@@ -1,4 +1,4 @@
-from models.models import (Base,Admin)
+from models.models import Admin
 from utils.database import *
 from passlib.context import CryptContext
 from sqlalchemy import text

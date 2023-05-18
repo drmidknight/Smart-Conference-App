@@ -4,6 +4,19 @@ from typing import Optional
 
 
 
+class EventRequest(BaseModel):
+    event_name:str
+    venue:Optional[str]
+    flyer:Optional[str]
+    start_date:str
+    end_date:str
+    registration_time:Optional[str]
+    number_of_participants:Optional[str]
+    description:Optional[str]
+    admin_id:Optional[int]
+
+
+
 
 
 class AdminRequest(BaseModel):

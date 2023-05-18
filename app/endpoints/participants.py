@@ -46,8 +46,7 @@ async def admin_login(user:LoginModel):
 
         return{
             "access":access_token,
-            "token_type": "bearer",
-            "id": data.id
+            "token_type": "bearer"
             }
 
     return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
@@ -98,10 +97,8 @@ async def add_admin(adminRequest: AdminRequest):
 
 
 
-
-
-@router.get("/getAllAdmin")
-async def all_admin():
+@router.get("/getAllStaffs")
+async def all_staff():
     data = session.query(Admin).all()
     return Response("ok", "success", data, 200, False)
 

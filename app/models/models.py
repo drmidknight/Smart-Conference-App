@@ -3,7 +3,7 @@ from sqlalchemy import DDL, event, Date,Column,Integer,Boolean,text,String, Fore
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 import sqlalchemy as db
-from app.utils.database import *
+from utils.database import Base
 
 
 
@@ -34,12 +34,14 @@ class Event(Base):
     id = Column(Integer, primary_key=True, index=True)
     event_name = Column(String(255), nullable=True, unique=True)
     venue = Column(String(255), nullable=True)
-    image = Column(String(255), nullable=True)
+    flyer = Column(String(255), nullable=True)
     start_date = Column(String(255), nullable=True)
+    registration_time = Column(String(255), nullable=True)
     end_date = Column(String(255), nullable=True)
     number_of_participants = Column(Integer)
     description = Column(String(255), nullable=True)
     admin_id = Column(Integer, ForeignKey("admins.id"))
+    status = Column(String(255), nullable=True)
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
     participants = relationship("Participant", back_populates="event")

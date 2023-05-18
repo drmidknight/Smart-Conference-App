@@ -4,6 +4,8 @@ from app.response.response import Response
 from app.models.models import *
 from app.utils.database import Database
 from app.auth import authentication
+from app.utils.config import *
+from app.endpoints import admin
 from fastapi.exceptions import HTTPException
 from sqlalchemy import and_, desc, or_
 from passlib.context import CryptContext
@@ -14,13 +16,13 @@ from app.mail.sendmail import *
 from uuid import uuid4
 from sqlalchemy.orm import load_only
 from typing import Union, Any
-from app.utils.config import *
+
 
 
 # APIRouter creates path operations for staffs module
 router = APIRouter(
-    prefix="/admin",
-    tags=["Admin"],
+    prefix="/event",
+    tags=["Event"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -37,60 +39,43 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@router.post('/login')
-async def admin_login(user:LoginModel):
-    data=session.query(Admin).filter(Admin.email==user.email).first()
-
-    if data and pwd_context.verify(user.password, data.password):
-        access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
-
-        return{
-            "access":access_token,
-            "token_type": "bearer",
-            "id": data.id
-            }
-
-    return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                        detail="Invalid login credential"                   
-    )
 
 
 
 
 
-
-
-@router.post("/add", response_description="Admin data added into the database")
-async def add_admin(adminRequest: AdminRequest):
+@router.post("/add", response_description="Event data added into the database")
+async def add_Event(eventRequest: EventRequest):
     response_code = 200
-    db_query = session.query(Admin).filter(or_(
-            Admin.email == adminRequest.email,
-            Admin.contact == adminRequest.contact
+    db_query = session.query(Event).filter(or_(
+            Event.event_name == eventRequest.event_name
         )).first()
 
     if db_query is not None:
-        response_msg = "Admin with email or phone number (" + \
-        str(adminRequest.email) + ") already exists"
+        response_msg = "Event (" + \
+        str(eventRequest.event_name) + ") already exists"
         error = True
         data = None
         return Response("ok", response_msg, data, response_code, error)
 
-    new_admin = Admin()
-    new_admin.admin_name = adminRequest.admin_name
-    new_admin.email = adminRequest.email
-    new_admin.contact = adminRequest.contact
-    new_admin.reset_password_token = generate_reset_password_token()
-    new_admin.status = "Active"
+    new_event = Event()
+    new_event.event_name = eventRequest.event_name
+    new_event.venue = eventRequest.venue
+    new_event.flyer = eventRequest.flyer
+    new_event.start_date = eventRequest.start_date
+    new_event.end_date = eventRequest.end_date
+    new_event.registration_time = eventRequest.registration_time
+    new_event.number_of_participants = eventRequest.number_of_participants
+    new_event.description = eventRequest.description
+    new_event.admin_id = admin.admin_login.id
+    new_event.status = "Active"
     
-    session.add(new_admin)
+    session.add(new_event)
     session.flush()
     # get id of the inserted admin
-    session.refresh(new_admin, attribute_names=['id'])
-    #await sendEmailToNewAdmin([adminRequest.email], new_admin)
-    data = {
-            "id": new_admin.id,
-            "email": new_admin.email
-            }
+    session.refresh(new_event, attribute_names=['id'])
+    #await sendEmailToNewAdmin([adminRequest.email], new_event)
+    data = {"event_name": new_event.event_name}
     session.commit()
     session.close()
     return Response("ok", "Admin added successfully", data, response_code, False)
@@ -98,10 +83,8 @@ async def add_admin(adminRequest: AdminRequest):
 
 
 
-
-
-@router.get("/getAllAdmin")
-async def all_admin():
+@router.get("/getAllStaffs")
+async def all_staff():
     data = session.query(Admin).all()
     return Response("ok", "success", data, 200, False)
 
