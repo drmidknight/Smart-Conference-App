@@ -2,7 +2,7 @@
 
 ## Installing Packages
 - Run the following commad
-    > pip install -r requirements.txt
+    > pip install -r app/requirements.txt
 
 
 
@@ -12,7 +12,7 @@
 
 - Database Migration and Data Seeding
 Run the following command
-    - python migrate.py
+    - python app/migrate.py
 
 
 ## RUNNING OR STARTING APPLICATON
@@ -21,7 +21,7 @@ Run the following command
 
     - OR
 
-    - python main.py
+    - python run.py
 
 
 
