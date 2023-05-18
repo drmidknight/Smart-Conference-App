@@ -1,0 +1,15 @@
+fastapi
+fastapi_jwt_auth
+sqlalchemy
+PyMySQL
+pydantic[email]
+uvicorn
+alembic
+passlib
+bcrypt
+fastapi_mail
+starlette
+uuid
+python-dotenv
+python-multipart
+python-jose[cryptography]
