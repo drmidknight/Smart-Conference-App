@@ -7,7 +7,7 @@
 
 
 ## CREATION AND MIGRATION OF DATABASE
->  Create a database name: **fastapi_student_results**
+>  Create a database name: **smart_conference_app**
 
 
 - Database Migration and Data Seeding
