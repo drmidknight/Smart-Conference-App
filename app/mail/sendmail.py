@@ -26,7 +26,7 @@ conf = ConnectionConfig(
     # MAIL_USERNAME = config_credentials["EMAIL"],
     # MAIL_PASSWORD = config_credentials["PASSWORD"],
     # MAIL_FROM =  config_credentials["EMAIL"],
-    MAIL_USERNAME = "SMART CONFERENCE APP",
+    MAIL_USERNAME = "bismarkotu1006@gmail.com",
     MAIL_PASSWORD ="olimwedzhheuxfce",
     MAIL_FROM =  "bismarkotu1006@gmail.com",
     MAIL_PORT = 587,
@@ -70,9 +70,9 @@ async def sendEmailToNewAdmin(email: EmailSchema, instance: Admin):
 
     html = f"""                    
                     <br>
-                    <p>Hi {instance.name} !</p>
+                    <p>Hi {instance.admin_name} !</p>
                     <br>
-                    <p>You have been added and assigned to <b>SMART CONFERENCE APP</b></p>
+                    <p>You have been added to <b>SMART CONFERENCE APP</b> as an Admin</p>
                     <br><br>
                     Change your password to access the application.
                     <br><br>
@@ -89,7 +89,7 @@ async def sendEmailToNewAdmin(email: EmailSchema, instance: Admin):
 
 
     message = MessageSchema(
-        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
+        subject="SMART CONFERENCE APP",
         recipients=email,
         body=html,
         subtype=MessageType.html)
@@ -117,7 +117,7 @@ async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Adm
 
     html = f"""                    
                     <br>
-                    <p>Hi {instance.name} !</p>
+                    <p>Hi {instance.admin_name} !</p>
                     <br>
                     <p>You have requested to reset your password. Click on the button below to reset your password</p>
 

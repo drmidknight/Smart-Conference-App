@@ -3,7 +3,7 @@ from sqlalchemy import DDL, event, Date,Column,Integer,Boolean,text,String, Fore
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 import sqlalchemy as db
-from utils.database import *
+from app.utils.database import *
 
 
 

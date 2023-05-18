@@ -1,15 +1,15 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, Security
 from app.schemas.schemas import *
 from app.response.response import Response
 from app.models.models import *
 from app.utils.database import Database
+from app.auth import authentication
 from fastapi.exceptions import HTTPException
 from sqlalchemy import and_, desc, or_
 from passlib.context import CryptContext
 from fastapi_jwt_auth import AuthJWT
 from fastapi.encoders import jsonable_encoder
 from fastapi.security import (OAuth2PasswordBearer, OAuth2PasswordRequestForm)
-from app.auth.authentication import *
 from app.mail.sendmail import *
 from uuid import uuid4
 from sqlalchemy.orm import load_only
@@ -25,7 +25,6 @@ router = APIRouter(
 )
 
 
-oath2_scheme = OAuth2PasswordBearer(tokenUrl = 'token')
 
 
 database = Database()
@@ -39,11 +38,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post('/login')
-async def admin_login(email:str, password:str):
-    data=session.query(Admin).filter(Admin.email==email).first()
+async def admin_login(user:LoginModel):
+    data=session.query(Admin).filter(Admin.email==user.email).first()
 
-    if data and pwd_context.verify(password, data.password):
-        access_token = create_access_token(data={"email": data.email, "contact": data.contact})
+    if data and pwd_context.verify(user.password, data.password):
+        access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
 
         return{
             "access":access_token,
@@ -62,7 +61,6 @@ async def admin_login(email:str, password:str):
 
 @router.post("/add", response_description="Admin data added into the database")
 async def add_admin(adminRequest: AdminRequest):
-
     response_code = 200
     db_query = session.query(Admin).filter(or_(
             Admin.email == adminRequest.email,
@@ -80,16 +78,18 @@ async def add_admin(adminRequest: AdminRequest):
     new_admin.admin_name = adminRequest.admin_name
     new_admin.email = adminRequest.email
     new_admin.contact = adminRequest.contact
-    new_admin.reset_password_token = create_access_token(new_admin)
+    new_admin.reset_password_token = generate_reset_password_token()
     new_admin.status = "Active"
     
     session.add(new_admin)
     session.flush()
-    # get id of the inserted staff
+    # get id of the inserted admin
     session.refresh(new_admin, attribute_names=['id'])
-    await sendEmailToNewAdmin([adminRequest.email], new_admin)
-    # data = {"staff_id": new_admin.id}
-    data = {"Token": new_admin.reset_password_token}
+    #await sendEmailToNewAdmin([adminRequest.email], new_admin)
+    data = {
+            "id": new_admin.id,
+            "email": new_admin.email
+            }
     session.commit()
     session.close()
     return Response("ok", "Admin added successfully", data, response_code, False)
@@ -105,51 +105,60 @@ async def all_staff():
 
 
 
-
-
-
-@router.get("/findStaffById")
-async def findStaffById(id: str):
-    response_message = "Staff retrieved successfully"
-    data = None
+@router.get("/getAdminById/{id}")
+async def getAdminById(id: str):
     try:
-        data = session.query(Admin).filter(Admin.id == id).one()
+        db_data = session.query(Admin).filter(Admin.id == id).update({
+            Admin.status: "Active"
+            }, synchronize_session=False)
+        session.flush()
+        session.commit()
+        response_msg = "Admin retrieved successfully"
+        response_code = 200
+        error = False 
+        data = {"id": id}
+        if db_data == 1:
+            data = session.query(Admin).filter(Admin.id == id).one()
+        elif db_data == 0:
+            response_msg = "Admin with id (" + \
+        str(id) + ") does not exists"
+            error = True
+            data = None
+            response_code = status.HTTP_404_NOT_FOUND
+        return Response("ok", response_msg, data, response_code, error)
     except Exception as ex:
-        print("Error", ex)
-        response_message = "Staff Not found"
-    error = False
-    return Response("ok", "success", data, 200, False)
+        print("Error : ", ex)
 
 
 
 
 
 
-
-
-@router.put("/updateCourse")
-async def update_course(update_course: UpdateCourseRequest):
-    course_id = update_course.id
+@router.put("/update")
+async def updateAdmin(updateAdmin: UpdateAdmin):
+    adminID = updateAdmin.id
     try:
-        is_course_update = session.query(Admin).filter(Admin.id == course_id).update({
-            Admin.course_name: update_course.course_name
+        is_adminID_update = session.query(Admin).filter(Admin.id == adminID).update({
+            Admin.admin_name: updateAdmin.admin_name,
+            Admin.contact: updateAdmin.contact,
+            Admin.email: updateAdmin.email
         }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Course updated successfully"
+        response_msg = "Admin updated successfully"
         response_code = 200
         error = False
-        if is_course_update == 1:
+        if is_adminID_update == 1:
             # After successful update, retrieve updated data from db
             data = session.query(Admin).filter(
-                Admin.id == course_id).one()
+                Admin.id == adminID).one()
 
-        elif is_course_update == 0:
-            response_msg = "Course not updated. No course found with this id :" + \
-                str(course_id)
+        elif is_adminID_update == 0:
+            response_msg = "Admin not updated. No Admin found with this id :" + \
+                str(adminID)
             error = True
             data = None
-        return Response(data, response_code, response_msg, error)
+        return Response("ok", response_msg, data, response_code, error)
     except Exception as ex:
         print("Error : ", ex)
 
@@ -162,23 +171,68 @@ async def update_course(update_course: UpdateCourseRequest):
 
 
 
-@router.delete("/deleteCourseById/{id}")
-async def delete_course(id: str):
+@router.post("/getAdminByEmail/{email}")
+async def getAdminByEmail(email: str):
     try:
-        is_course_updated = session.query(Admin).filter(Admin.id == id).update({
-            Admin.status: "Inactive"}, synchronize_session=False)
+        db_data = session.query(Admin).filter(Admin.email == email).update({
+            Admin.status: "Active"
+            }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Course deleted successfully"
+        response_msg = "Admin retrieved successfully"
         response_code = 200
-        error = False
-        data = {"id": id}
-        if is_course_updated == 0:
-            response_msg = "Course not deleted. No Course found with this id :" + \
-                str(id)
+        error = False 
+        data = {"email": email}
+        if db_data == 1:
+            data = session.query(Admin).filter(Admin.email == email).one()
+        elif db_data == 0:
+            response_msg = "Admin with email (" + \
+        str(email) + ") does not exists"
             error = True
             data = None
-        return Response(data, response_code, response_msg, error)
+            response_code = status.HTTP_404_NOT_FOUND
+        return Response("ok", response_msg, data, response_code, error)
+    except Exception as ex:
+        print("Error : ", ex)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@router.delete("/delete/{id}")
+async def deleteAdmin(id: str):
+    try:
+        db_data = session.query(Admin).filter(Admin.id == id).update({
+            Admin.status: "InActive"
+            }, synchronize_session=False)
+        session.flush()
+        session.commit()
+        response_msg = "Admin deleted successfully"
+        response_code = 200
+        error = False 
+        data = {"id": id}
+        if db_data == 1:
+            data = session.query(Admin).filter(Admin.id == id).one()
+        elif db_data == 0:
+            response_msg = "Admin not deleted. Admin with id (" + \
+        str(id) + ") not found"
+            error = True
+            data = None
+            response_code = status.HTTP_404_NOT_FOUND
+        return Response("ok", response_msg, data, response_code, error)
     except Exception as ex:
         print("Error : ", ex)
 
@@ -318,59 +372,22 @@ async def sendResetPasswordLinkToStaffEmail(email: str):
 
 
 
-@router.put("/updateStaffDetailsAfterResetPassword")
-async def updateStaffDetailsAfterResetPassword(updateStaffRequest: UpdateStaffRequest):
-    staffDetailID = updateStaffRequest.id
-    try:
-        is_staffDetailID_update = session.query(Admin).filter(Admin.id == staffDetailID).update({
-            Admin.reset_password_token: None,
-            Admin.password: pwd_context.hash(updateStaffRequest.password)
-        }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Staff Detail updated successfully"
-        response_code = 200
-        error = False
-        if is_staffDetailID_update == 1:
-            # After successful update, retrieve updated data from db
-            data = session.query(Admin).filter(
-                Admin.id == staffDetailID).one()
+# @router.post('/login')
+# async def staff_login(email:str, password:str, Authorize:AuthJWT=Depends()):
+#     data=session.query(Admin).filter(Admin.email==email).first()
 
-        elif is_staffDetailID_update == 0:
-            response_msg = "Staff Detail not updated. No staff Detail found with this id :" + \
-                str(staffDetailID)
-            error = True
-            data = None
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
+#     if data and pwd_context.verify(password, data.password):
+#         access_token = Authorize.create_access_token(subject=data.name)
+#         refresh_token = Authorize.create_refresh_token(subject=data.name)
 
+#         response={
+#             "access":access_token,
+#             "refresh":refresh_token
+#         }
 
+#         response_code = status.HTTP_200_OK
+#         return Response("ok", "success", data, response_code, False)
 
-
-
-
-
-
-
-
-
-@router.post('/login')
-async def staff_login(email:str, password:str, Authorize:AuthJWT=Depends()):
-    data=session.query(Admin).filter(Admin.email==email).first()
-
-    if data and pwd_context.verify(password, data.password):
-        access_token = Authorize.create_access_token(subject=data.name)
-        refresh_token = Authorize.create_refresh_token(subject=data.name)
-
-        response={
-            "access":access_token,
-            "refresh":refresh_token
-        }
-
-        response_code = status.HTTP_200_OK
-        return Response("ok", "success", data, response_code, False)
-
-    return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                        detail="Invalid login credential"                   
-    )
+#     return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+#                         detail="Invalid login credential"                   
+#     )

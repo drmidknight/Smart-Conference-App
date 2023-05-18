@@ -19,7 +19,8 @@ db_addStaff = Admin()
 db_addStaff.admin_name = "Super Admin"
 db_addStaff.email = "admin@admin.com"
 db_addStaff.password = pwd_context.hash("password")
-db_addStaff.contact = "0245678987"
+db_addStaff.contact = "0245678987",
+db_addStaff.status = "Active"
 db.add(db_addStaff)
 
 
