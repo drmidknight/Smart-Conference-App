@@ -3,26 +3,10 @@ from sqlalchemy import DDL, event, Date, Column,Integer,Boolean,text,String, For
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 import sqlalchemy as db
-from utils.database import *
 
+                    
 
-# #MYSQL_URL = "mysql+pymysql://root:@localhost:3306/fastapi_student_results?charset=utf8"
-# MYSQL_URL = "mysql+pymysql://root:Openforme@localhost:3306/smart_conference_app?charset=utf8"
-# POOL_SIZE = 20
-# POOL_RECYCLE = 3600
-# POOL_TIMEOUT = 15
-# MAX_OVERFLOW = 2
-# CONNECT_TIMEOUT = 60
-
-# connect_argument = {"connect_timeout":CONNECT_TIMEOUT}
-
-# migrate = db.create_engine(MYSQL_URL, pool_size=POOL_SIZE, pool_recycle=POOL_RECYCLE,
-#                          pool_timeout=POOL_TIMEOUT, max_overflow=MAX_OVERFLOW, connect_args=connect_argument)
-
-                         
-# meta = MetaData()
-
-# Base = declarative_base()
+Base = declarative_base()
 
 class Participant(Base):
     __tablename__ = 'participants'

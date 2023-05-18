@@ -1,5 +1,6 @@
 from models.models import Admin
-from utils.database import *
+from utils.database import Database
+from models.models import Base
 from passlib.context import CryptContext
 from sqlalchemy import text
 
