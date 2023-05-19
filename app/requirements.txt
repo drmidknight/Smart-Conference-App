@@ -13,3 +13,4 @@ uuid
 python-dotenv
 python-multipart
 python-jose[cryptography]
+cloudinary==1.24.0

@@ -1,12 +1,9 @@
-from fastapi import FastAPI, APIRouter, status, Depends, Security, File, UploadFile
-from typing_extensions import Annotated
+from fastapi import APIRouter, status, Depends, Security
 from app.schemas.schemas import *
 from app.response.response import Response
 from app.models.models import *
 from app.utils.database import Database
 from app.auth import authentication
-from app.utils.config import *
-from app.endpoints import admin
 from fastapi.exceptions import HTTPException
 from sqlalchemy import and_, desc, or_
 from passlib.context import CryptContext
@@ -14,21 +11,22 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi.encoders import jsonable_encoder
 from fastapi.security import (OAuth2PasswordBearer, OAuth2PasswordRequestForm)
 from app.mail.sendmail import *
-import uuid
+from uuid import uuid4
 from sqlalchemy.orm import load_only
 from typing import Union, Any
-
+from app.utils.config import *
+from typing import Annotated
 
 
 # APIRouter creates path operations for staffs module
 router = APIRouter(
-    prefix="/event",
-    tags=["Event"],
+    prefix="/admin",
+    tags=["Admin"],
     responses={404: {"description": "Not found"}},
 )
 
 
-IMAGEDIR = "images/"
+
 
 database = Database()
 engine = database.get_db_connection()
@@ -37,6 +35,77 @@ session = database.get_db_session(engine)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+
+def get_admin(session, email: str):
+    data = session.query(Admin).filter(Admin.email == email).all()
+    return data
+
+
+def fake_decode_token(token):
+    # This doesn't provide any security at all
+    # Check the next version
+    admin = get_admin(token)
+    return admin
+
+
+async def get_current_admin(token: Annotated[str, Depends(oauth2_scheme)]):
+    admin = fake_decode_token(token)
+    if not admin:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return admin
+
+
+async def get_current_active_admin(
+    current_user: Annotated[Admin, Depends(get_current_admin)]
+):
+    if current_user.status == "InActive":
+        raise HTTPException(status_code=400, detail="InActive admin")
+    return current_user
+
+
+@router.post("/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+
+    user_dict=session.query(Admin).filter(Admin.email==form_data.username).first()
+
+    if user_dict and pwd_context.verify(form_data.password, user_dict.password):
+        return {"access_token": user_dict.email, "token_type": "bearer"}
+
+    raise HTTPException(status_code=400, detail="Incorrect email or password")
+
+
+
+@router.get("/admin/me")
+async def read_users_me(current_user: Annotated[Admin, Depends(get_current_active_admin)]):
+    return current_user
+
+
+
+@router.post('/loginMe')
+async def admin_login(user:LoginModel):
+    
+    data=session.query(Admin).filter(Admin.email==user.email).first()
+
+    if data and pwd_context.verify(user.password, data.password):
+        access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
+        user.id = data.id
+
+        return{
+            "access":access_token,
+            "token_type": "bearer",
+            "id" : user.id
+            }
+
+    return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                        detail="Invalid login credential"                   
+    )
 
 
 
@@ -44,51 +113,37 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-
-@router.post("/add", response_description="Event data added into the database")
-async def add_Event(eventRequest: EventRequest, file: UploadFile = File(...)):
+@router.post("/add", response_description="Admin data added into the database")
+async def add_admin(adminRequest: AdminRequest):
     response_code = 200
-    db_query = session.query(Event).filter(or_(
-            Event.event_name == eventRequest.event_name
+    db_query = session.query(Admin).filter(or_(
+            Admin.email == adminRequest.email,
+            Admin.contact == adminRequest.contact
         )).first()
 
     if db_query is not None:
-        response_msg = "Event (" + \
-        str(eventRequest.event_name) + ") already exists"
+        response_msg = "Admin with email or phone number (" + \
+        str(adminRequest.email) + ") already exists"
         error = True
         data = None
         return Response("ok", response_msg, data, response_code, error)
 
-
-    file.filename = f"{flyerIncrement()}.jpg"
-    contents = await file.read()
-
-    #save flyer
-    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-        f.write(contents)
-
-
-    admin_id = LoginModel()
-    new_event = Event()
-    new_event.event_name = eventRequest.event_name
-    new_event.venue = eventRequest.venue
-    new_event.flyer = file.filename
-    new_event.start_date = eventRequest.start_date
-    new_event.end_date = eventRequest.end_date
-    new_event.registration_time = eventRequest.registration_time
-    new_event.number_of_participants = eventRequest.number_of_participants
-    new_event.description = eventRequest.description
-    new_event.admin_id = admin_id.id
-    new_event.status = "Active"
+    new_admin = Admin()
+    new_admin.admin_name = adminRequest.admin_name
+    new_admin.email = adminRequest.email
+    new_admin.contact = adminRequest.contact
+    new_admin.reset_password_token = generate_reset_password_token()
+    new_admin.status = "Active"
     
-    session.add(new_event)
+    session.add(new_admin)
     session.flush()
     # get id of the inserted admin
-    session.refresh(new_event, attribute_names=['id'])
-    #await sendEmailToNewAdmin([adminRequest.email], new_event)
-    data = {"event_name": new_event.event_name, 
-            "admin_id": new_event.admin_id,
-            "filename": file.filename}
+    session.refresh(new_admin, attribute_names=['id'])
+    #await sendEmailToNewAdmin([adminRequest.email], new_admin)
+    data = {
+            "id": new_admin.id,
+            "email": new_admin.email
+            }
     session.commit()
     session.close()
     return Response("ok", "Admin added successfully", data, response_code, False)
@@ -96,19 +151,21 @@ async def add_Event(eventRequest: EventRequest, file: UploadFile = File(...)):
 
 
 
-@router.get("/getAllEvents")
-async def all_event():
-    data = session.query(Event).filter(Event.status == "Active").all()
+
+
+@router.get("/getAllAdmin")
+async def all_admin():
+    data = session.query(Admin).filter(Admin.status == "Active").all()
     return Response("ok", "success", data, 200, False)
 
 
 
 
-@router.get("/getEventById/{id}")
-async def getEventById(id: str):
+@router.get("/getAdminById/{id}")
+async def getAdminById(id: str):
     try:
-        db_data = session.query(Event).filter(Event.id == id).update({
-            Event.status: "Active"
+        db_data = session.query(Admin).filter(Admin.id == id).update({
+            Admin.status: "Active"
             }, synchronize_session=False)
         session.flush()
         session.commit()
@@ -212,21 +269,21 @@ async def getAdminByEmail(email: str):
 
 
 @router.delete("/delete/{id}")
-async def deleteEvent(id: str):
+async def deleteAdmin(id: str):
     try:
-        db_data = session.query(Event).filter(Event.id == id).update({
-            Event.status: "InActive"
+        db_data = session.query(Admin).filter(Admin.id == id).update({
+            Admin.status: "InActive"
             }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Event deleted successfully"
+        response_msg = "Admin deleted successfully"
         response_code = 200
         error = False 
         data = {"id": id}
         if db_data == 1:
-            data = session.query(Event).filter(Event.id == id).one()
+            data = session.query(Admin).filter(Admin.id == id).one()
         elif db_data == 0:
-            response_msg = "Event not deleted. Event with id (" + \
+            response_msg = "Admin not deleted. Admin with id (" + \
         str(id) + ") not found"
             error = True
             data = None
@@ -344,42 +401,49 @@ async def sendResetPasswordLinkToStaffEmail(email: str):
         print("Error : ", ex)
     
 
-import shutil
-app = FastAPI()
-
-
-# @app.post("/flyer")
-# async def flyer(file: UploadFile = File(...)):
-
-#     #file.filename = f"{flyerIncrement()}.jpg"
-#     file_location = f"images/{file.filename}"
-#     filename = file.filename
-#     contents = await file.read()
-
-#     #save flyer
-#     with open(f"{IMAGEDIR}{filename}", "wb+") as f:
-#         f.write(contents)
-
-#     return {"filename": filename}
 
 
 
 
-@app.post("/flyer")
-async def flyer(file: UploadFile = File(...)):
-
-    #file.filename = f"{flyerIncrement()}.jpg"
-    file_location = f"images/{file.filename}"
-    # filename = file.filename
-    # contents = await file.read()
-
-    #save flyer
-    with open("images/"+file.filename, "wb") as image:
-        shutil.copyfileobj(file.file, image)
-
-    return {"filename": '{file.filename}',
-            "saved at": '{file_location}'}
 
 
-def flyerIncrement(size=10, chars=string.ascii_lowercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @router.post('/login')
+# async def staff_login(email:str, password:str, Authorize:AuthJWT=Depends()):
+#     data=session.query(Admin).filter(Admin.email==email).first()
+
+#     if data and pwd_context.verify(password, data.password):
+#         access_token = Authorize.create_access_token(subject=data.name)
+#         refresh_token = Authorize.create_refresh_token(subject=data.name)
+
+#         response={
+#             "access":access_token,
+#             "refresh":refresh_token
+#         }
+
+#         response_code = status.HTTP_200_OK
+#         return Response("ok", "success", data, response_code, False)
+
+#     return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+#                         detail="Invalid login credential"                   
+#     )

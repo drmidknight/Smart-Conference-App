@@ -47,8 +47,8 @@ async def admin_login(user:LoginModel, id: int = None):
         user.id = data.id
 
         return{
-            # "access":access_token,
-            # "token_type": "bearer",
+            "access":access_token,
+            "token_type": "bearer",
             "id" : user.id
             }
 
@@ -104,7 +104,7 @@ async def add_admin(adminRequest: AdminRequest):
 
 @router.get("/getAllAdmin")
 async def all_admin():
-    data = session.query(Admin).all()
+    data = session.query(Admin).filter(Admin.status == "Active").all()
     return Response("ok", "success", data, 200, False)
 
 
