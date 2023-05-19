@@ -49,8 +49,9 @@ class ShowAdmin(BaseModel):
 
 
 class LoginModel(BaseModel):
-    email:str
-    password:str
+    email:Optional[str]
+    password:Optional[str]
+    id:Optional[int]
 
 
 

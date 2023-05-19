@@ -38,16 +38,18 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post('/login')
-async def admin_login(user:LoginModel):
+async def admin_login(user:LoginModel, id: int = None):
+    
     data=session.query(Admin).filter(Admin.email==user.email).first()
 
     if data and pwd_context.verify(user.password, data.password):
         access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
+        user.id = data.id
 
         return{
-            "access":access_token,
-            "token_type": "bearer",
-            "id": data.id
+            # "access":access_token,
+            # "token_type": "bearer",
+            "id" : user.id
             }
 
     return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 

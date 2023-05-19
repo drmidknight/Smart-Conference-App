@@ -58,6 +58,7 @@ async def add_Event(eventRequest: EventRequest):
         data = None
         return Response("ok", response_msg, data, response_code, error)
 
+    admin_id = LoginModel()
     new_event = Event()
     new_event.event_name = eventRequest.event_name
     new_event.venue = eventRequest.venue
@@ -67,7 +68,7 @@ async def add_Event(eventRequest: EventRequest):
     new_event.registration_time = eventRequest.registration_time
     new_event.number_of_participants = eventRequest.number_of_participants
     new_event.description = eventRequest.description
-    new_event.admin_id = admin.admin_login.id
+    new_event.admin_id = admin_id.id
     new_event.status = "Active"
     
     session.add(new_event)
@@ -75,7 +76,7 @@ async def add_Event(eventRequest: EventRequest):
     # get id of the inserted admin
     session.refresh(new_event, attribute_names=['id'])
     #await sendEmailToNewAdmin([adminRequest.email], new_event)
-    data = {"event_name": new_event.event_name}
+    data = {"event_name": new_event.event_name, "admin_id": new_event.admin_id}
     session.commit()
     session.close()
     return Response("ok", "Admin added successfully", data, response_code, False)
