@@ -16,7 +16,7 @@ from fastapi.security import (OAuth2PasswordBearer, OAuth2PasswordRequestForm)
 from app.mail.sendmail import *
 import uuid
 from sqlalchemy.orm import load_only
-from typing import Union, Any
+from datetime import datetime, timedelta
 
 
 
@@ -28,7 +28,7 @@ router = APIRouter(
 )
 
 
-IMAGEDIR = "images/"
+IMAGEDIR = "app/endpoints/images/"
 
 database = Database()
 engine = database.get_db_connection()
@@ -46,7 +46,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/add", response_description="Event data added into the database")
-async def add_Event(eventRequest: EventRequest, file: UploadFile = File(...)):
+async def add_Event(eventRequest: EventRequest,
+                    #file: UploadFile = File(...)
+                    #current_user: Admin = Depends(authentication.get_current_user)
+                    ):
+    
+    #user_id=current_user.id
     response_code = 200
     db_query = session.query(Event).filter(or_(
             Event.event_name == eventRequest.event_name
@@ -59,39 +64,27 @@ async def add_Event(eventRequest: EventRequest, file: UploadFile = File(...)):
         data = None
         return Response("ok", response_msg, data, response_code, error)
 
+    #flyer_name:str = file.filename
 
-    file.filename = f"{flyerIncrement()}.jpg"
-    contents = await file.read()
-
-    #save flyer
-    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-        f.write(contents)
-
-
-    admin_id = LoginModel()
     new_event = Event()
     new_event.event_name = eventRequest.event_name
     new_event.venue = eventRequest.venue
-    new_event.flyer = file.filename
+    #new_event.flyer = flyer_name
     new_event.start_date = eventRequest.start_date
     new_event.end_date = eventRequest.end_date
     new_event.registration_time = eventRequest.registration_time
     new_event.number_of_participants = eventRequest.number_of_participants
     new_event.description = eventRequest.description
-    new_event.admin_id = admin_id.id
+    #new_event.admin_id = admin_id.id
     new_event.status = "Active"
     
     session.add(new_event)
     session.flush()
-    # get id of the inserted admin
     session.refresh(new_event, attribute_names=['id'])
-    #await sendEmailToNewAdmin([adminRequest.email], new_event)
-    data = {"event_name": new_event.event_name, 
-            "admin_id": new_event.admin_id,
-            "filename": file.filename}
+    data = {"event_name": new_event.event_name}
     session.commit()
     session.close()
-    return Response("ok", "Admin added successfully", data, response_code, False)
+    return Response("ok", "Event added successfully", data, response_code, False)
 
 
 
@@ -365,20 +358,38 @@ app = FastAPI()
 
 
 
-@app.post("/flyer")
-async def flyer(file: UploadFile = File(...)):
+# @router.post("/flyer")
+# async def flyer(file: UploadFile = File(...)):
 
-    #file.filename = f"{flyerIncrement()}.jpg"
-    file_location = f"images/{file.filename}"
-    # filename = file.filename
-    # contents = await file.read()
+#     file.filename = f"{flyerIncrement()}.jpg"
+#     #file_location = f"images/{file.filename}"
+#     # filename = file.filename
+#     contents = await file.read()
 
-    #save flyer
-    with open("images/"+file.filename, "wb") as image:
-        shutil.copyfileobj(file.file, image)
+#     #save flyer
+#     with open(f"{file.filename}", "wb") as image:
+#         image.write(contents)
 
-    return {"filename": '{file.filename}',
-            "saved at": '{file_location}'}
+#     return {"filename": file.filename}
+
+
+
+
+
+
+# @router.post("/flyer")
+# async def flyer(file: UploadFile = File(...)):
+
+#     #file.filename = f"{flyerIncrement()}.jpg"
+#     #file_location = f"images/{file.filename}"
+#     # filename = file.filename
+#     # contents = await file.read()
+
+#     #save flyer
+#     with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
+#         shutil.copyfileobj(file.file, image)
+
+#     return {"filename": file.filename}
 
 
 def flyerIncrement(size=10, chars=string.ascii_lowercase + string.digits):

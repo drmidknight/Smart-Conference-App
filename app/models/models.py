@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import DDL, event, Date, Column,Integer,Boolean,text,String, ForeignKey, TIMESTAMP, BIGINT, MetaData
+from sqlalchemy import Boolean,text,ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 import sqlalchemy as db

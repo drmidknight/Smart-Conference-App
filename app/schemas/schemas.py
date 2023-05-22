@@ -5,14 +5,13 @@ from typing import Optional
 
 
 class EventRequest(BaseModel):
-    event_name:str
+    event_name:Optional[str]
     venue:Optional[str]
-    start_date:str
-    end_date:str
+    start_date:Optional[str]
+    end_date:Optional[str]
     registration_time:Optional[str]
     number_of_participants:Optional[str]
     description:Optional[str]
-    admin_id:Optional[int]
 
 
 
@@ -50,7 +49,6 @@ class ShowAdmin(BaseModel):
 class LoginModel(BaseModel):
     email:Optional[str]
     password:Optional[str]
-    id:Optional[int]
 
 
 
