@@ -40,6 +40,16 @@ class TokenPayload(BaseModel):
 
 
 
+class TokenData(BaseModel):
+    username: str | None = None
+    scopes: list[str] = []
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+    
 class ShowAdmin(BaseModel):
     id: int
     email: str

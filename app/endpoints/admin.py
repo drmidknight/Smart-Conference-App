@@ -37,19 +37,20 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@router.post('/login')
+@router.post('/login', response_model=Token)
 async def admin_login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     data=session.query(Admin).filter(Admin.email==form_data.username).first()
 
     if data and pwd_context.verify(form_data.password, data.password):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = authentication.create_access_token(data={"sub": data.email}, expires_delta=access_token_expires)
+        access_token = authentication.create_access_token(data={"email": data.email}, expires_delta=access_token_expires)
         #access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
 
         return{
-            "access":access_token,
-            "token_type": "bearer"
+            "access_token":access_token,
+            "token_type": "bearer",
+            "email": data.email
             }
 
 

@@ -5,9 +5,10 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from fastapi import status, Security
 from datetime import datetime, timedelta
+from pydantic import ValidationError
 from app.utils.config import *
 from jose import JWTError, jwt
-from fastapi.security import (OAuth2PasswordBearer, OAuth2PasswordRequestForm)
+from fastapi.security import (OAuth2PasswordBearer, SecurityScopes)
 from app.schemas.schemas import *
 from app.endpoints.admin import *
 from app.utils.database import *
@@ -15,7 +16,8 @@ from app.utils.database import *
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="admin/login",  scheme_name="JWT")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="admin/login",  scheme_name="JWT",
+scopes={"me": "Read information about the current user.", "items": "Read items."})
 
 
 database = Database()
@@ -89,54 +91,56 @@ def verify_token(token: str):
 
 #      return current_admin
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-def get_user(db, admin_name: str):
-    return db.query(Admin).filter(Admin.admin_name== admin_name).first()
 
 
 
-async def get_current_user(db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
+def get_user(username: str):
+    return session.query(Admin).filter(Admin.email== username).first()
+
+
+def admin_db():
+    data = session.query(Admin).filter(Admin.status == "Active").all()
+    return data
+
+
+
+async def get_current_user(
+    security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)
+):
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = "Bearer"
+        credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={"WWW-Authenticate": authenticate_value},
     )
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
-        admin_name: str = payload.get("sub")
-        if admin_name is None:
+        email: str = payload.get("email")
+        if email is None:
             raise credentials_exception
-        token_data = admin_name
-    except JWTError:
+        token_scopes = payload.get("scopes", [])
+        token_data = TokenData(scopes=token_scopes, username=email)
+    except (JWTError, ValidationError):
         raise credentials_exception
-    user = get_user(db, admin_name=token_data)
+    user = get_user(admin_db, username=token_data.username)
     if user is None:
         raise credentials_exception
+    for scope in security_scopes.scopes:
+        if scope not in token_data.scopes:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not enough permissions",
+                headers={"WWW-Authenticate": authenticate_value},
+            )
     return user
 
 
-
-
-
-
-# async def verify_token(token: str):
-#     try:
-#         payload = jwt.decode(token, JWT_SECRET_KEY, algorithm=ALGORITHM)
-#         user = await Admin.id(id = payload.get('id'))
-
-#     except:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             details="Invalid token",
-#             headers={"WWW-Authentication": "Bearer"}
-#         )
-    
-#     return user
+async def get_current_active_user(
+    current_user: Admin = Security(get_current_user, scopes=["me"])
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user

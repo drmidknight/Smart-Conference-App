@@ -17,6 +17,7 @@ from app.mail.sendmail import *
 import uuid
 from sqlalchemy.orm import load_only
 from datetime import datetime, timedelta
+import shutil
 
 
 
@@ -48,8 +49,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/add", response_description="Event data added into the database")
 async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
-                registration_time:str = Form(...), number_of_participants:str = Form(...),
-                description:str = Form(...), file: UploadFile = File(...)):
+                registration_time:str = Form(None) , number_of_participants:str = Form(None),
+                description:str = Form(None), file: UploadFile = File(None),
+                current_admin: Admin = Depends(authentication.get_current_user)):
+    
+    admin_id = current_admin.id
 
 
     response_code = 200
@@ -75,7 +79,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     new_event.registration_time = registration_time
     new_event.number_of_participants = number_of_participants
     new_event.description = description
-    #new_event.admin_id = admin_id.id
+    new_event.admin_id = admin_id
     new_event.status = "Active"
     
     session.add(new_event)
@@ -343,90 +347,9 @@ async def sendResetPasswordLinkToStaffEmail(email: str):
         print("Error : ", ex)
     
 
-import shutil
-app = FastAPI()
-
-
-# @app.post("/flyer")
-# async def flyer(file: UploadFile = File(...)):
-
-#     #file.filename = f"{flyerIncrement()}.jpg"
-#     file_location = f"images/{file.filename}"
-#     filename = file.filename
-#     contents = await file.read()
-
-#     #save flyer
-#     with open(f"{IMAGEDIR}{filename}", "wb+") as f:
-#         f.write(contents)
-
-#     return {"filename": filename}
 
 
 
-
-# @router.post("/flyer")
-# async def flyer(file: UploadFile = File(...)):
-
-#     file.filename = f"{flyerIncrement()}.jpg"
-#     #file_location = f"images/{file.filename}"
-#     # filename = file.filename
-#     contents = await file.read()
-
-#     #save flyer
-#     with open(f"{file.filename}", "wb") as image:
-#         image.write(contents)
-
-#     return {"filename": file.filename}
-
-
-
-
-
-
-@router.post("/flyer")
-async def flyer(event_name:str = Form(...), venue:str = Form(...),
-                start_date:str = Form(...), end_date:str = Form(...),
-                registration_time:str = Form(...), number_of_participants:str = Form(...),
-                description:str = Form(...), file: UploadFile = File(...)):
-
-
-    response_code = 200
-    db_query = session.query(Event).filter(or_(
-            Event.event_name == event_name
-        )).first()
-
-    if db_query is not None:
-        response_msg = "Event (" + \
-        str(event_name) + ") already exists"
-        error = True
-        data = None
-        return Response("ok", response_msg, data, response_code, error)
-
-    flyer_name:str = file.filename
-
-    new_event = Event()
-    new_event.event_name = event_name
-    new_event.venue = venue
-    new_event.flyer = flyer_name
-    new_event.start_date = start_date
-    new_event.end_date = end_date
-    new_event.registration_time = registration_time
-    new_event.number_of_participants = number_of_participants
-    new_event.description = description
-    #new_event.admin_id = admin_id.id
-    new_event.status = "Active"
-    
-    session.add(new_event)
-    session.flush()
-    session.refresh(new_event, attribute_names=['id'])
-    response_msg = "Event (" + \
-        str(new_event.event_name) + ") created successfully"
-    data = {"event_name": new_event.event_name}
-    session.commit()
-    session.close()
-
-        #save flyer
-    with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
-        shutil.copyfileobj(file.file, image)
-
-    return {"filename": file.filename}
+# @router.post("/get_user")
+# def get_user(admin_name: str):
+#     return session.query(Admin).filter(Admin.admin_name== admin_name).first()
