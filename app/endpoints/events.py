@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, status, Depends, Security, File, UploadFile
+from fastapi import FastAPI, APIRouter, status, Depends, Security, File, UploadFile, Form
 from typing_extensions import Annotated
 from app.schemas.schemas import *
 from app.response.response import Response
@@ -46,45 +46,51 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/add", response_description="Event data added into the database")
-async def add_Event(eventRequest: EventRequest,
-                    #file: UploadFile = File(...)
-                    #current_user: Admin = Depends(authentication.get_current_user)
-                    ):
-    
-    #user_id=current_user.id
+async def add_event(event_name:str = Form(...), venue:str = Form(...),
+                start_date:str = Form(...), end_date:str = Form(...),
+                registration_time:str = Form(...), number_of_participants:str = Form(...),
+                description:str = Form(...), file: UploadFile = File(...)):
+
+
     response_code = 200
     db_query = session.query(Event).filter(or_(
-            Event.event_name == eventRequest.event_name
+            Event.event_name == event_name
         )).first()
 
     if db_query is not None:
         response_msg = "Event (" + \
-        str(eventRequest.event_name) + ") already exists"
+        str(event_name) + ") already exists"
         error = True
         data = None
         return Response("ok", response_msg, data, response_code, error)
 
-    #flyer_name:str = file.filename
+    flyer_name:str = file.filename
 
     new_event = Event()
-    new_event.event_name = eventRequest.event_name
-    new_event.venue = eventRequest.venue
-    #new_event.flyer = flyer_name
-    new_event.start_date = eventRequest.start_date
-    new_event.end_date = eventRequest.end_date
-    new_event.registration_time = eventRequest.registration_time
-    new_event.number_of_participants = eventRequest.number_of_participants
-    new_event.description = eventRequest.description
+    new_event.event_name = event_name
+    new_event.venue = venue
+    new_event.flyer = flyer_name
+    new_event.start_date = start_date
+    new_event.end_date = end_date
+    new_event.registration_time = registration_time
+    new_event.number_of_participants = number_of_participants
+    new_event.description = description
     #new_event.admin_id = admin_id.id
     new_event.status = "Active"
     
     session.add(new_event)
     session.flush()
     session.refresh(new_event, attribute_names=['id'])
+    response_msg = "Event (" + \
+        str(new_event.event_name) + ") created successfully"
     data = {"event_name": new_event.event_name}
     session.commit()
     session.close()
-    return Response("ok", "Event added successfully", data, response_code, False)
+
+        #save flyer
+    with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
+        shutil.copyfileobj(file.file, image)
+    return Response("ok", response_msg, data, response_code, False)
 
 
 
@@ -377,20 +383,50 @@ app = FastAPI()
 
 
 
-# @router.post("/flyer")
-# async def flyer(file: UploadFile = File(...)):
-
-#     #file.filename = f"{flyerIncrement()}.jpg"
-#     #file_location = f"images/{file.filename}"
-#     # filename = file.filename
-#     # contents = await file.read()
-
-#     #save flyer
-#     with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
-#         shutil.copyfileobj(file.file, image)
-
-#     return {"filename": file.filename}
+@router.post("/flyer")
+async def flyer(event_name:str = Form(...), venue:str = Form(...),
+                start_date:str = Form(...), end_date:str = Form(...),
+                registration_time:str = Form(...), number_of_participants:str = Form(...),
+                description:str = Form(...), file: UploadFile = File(...)):
 
 
-def flyerIncrement(size=10, chars=string.ascii_lowercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+    response_code = 200
+    db_query = session.query(Event).filter(or_(
+            Event.event_name == event_name
+        )).first()
+
+    if db_query is not None:
+        response_msg = "Event (" + \
+        str(event_name) + ") already exists"
+        error = True
+        data = None
+        return Response("ok", response_msg, data, response_code, error)
+
+    flyer_name:str = file.filename
+
+    new_event = Event()
+    new_event.event_name = event_name
+    new_event.venue = venue
+    new_event.flyer = flyer_name
+    new_event.start_date = start_date
+    new_event.end_date = end_date
+    new_event.registration_time = registration_time
+    new_event.number_of_participants = number_of_participants
+    new_event.description = description
+    #new_event.admin_id = admin_id.id
+    new_event.status = "Active"
+    
+    session.add(new_event)
+    session.flush()
+    session.refresh(new_event, attribute_names=['id'])
+    response_msg = "Event (" + \
+        str(new_event.event_name) + ") created successfully"
+    data = {"event_name": new_event.event_name}
+    session.commit()
+    session.close()
+
+        #save flyer
+    with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
+        shutil.copyfileobj(file.file, image)
+
+    return {"filename": file.filename}
