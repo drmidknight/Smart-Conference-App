@@ -3,6 +3,27 @@ from typing import Optional
 
 
 
+class AdminRequest(BaseModel):
+    admin_name:str
+    email:str
+    contact:str
+
+    class Config():
+        orm_mode = True
+
+
+class UpdateAdmin(BaseModel):
+    id:Optional[int]
+    admin_name:Optional[str]
+    contact:Optional[str]
+    email:Optional[str]
+
+    class Config():
+        orm_mode = True
+
+
+
+
 
 class EventRequest(BaseModel):
     event_name:Optional[str]
@@ -13,22 +34,43 @@ class EventRequest(BaseModel):
     number_of_participants:Optional[str]
     description:Optional[str]
 
+    class Config():
+        orm_mode = True
 
 
 
-
-class AdminRequest(BaseModel):
-    admin_name:str
-    email:str
-    contact:str
-
-
-
-class UpdateAdmin(BaseModel):
+class UpdateEventRequest(BaseModel):
     id:Optional[int]
-    admin_name:Optional[str]
-    contact:Optional[str]
+    event_name:Optional[str]
+    venue:Optional[str]
+    start_date:Optional[str]
+    end_date:Optional[str]
+    registration_time:Optional[str]
+    number_of_participants:Optional[str]
+    description:Optional[str]
+
+    class Config():
+        orm_mode = True
+
+
+
+
+class ParticipantRequest(BaseModel):
+    id:Optional[int]
+    name:Optional[str]
+    phone_number:Optional[str]
+    gender:Optional[str]
     email:Optional[str]
+    organization:Optional[str]
+    attend_by:Optional[str]
+    registration_time:Optional[str]
+    location:Optional[str]
+    event_id: Optional[int]
+
+    class Config():
+        orm_mode = True
+
+
 
 
 

@@ -1,7 +1,7 @@
 from typing import List
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr
-from app.models.models import Admin
+from app.models.models import Participant, Event
 from starlette.responses import JSONResponse
 from uuid import uuid4
 import random
@@ -12,10 +12,15 @@ from fastapi_jwt_auth import AuthJWT
 from datetime import datetime, time, timedelta
 from app.utils.config import *
 from jose import jwt
+from app.utils.database import Database
 
 
 config_credentials = dotenv_values(".env")
 
+
+database = Database()
+engine = database.get_db_connection()
+session = database.get_db_session(engine)
 
 class EmailSchema(BaseModel):
     email: List[EmailStr]
@@ -66,15 +71,18 @@ def generate_reset_password_token(expires_delta: int = None):
 
 
 
-async def sendEmailToNewAdmin(email: EmailSchema, instance: Admin):
+async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
+    event_data = session.query(Event).filter(Event.id == instance.event_id).all
+            
+  
     html = f"""                    
                     <br>
-                    <p>Hi {instance.admin_name} !</p>
+                    <p>Hi {instance.name} !</p>
                     <br>
-                    <p>You have been added to <b>SMART CONFERENCE APP</b> as an Admin</p>
+                    <p>Welcome to <b>SMART CONFERENCE APP</b></p>
                     <br><br>
-                    Change your password to access the application.
+                    Thanks for showing interest to attend the upcoming {event_data.event_name} conference.
                     <br><br>
                     
                     <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
@@ -113,7 +121,7 @@ async def sendEmailToNewAdmin(email: EmailSchema, instance: Admin):
 
 
 
-async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Admin):
+async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Participant):
 
     html = f"""                    
                     <br>

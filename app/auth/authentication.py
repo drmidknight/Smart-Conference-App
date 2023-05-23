@@ -125,7 +125,7 @@ async def get_current_user(
         token_data = TokenData(scopes=token_scopes, username=email)
     except (JWTError, ValidationError):
         raise credentials_exception
-    user = get_user(admin_db, username=token_data.username)
+    user = get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     for scope in security_scopes.scopes:

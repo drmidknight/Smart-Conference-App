@@ -55,7 +55,6 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     
     admin_id = current_admin.id
 
-
     response_code = 200
     db_query = session.query(Event).filter(or_(
             Event.event_name == event_name
@@ -99,10 +98,20 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
 
 
 
+
+
+
+
+
 @router.get("/getAllEvents")
 async def all_event():
     data = session.query(Event).filter(Event.status == "Active").all()
     return Response("ok", "success", data, 200, False)
+
+
+
+
+
 
 
 
@@ -115,14 +124,14 @@ async def getEventById(id: str):
             }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Admin retrieved successfully"
+        response_msg = "Event retrieved successfully"
         response_code = 200
         error = False 
         data = {"id": id}
         if db_data == 1:
-            data = session.query(Admin).filter(Admin.id == id).one()
+            data = session.query(Event).filter(Event.id == id).one()
         elif db_data == 0:
-            response_msg = "Admin with id (" + \
+            response_msg = "Event with id (" + \
         str(id) + ") does not exists"
             error = True
             data = None
@@ -137,27 +146,30 @@ async def getEventById(id: str):
 
 
 @router.put("/update")
-async def updateAdmin(updateAdmin: UpdateAdmin):
-    adminID = updateAdmin.id
+async def updateAdmin(updateEvent: UpdateEventRequest):
+    eventID = updateEvent.id
     try:
-        is_adminID_update = session.query(Admin).filter(Admin.id == adminID).update({
-            Admin.admin_name: updateAdmin.admin_name,
-            Admin.contact: updateAdmin.contact,
-            Admin.email: updateAdmin.email
+        is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
+            Event.event_name: updateEvent.event_name,
+            Event.venue: updateEvent.venue,
+            Event.start_date: updateEvent.start_date,
+            Event.end_date: updateEvent.end_date,
+            Event.registration_time: updateEvent.registration_time,
+            Event.number_of_participants: updateEvent.number_of_participants,
+            Event.description: updateEvent.description
         }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Admin updated successfully"
+        response_msg = "Event updated successfully"
         response_code = 200
         error = False
-        if is_adminID_update == 1:
-            # After successful update, retrieve updated data from db
-            data = session.query(Admin).filter(
-                Admin.id == adminID).one()
+        if is_eventID_update == 1:
+            data = session.query(Event).filter(
+                Event.id == eventID).one()
 
-        elif is_adminID_update == 0:
-            response_msg = "Admin not updated. No Admin found with this id :" + \
-                str(adminID)
+        elif is_eventID_update == 0:
+            response_msg = "Event not updated. No Event found with this id :" + \
+                str(eventID)
             error = True
             data = None
         return Response("ok", response_msg, data, response_code, error)
@@ -173,23 +185,25 @@ async def updateAdmin(updateAdmin: UpdateAdmin):
 
 
 
-@router.post("/getAdminByEmail/{email}")
-async def getAdminByEmail(email: str):
+
+
+@router.get("/getEventByName/{event_name}")
+async def getEventByName(event_name: str):
     try:
-        db_data = session.query(Admin).filter(Admin.email == email).update({
-            Admin.status: "Active"
+        db_data = session.query(Event).filter(Event.event_name == event_name).update({
+            Event.status: "Active"
             }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Admin retrieved successfully"
+        response_msg = "Event retrieved successfully"
         response_code = 200
         error = False 
-        data = {"email": email}
+        data = {"event_name": event_name}
         if db_data == 1:
-            data = session.query(Admin).filter(Admin.email == email).one()
+            data = session.query(Event).filter(Event.event_name == event_name).one()
         elif db_data == 0:
-            response_msg = "Admin with email (" + \
-        str(email) + ") does not exists"
+            response_msg = "Event (" + \
+        str(event_name) + ") does not exists"
             error = True
             data = None
             response_code = status.HTTP_404_NOT_FOUND
@@ -207,15 +221,8 @@ async def getAdminByEmail(email: str):
 
 
 
-
-
-
-
-
-
-
 @router.delete("/delete/{id}")
-async def deleteEvent(id: str):
+async def deleteEvent(id: int):
     try:
         db_data = session.query(Event).filter(Event.id == id).update({
             Event.status: "InActive"
@@ -243,68 +250,23 @@ async def deleteEvent(id: str):
 
 
 
-
-
-@router.get("/countStaff")
-async def count_all_staff():
-    data = session.query(Admin).count()
-    return Response("ok", "Staff retrieved successfully.", data, 200, False)
-
-
-
-
-
-
-@router.get("/getInstructors")
-async def getInstructors():
-    data = None
-    data = session.query(Admin).filter(or_(
-        Admin.usertype == "Course Cordinator",
-        Admin.usertype == "Faculty", 
-        Admin.usertype == "Instructor"
-        )).all()
-    return Response("ok", "success", data, 200, False)
-
-
-
-
-
-
-# @router.get("/getStaffDetails")
-# async def getStaffDetails(token: str):
-#     data = session.query(Admin).filter(Admin.reset_password_token == token).all()
-
-#     if data is not None:
-#          response_message = "Staff retrieved successfully"
-#          response_code = status.HTTP_200_OK
-#          return Response("ok", response_message, data, response_code, False)
-    
-#     return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-#             detail="Staff not found"
-#         )
-
-
-
-
-
-
-
-@router.get("/getStaffDetails")
-async def getStaffDetails(token: str):
+@router.get("/event_url/{event_name}")
+async def generate_url(event_name: str):
     try:
-        db_data = session.query(Admin).filter(Admin.reset_password_token == token).update({
-            Admin.password: None
+        db_data = session.query(Event).filter(Event.event_name == event_name).update({
+            Event.status: "Active"
             }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Staff retrieved successfully"
+        response_msg = "Event retrieved successfully"
         response_code = 200
         error = False 
-        data = {"token": token}
+        data = {"event_name": event_name}
         if db_data == 1:
-            data = session.query(Admin).filter(Admin.reset_password_token == token).one()
+            data = session.query(Event).filter(Event.event_name == event_name).one()
         elif db_data == 0:
-            response_msg = "Invalid Token"
+            response_msg = "Event (" + \
+        str(event_name) + ") does not exists"
             error = True
             data = None
             response_code = status.HTTP_404_NOT_FOUND
@@ -316,40 +278,7 @@ async def getStaffDetails(token: str):
 
 
 
-
-
-
-
-@router.post("/sendResetPasswordLinkToStaffEmail")
-async def sendResetPasswordLinkToStaffEmail(email: str):
-    try:
-        db_data = session.query(Admin).filter(Admin.email == email).update({
-            Admin.password: None,
-            Admin.reset_password_token: generate_reset_password_token()
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Staff retrieved successfully"
-        response_code = 200
-        error = False 
-        data = {"email": email}
-        if db_data == 1:
-            data = session.query(Admin).filter(Admin.email == email).one()
-            await send_Reset_Password_LinkToStaffEmail([email], data)
-        elif db_data == 0:
-            response_msg = "No Staff found with this email :" + \
-                str(email)
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
-    
-
-
-
-
-# @router.post("/get_user")
-# def get_user(admin_name: str):
-#     return session.query(Admin).filter(Admin.admin_name== admin_name).first()
+@router.get("/countEvent")
+async def count_all_Event():
+    data = session.query(Event).count()
+    return Response("ok", "Event retrieved successfully.", data, 200, False)

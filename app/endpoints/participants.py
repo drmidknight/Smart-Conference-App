@@ -19,8 +19,8 @@ from app.utils.config import *
 
 # APIRouter creates path operations for staffs module
 router = APIRouter(
-    prefix="/admin",
-    tags=["Admin"],
+    prefix="/participant",
+    tags=["Participant"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -37,69 +37,58 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@router.post('/login')
-async def admin_login(user:LoginModel):
-    data=session.query(Admin).filter(Admin.email==user.email).first()
-
-    if data and pwd_context.verify(user.password, data.password):
-        access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
-
-        return{
-            "access":access_token,
-            "token_type": "bearer"
-            }
-
-    return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                        detail="Invalid login credential"                   
-    )
 
 
 
 
 
-
-
-@router.post("/add", response_description="Admin data added into the database")
-async def add_admin(adminRequest: AdminRequest):
+@router.post("/add", response_description="Participant data added into the database")
+async def add_admin(participantRequest: ParticipantRequest):
     response_code = 200
-    db_query = session.query(Admin).filter(or_(
-            Admin.email == adminRequest.email,
-            Admin.contact == adminRequest.contact
+    db_query = session.query(Participant).filter(or_(
+            Participant.email == participantRequest.email,
+            Participant.phone_number == participantRequest.phone_number
         )).first()
 
     if db_query is not None:
-        response_msg = "Admin with email or phone number (" + \
-        str(adminRequest.email) + ") already exists"
+        response_msg = "Participant with email or phone number (" + \
+        str(participantRequest.email) + ") already exists"
         error = True
         data = None
         return Response("ok", response_msg, data, response_code, error)
 
-    new_admin = Admin()
-    new_admin.admin_name = adminRequest.admin_name
-    new_admin.email = adminRequest.email
-    new_admin.contact = adminRequest.contact
-    new_admin.reset_password_token = generate_reset_password_token()
-    new_admin.status = "Active"
+    new_participant = Participant()
+    new_participant.name = participantRequest.name
+    new_participant.phone_number = participantRequest.phone_number
+    new_participant.gender = participantRequest.gender
+    new_participant.email = participantRequest.email
+    new_participant.organization = participantRequest.organization
+    new_participant.attend_by = participantRequest.attend_by
+    new_participant.registration_time = participantRequest.registration_time
+    new_participant.location = participantRequest.location
+    new_participant.event_id = participantRequest.event_id
+    new_participant.status = 0
     
-    session.add(new_admin)
+    session.add(new_participant)
     session.flush()
-    # get id of the inserted admin
-    session.refresh(new_admin, attribute_names=['id'])
-    #await sendEmailToNewAdmin([adminRequest.email], new_admin)
+    session.refresh(new_participant, attribute_names=['id'])
+    await sendEmailToNewParticipant([new_participant.email], new_participant)
     data = {
-            "id": new_admin.id,
-            "email": new_admin.email
+            "id": new_participant.id,
+            "email": new_participant.email
             }
     session.commit()
     session.close()
-    return Response("ok", "Admin added successfully", data, response_code, False)
+    return Response("ok", "Participant added successfully", data, response_code, False)
 
 
 
 
-@router.get("/getAllStaffs")
-async def all_staff():
-    data = session.query(Admin).all()
+
+
+@router.get("/getAllAdmin")
+async def all_admin():
+    data = session.query(Admin).filter(Admin.status == "Active").all()
     return Response("ok", "success", data, 200, False)
 
 
