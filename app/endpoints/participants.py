@@ -97,26 +97,23 @@ async def all_Participant():
 
 @router.get("/getParticipantById/{id}")
 async def get_Participant_By_Id(id: int):
-    try:
-        db_data = session.query(Participant).filter(Participant.id == id).one()
-        response_msg = "Participant retrieved successfully"
-        response_code = 200
-        error = False 
+        
+        db_data = session.query(Participant).filter(Participant.id == id).all()
+        
         if db_data is not None:
-            data = session.query(Participant).filter(Participant.id == id).one()
-            return Response("ok", response_msg, data, response_code, error)
+            response_msg = "Participant retrieved successfully"
+            response_code = 200
+            error = False 
+            return Response("ok", response_msg, db_data, response_code, error)
 
-        elif db_data == None:
-            response_msg = "No Participant found with this id :" + \
-                int(id)
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-            return Response("ok", response_msg, data, response_code, error)
+
+        response_msg = "No Participant found with this id :" + \
+        int(id)
+        error = True
+        data = None
+        response_code = 404
+        return Response("ok", response_msg, data, response_code, error)
     
-    except Exception as ex:
-        print("Error : ", ex)
-
 
 
 
@@ -169,31 +166,6 @@ async def updateParticipant(updateParticipant: UpdateParticipant):
 
 
 
-@router.get("/getParticipantByEmail/{email}")
-async def get_Participant_By_Email(email: str):
-    try:
-        db_data = session.query(Participant).filter(Participant.email == email).update({
-            Participant.status: 0
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Participant retrieved successfully"
-        response_code = 200
-        error = False 
-        data = {"email": email}
-        if db_data == 1:
-            data = session.query(Participant).filter(Participant.email == email).one()
-        elif db_data == 0:
-            response_msg = "Participant with email (" + \
-        str(email) + ") does not exists"
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
-
-
 
 
 @router.get("/phone_number_email/{phone_number_email}")
@@ -218,29 +190,6 @@ async def phone_number_email(phone_number_email: str):
 
 
 
-@router.get("/getParticipantByPhoneNumber/{phone_number}")
-async def get_Participant_By_phone_number(phone_number: str):
-    try:
-        db_data = session.query(Participant).filter(Participant.phone_number == phone_number).update({
-            Participant.status: 0
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Participant retrieved successfully"
-        response_code = 200
-        error = False 
-        data = {"phone_number": phone_number}
-        if db_data == 1:
-            data = session.query(Participant).filter(Participant.phone_number == phone_number).one()
-        elif db_data == 0:
-            response_msg = "Participant with phone_number (" + \
-        str(phone_number) + ") does not exists"
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
 
 
 
@@ -277,21 +226,21 @@ async def get_Participant_By_attend_by(attend_by: str):
 
 
 @router.delete("/delete/{id}")
-async def deleteAdmin(id: str):
+async def deleteParticipant(id: str):
     try:
-        db_data = session.query(Admin).filter(Admin.id == id).update({
-            Admin.status: "InActive"
+        db_data = session.query(Participant).filter(Participant.id == id).update({
+            Participant.status: 0
             }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Admin deleted successfully"
+        response_msg = "Participant deleted successfully"
         response_code = 200
         error = False 
         data = {"id": id}
         if db_data == 1:
-            data = session.query(Admin).filter(Admin.id == id).one()
+            data = session.query(Participant).filter(Participant.id == id).one()
         elif db_data == 0:
-            response_msg = "Admin not deleted. Admin with id (" + \
+            response_msg = "Participant not deleted. Participant with id (" + \
         str(id) + ") not found"
             error = True
             data = None
