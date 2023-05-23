@@ -146,7 +146,7 @@ async def getEventById(id: str):
 
 
 @router.put("/update")
-async def updateAdmin(updateEvent: UpdateEventRequest):
+async def update_Event(updateEvent: UpdateEventRequest):
     eventID = updateEvent.id
     try:
         is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
@@ -156,7 +156,8 @@ async def updateAdmin(updateEvent: UpdateEventRequest):
             Event.end_date: updateEvent.end_date,
             Event.registration_time: updateEvent.registration_time,
             Event.number_of_participants: updateEvent.number_of_participants,
-            Event.description: updateEvent.description
+            Event.description: updateEvent.description,
+            Event.status: "Active"
         }, synchronize_session=False)
         session.flush()
         session.commit()
@@ -282,3 +283,42 @@ async def generate_url(event_name: str):
 async def count_all_Event():
     data = session.query(Event).count()
     return Response("ok", "Event retrieved successfully.", data, 200, False)
+
+
+
+
+
+
+
+
+@router.put("/update_only_flyer")
+async def update_only_flyer(event_id: int, file: UploadFile = File(...)):
+    eventID = event_id
+
+    flyer_name:str = file.filename
+
+    try:
+        is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
+            Event.flyer: flyer_name
+        }, synchronize_session=False)
+        session.flush()
+        session.commit()
+        response_msg = "Event updated with flyer successfully"
+        response_code = 200
+        error = False
+        if is_eventID_update == 1:
+            data = session.query(Event).filter(
+                Event.id == eventID).one()
+
+        elif is_eventID_update == 0:
+            response_msg = "Event not updated. No Event found with this id :" + \
+                str(eventID)
+            error = True
+            data = None
+            #save flyer
+        with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
+            shutil.copyfileobj(file.file, image)
+
+        return Response("ok", response_msg, data, response_code, error)
+    except Exception as ex:
+        print("Error : ", ex)

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from fastapi import Form
 from typing import Optional
 
 
@@ -46,11 +47,10 @@ class UpdateEventRequest(BaseModel):
     start_date:Optional[str]
     end_date:Optional[str]
     registration_time:Optional[str]
+    flyer:Optional[str]
     number_of_participants:Optional[str]
     description:Optional[str]
 
-    class Config():
-        orm_mode = True
 
 
 

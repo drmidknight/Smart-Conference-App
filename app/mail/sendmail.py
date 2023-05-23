@@ -73,11 +73,14 @@ def generate_reset_password_token(expires_delta: int = None):
 
 async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
-    event_data = session.query(Event).filter(Event.id == instance.event_id).all
+    event_data = session.query(Event).filter(Event.id == instance.event_id).first()
             
   
     html = f"""                    
                     <br>
+                    <br><br>
+                    <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
+                    <br><br>
                     <p>Hi {instance.name} !</p>
                     <br>
                     <p>Welcome to <b>SMART CONFERENCE APP</b></p>
@@ -85,13 +88,8 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
                     Thanks for showing interest to attend the upcoming {event_data.event_name} conference.
                     <br><br>
                     
-                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                    background: #0275d8; color:white;" href="http://localhost:4200/reset-password?token={instance.reset_password_token}">
-                    Change password 
-                    </a>
-                    <br><br>
-                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser</p>
-                    http://localhost:4200/reset-password?token={instance.reset_password_token}
+                    <p>We will send you a confirmation link for you to confirm attending the {event_data.event_name} conference</p>
+
                     
     """
 
