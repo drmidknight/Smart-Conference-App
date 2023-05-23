@@ -10,11 +10,11 @@ Base = declarative_base()
 
 class Participant(Base):
     __tablename__ = 'participants'
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=True)
     phone_number = db.Column(db.String(255), nullable=True, unique=True)
     gender = db.Column(db.String(255), nullable=True)
-    email = db.Column(db.String(255), nullable=True, unique=True, index=True)
+    email = db.Column(db.String(255), nullable=True, unique=True)
     organization = db.Column(db.String(255), nullable=True)
     status = db.Column(Boolean, default=False, index=False)
     attend_by = db.Column(db.String(255), nullable=True)
@@ -31,7 +31,7 @@ class Participant(Base):
 
 class Event(Base):
     __tablename__ = 'events'
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     event_name = db.Column(db.String(255), nullable=True, unique=True)
     venue = db.Column(db.String(255), nullable=True)
     flyer = db.Column(db.String(255), nullable=True)
@@ -49,7 +49,7 @@ class Event(Base):
 
 class Attendance(Base):
     __tablename__ = 'attendances'
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(255), nullable=True)
     admin_id = db.Column(db.Integer, ForeignKey("admins.id"))
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
@@ -60,10 +60,10 @@ class Attendance(Base):
 
 class Admin(Base):
     __tablename__ = 'admins'
-    id = db.Column(db.Integer, primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
     admin_name = db.Column(db.String(255), nullable=True, unique=True)
     contact = db.Column(db.String(255), nullable=True, unique=True)
-    email = db.Column(db.String(255), nullable=True, unique=True, index=True)
+    email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=True)
     reset_password_token = db.Column(db.String(255), nullable=True)
     status = db.Column(db.String(255), nullable=True)

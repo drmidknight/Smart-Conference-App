@@ -75,10 +75,11 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
     event_data = session.query(Event).filter(Event.id == instance.event_id).first()
             
+  
     html = f"""                    
                     <br>
                     <br><br>
-                
+                    <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
                     <br><br>
                     <p>Hi {instance.name} !</p>
                     <br>

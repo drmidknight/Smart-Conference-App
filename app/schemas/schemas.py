@@ -56,7 +56,6 @@ class UpdateEventRequest(BaseModel):
 
 
 class ParticipantRequest(BaseModel):
-    id:Optional[int]
     name:Optional[str]
     phone_number:Optional[str]
     gender:Optional[str]
@@ -67,10 +66,20 @@ class ParticipantRequest(BaseModel):
     location:Optional[str]
     event_id: Optional[int]
 
-    class Config():
-        orm_mode = True
 
 
+
+class UpdateParticipant(BaseModel):
+    id:Optional[int]
+    name:Optional[str]
+    phone_number:Optional[str]
+    gender:Optional[str]
+    email:Optional[str]
+    organization:Optional[str]
+    attend_by:Optional[str]
+    registration_time:Optional[str]
+    location:Optional[str]
+    event_id: Optional[int]
 
 
 

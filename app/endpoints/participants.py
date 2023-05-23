@@ -72,7 +72,7 @@ async def add_admin(participantRequest: ParticipantRequest):
     session.add(new_participant)
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
-    await sendEmailToNewParticipant([new_participant.email], new_participant)
+    #await sendEmailToNewParticipant([new_participant.email], new_participant)
     data = {
             "id": new_participant.id,
             "email": new_participant.email
@@ -86,37 +86,39 @@ async def add_admin(participantRequest: ParticipantRequest):
 
 
 
-@router.get("/getAllAdmin")
-async def all_admin():
-    data = session.query(Admin).filter(Admin.status == "Active").all()
+@router.get("/getAllParticipant")
+async def all_Participant():
+    data = session.query(Participant).all()
     return Response("ok", "success", data, 200, False)
 
 
 
 
-@router.get("/getAdminById/{id}")
-async def getAdminById(id: str):
+
+@router.get("/getParticipantById/{id}")
+async def get_Participant_By_Id(id: int):
     try:
-        db_data = session.query(Admin).filter(Admin.id == id).update({
-            Admin.status: "Active"
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Admin retrieved successfully"
+        db_data = session.query(Participant).filter(Participant.id == id).one()
+        response_msg = "Participant retrieved successfully"
         response_code = 200
         error = False 
-        data = {"id": id}
-        if db_data == 1:
-            data = session.query(Admin).filter(Admin.id == id).one()
-        elif db_data == 0:
-            response_msg = "Admin with id (" + \
-        str(id) + ") does not exists"
+        if db_data is not None:
+            data = session.query(Participant).filter(Participant.id == id).one()
+            return Response("ok", response_msg, data, response_code, error)
+
+        elif db_data == None:
+            response_msg = "No Participant found with this id :" + \
+                int(id)
             error = True
             data = None
             response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
+            return Response("ok", response_msg, data, response_code, error)
+    
     except Exception as ex:
         print("Error : ", ex)
+
+
+
 
 
 
@@ -124,27 +126,34 @@ async def getAdminById(id: str):
 
 
 @router.put("/update")
-async def updateAdmin(updateAdmin: UpdateAdmin):
-    adminID = updateAdmin.id
+async def updateParticipant(updateParticipant: UpdateParticipant):
+    participant_id = updateParticipant.id
     try:
-        is_adminID_update = session.query(Admin).filter(Admin.id == adminID).update({
-            Admin.admin_name: updateAdmin.admin_name,
-            Admin.contact: updateAdmin.contact,
-            Admin.email: updateAdmin.email
+        is_Participant_update = session.query(Participant).filter(Participant.id == participant_id).update({
+            Participant.name: updateParticipant.name,
+            Participant.phone_number: updateParticipant.phone_number,
+            Participant.gender: updateParticipant.gender,
+            Participant.email: updateParticipant.email,
+            Participant.organization: updateParticipant.organization,
+            Participant.attend_by: updateParticipant.attend_by,
+            Participant.registration_time: updateParticipant.registration_time,
+            Participant.location: updateParticipant.location,
+            Participant.event_id: updateParticipant.event_id,
+            Participant.status: 1
         }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Admin updated successfully"
+        response_msg = "Participant updated successfully"
         response_code = 200
         error = False
-        if is_adminID_update == 1:
+        if is_Participant_update == 1:
             # After successful update, retrieve updated data from db
-            data = session.query(Admin).filter(
-                Admin.id == adminID).one()
+            data = session.query(Participant).filter(
+                Participant.id == participant_id).one()
 
-        elif is_adminID_update == 0:
-            response_msg = "Admin not updated. No Admin found with this id :" + \
-                str(adminID)
+        elif is_Participant_update == 0:
+            response_msg = "Participant not updated. No Participant found with this id :" + \
+                str(participant_id)
             error = True
             data = None
         return Response("ok", response_msg, data, response_code, error)
@@ -160,22 +169,22 @@ async def updateAdmin(updateAdmin: UpdateAdmin):
 
 
 
-@router.post("/getAdminByEmail/{email}")
-async def getAdminByEmail(email: str):
+@router.get("/getParticipantByEmail/{email}")
+async def get_Participant_By_Email(email: str):
     try:
-        db_data = session.query(Admin).filter(Admin.email == email).update({
-            Admin.status: "Active"
+        db_data = session.query(Participant).filter(Participant.email == email).update({
+            Participant.status: 0
             }, synchronize_session=False)
         session.flush()
         session.commit()
-        response_msg = "Admin retrieved successfully"
+        response_msg = "Participant retrieved successfully"
         response_code = 200
         error = False 
         data = {"email": email}
         if db_data == 1:
-            data = session.query(Admin).filter(Admin.email == email).one()
+            data = session.query(Participant).filter(Participant.email == email).one()
         elif db_data == 0:
-            response_msg = "Admin with email (" + \
+            response_msg = "Participant with email (" + \
         str(email) + ") does not exists"
             error = True
             data = None
@@ -187,10 +196,76 @@ async def getAdminByEmail(email: str):
 
 
 
+@router.get("/phone_number_email/{phone_number_email}")
+async def phone_number_email(phone_number_email: str):
+    try:
+        response_msg = "Participant retrieved successfully"
+        response_code = 200
+        error = False 
+        if "@" in phone_number_email:
+            data = session.query(Participant).filter(Participant.email == phone_number_email).all()
+        elif "@" not in phone_number_email:
+            data = session.query(Participant).filter(Participant.phone_number == phone_number_email).all()
+        else:
+            response_msg = "Email or Phone Number (" + str(phone_number_email) + ") does not exists"
+            error = True
+            data = None
+            response_code = status.HTTP_404_NOT_FOUND
+        return Response("ok", response_msg, data, response_code, error)
+    except Exception as ex:
+        print("Error : ", ex)
 
 
 
 
+@router.get("/getParticipantByPhoneNumber/{phone_number}")
+async def get_Participant_By_phone_number(phone_number: str):
+    try:
+        db_data = session.query(Participant).filter(Participant.phone_number == phone_number).update({
+            Participant.status: 0
+            }, synchronize_session=False)
+        session.flush()
+        session.commit()
+        response_msg = "Participant retrieved successfully"
+        response_code = 200
+        error = False 
+        data = {"phone_number": phone_number}
+        if db_data == 1:
+            data = session.query(Participant).filter(Participant.phone_number == phone_number).one()
+        elif db_data == 0:
+            response_msg = "Participant with phone_number (" + \
+        str(phone_number) + ") does not exists"
+            error = True
+            data = None
+            response_code = status.HTTP_404_NOT_FOUND
+        return Response("ok", response_msg, data, response_code, error)
+    except Exception as ex:
+        print("Error : ", ex)
+
+
+
+
+
+
+
+@router.get("/participantByattend_by/{attend_by}")
+async def get_Participant_By_attend_by(attend_by: str):
+    try:
+        response_msg = "Participant retrieved successfully"
+        response_code = 200
+        error = False 
+        if attend_by == "virtual":
+            data = session.query(Participant).filter(Participant.attend_by == attend_by).all()
+        elif attend_by == "onsite":
+            data = session.query(Participant).filter(Participant.attend_by == attend_by).all()
+        else:
+            response_msg = "Attend by (" + str(attend_by) + ") does not exists"
+            error = True
+            data = None
+            response_code = status.HTTP_404_NOT_FOUND
+        return Response("ok", response_msg, data, response_code, error)
+    except Exception as ex:
+        print("Error : ", ex)
 
 
 
