@@ -80,14 +80,25 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     
     session.add(new_event)
     session.flush()
-    session.refresh()
+    session.refresh(new_event, attribute_names=['id'])
+    data = {
+        "event_name": new_event.event_name,
+        "venue": new_event.venue,
+        "status": new_event.status,
+        "flyer": new_event.flyer,
+        "start_date": new_event.start_date,
+        "end_date": new_event.end_date,
+        "registration_time": new_event.registration_time,
+        "number_of_participants": new_event.number_of_participants,
+        "description": new_event.description
+    }
     session.commit()
     session.close()
 
         #save flyer
     with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
         shutil.copyfileobj(file.file, image)
-    return new_event
+    return data
 
 
 
