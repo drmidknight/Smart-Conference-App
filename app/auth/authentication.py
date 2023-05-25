@@ -12,6 +12,7 @@ from fastapi.security import (OAuth2PasswordBearer, SecurityScopes)
 from app.schemas.schemas import *
 from app.endpoints.admin import *
 from app.utils.database import *
+from app.utils.config import settings
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -33,7 +34,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=60)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 
@@ -49,7 +50,7 @@ def get_hashed_password(password):
 def verify_token(token: str):
     try:
         payload = jwt.decode(
-            token, JWT_SECRET_KEY, algorithms=ALGORITHM
+            token, settings.JWT_SECRET_KEY, algorithms=settings.ALGORITHM
         )
         token_data = TokenPayload(**payload)
         print(payload)
@@ -117,7 +118,7 @@ async def get_current_user(
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
         email: str = payload.get("email")
         if email is None:
             raise credentials_exception

@@ -13,6 +13,7 @@ from datetime import datetime, time, timedelta
 from app.utils.config import *
 from jose import jwt
 from app.utils.database import Database
+from app.utils.config import settings
 
 
 config_credentials = dotenv_values(".env")
@@ -28,18 +29,15 @@ class EmailSchema(BaseModel):
 
 
 conf = ConnectionConfig(
-    # MAIL_USERNAME = config_credentials["EMAIL"],
-    # MAIL_PASSWORD = config_credentials["PASSWORD"],
-    # MAIL_FROM =  config_credentials["EMAIL"],
-    MAIL_USERNAME = "bismarkotu1006@gmail.com",
-    MAIL_PASSWORD ="olimwedzhheuxfce",
-    MAIL_FROM =  "bismarkotu1006@gmail.com",
-    MAIL_PORT = 587,
-    MAIL_SERVER = "smtp.gmail.com",
-    MAIL_STARTTLS = True,
-    MAIL_SSL_TLS = False,
-    USE_CREDENTIALS = True,
-    VALIDATE_CERTS = True
+    MAIL_USERNAME = settings.MAIL_USERNAME,
+    MAIL_PASSWORD = settings.MAIL_PASSWORD,
+    MAIL_FROM =  settings.MAIL_FROM,
+    MAIL_PORT = settings.MAIL_PORT,
+    MAIL_SERVER = settings.MAIL_SERVER,
+    MAIL_STARTTLS = settings.MAIL_STARTTLS,
+    MAIL_SSL_TLS = settings.MAIL_SSL_TLS,
+    USE_CREDENTIALS = settings.USE_CREDENTIALS,
+    VALIDATE_CERTS = settings.VALIDATE_CERTS
 )
 
 
@@ -49,10 +47,10 @@ def generate_reset_password_token(expires_delta: int = None):
     if expires_delta is not None:
         expires_delta = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode = {"exp": expires_delta}
-    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, settings.ALGORITHM)
     return encoded_jwt
 
 
@@ -78,16 +76,16 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
     html = f"""                    
                     <br>
                     <br><br>
-                
+                    <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
                     <br><br>
                     <p>Hi {instance.name} !</p>
                     <br>
                     <p>Welcome to <b>SMART CONFERENCE APP</b></p>
                     <br><br>
-                    Thanks for showing interest to attend the upcoming {event_data.event_name} conference.
+                    Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference.
                     <br><br>
                     
-                    <p>We will send you a confirmation link for you to confirm attending the {event_data.event_name} conference</p>
+                    <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
 
                     
     """

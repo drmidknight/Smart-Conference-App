@@ -55,17 +55,14 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     
     admin_id = current_admin.id
 
-    response_code = 200
-    db_query = session.query(Event).filter(or_(
+    db_query = session.query(Event).filter(
             Event.event_name == event_name
-        )).first()
+        ).first()
 
     if db_query is not None:
-        response_msg = "Event (" + \
-        str(event_name) + ") already exists"
-        error = True
-        data = None
-        return Response("ok", response_msg, data, response_code, error)
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+           detail=f"Event (" + \
+        str(event_name) + ") already exists")
 
     flyer_name:str = file.filename
 
@@ -83,17 +80,14 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     
     session.add(new_event)
     session.flush()
-    session.refresh(new_event, attribute_names=['id'])
-    response_msg = "Event (" + \
-        str(new_event.event_name) + ") created successfully"
-    data = {"event_name": new_event.event_name}
+    session.refresh()
     session.commit()
     session.close()
 
         #save flyer
     with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
         shutil.copyfileobj(file.file, image)
-    return Response("ok", response_msg, data, response_code, False)
+    return new_event
 
 
 
@@ -106,10 +100,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
 @router.get("/getAllEvents")
 async def all_event():
     data = session.query(Event).filter(Event.status == "Active").all()
-    return Response("ok", "success", data, 200, False)
-
-
-
+    return data
 
 
 
@@ -118,27 +109,16 @@ async def all_event():
 
 @router.get("/getEventById/{id}")
 async def getEventById(id: str):
-    try:
-        db_data = session.query(Event).filter(Event.id == id).update({
-            Event.status: "Active"
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Event retrieved successfully"
-        response_code = 200
-        error = False 
-        data = {"id": id}
-        if db_data == 1:
-            data = session.query(Event).filter(Event.id == id).one()
-        elif db_data == 0:
-            response_msg = "Event with id (" + \
-        str(id) + ") does not exists"
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
+    data = session.query(Event).filter(Event.id == id).all()
+    
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event with the id {id} is not available")
+    return data
+
+
+
+
 
 
 
@@ -148,8 +128,7 @@ async def getEventById(id: str):
 @router.put("/update")
 async def update_Event(updateEvent: UpdateEventRequest):
     eventID = updateEvent.id
-    try:
-        is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
+    is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
             Event.event_name: updateEvent.event_name,
             Event.venue: updateEvent.venue,
             Event.start_date: updateEvent.start_date,
@@ -159,26 +138,14 @@ async def update_Event(updateEvent: UpdateEventRequest):
             Event.description: updateEvent.description,
             Event.status: "Active"
         }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Event updated successfully"
-        response_code = 200
-        error = False
-        if is_eventID_update == 1:
-            data = session.query(Event).filter(
-                Event.id == eventID).one()
+    session.flush()
+    session.commit()
+    if not is_eventID_update:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Event with the id (" + str(eventID) + ") is not available")
 
-        elif is_eventID_update == 0:
-            response_msg = "Event not updated. No Event found with this id :" + \
-                str(eventID)
-            error = True
-            data = None
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
-
-
-
+    data = session.query(Event).filter(Event.id == eventID).one()
+    return data
 
 
 
@@ -190,27 +157,12 @@ async def update_Event(updateEvent: UpdateEventRequest):
 
 @router.get("/getEventByName/{event_name}")
 async def getEventByName(event_name: str):
-    try:
-        db_data = session.query(Event).filter(Event.event_name == event_name).update({
-            Event.status: "Active"
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Event retrieved successfully"
-        response_code = 200
-        error = False 
-        data = {"event_name": event_name}
-        if db_data == 1:
-            data = session.query(Event).filter(Event.event_name == event_name).one()
-        elif db_data == 0:
-            response_msg = "Event (" + \
-        str(event_name) + ") does not exists"
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
+    data = session.query(Event).filter(Event.event_name == event_name).all()
+    
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event with the event_name (" + str(event_name) + ") not found")
+    return data
 
 
 
@@ -224,27 +176,17 @@ async def getEventByName(event_name: str):
 
 @router.delete("/delete/{id}")
 async def deleteEvent(id: int):
-    try:
-        db_data = session.query(Event).filter(Event.id == id).update({
+    db_data = session.query(Event).filter(Event.id == id).update({
             Event.status: "InActive"
             }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Event deleted successfully"
-        response_code = 200
-        error = False 
-        data = {"id": id}
-        if db_data == 1:
-            data = session.query(Event).filter(Event.id == id).one()
-        elif db_data == 0:
-            response_msg = "Event not deleted. Event with id (" + \
-        str(id) + ") not found"
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
+    session.flush()
+    session.commit()
+    if not db_data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Event with the id (" + str(id) + ") is not available")
+
+    data = session.query(Event).filter(Event.id == id).one()
+    return data
 
 
 
@@ -253,27 +195,12 @@ async def deleteEvent(id: int):
 
 @router.get("/event_url/{event_name}")
 async def generate_url(event_name: str):
-    try:
-        db_data = session.query(Event).filter(Event.event_name == event_name).update({
-            Event.status: "Active"
-            }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Event retrieved successfully"
-        response_code = 200
-        error = False 
-        data = {"event_name": event_name}
-        if db_data == 1:
-            data = session.query(Event).filter(Event.event_name == event_name).one()
-        elif db_data == 0:
-            response_msg = "Event (" + \
-        str(event_name) + ") does not exists"
-            error = True
-            data = None
-            response_code = status.HTTP_404_NOT_FOUND
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
+    data = session.query(Event).filter(Event.event_name == event_name).all()
+    
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event with the event_name (" + str(event_name) + ") not found")
+    return data
 
 
 
@@ -291,34 +218,25 @@ async def count_all_Event():
 
 
 
+
+
 @router.put("/update_only_flyer")
 async def update_only_flyer(event_id: int, file: UploadFile = File(...)):
     eventID = event_id
 
     flyer_name:str = file.filename
-
-    try:
-        is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
+    is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
             Event.flyer: flyer_name
         }, synchronize_session=False)
-        session.flush()
-        session.commit()
-        response_msg = "Event updated with flyer successfully"
-        response_code = 200
-        error = False
-        if is_eventID_update == 1:
-            data = session.query(Event).filter(
-                Event.id == eventID).one()
+    session.flush()
+    session.commit()
+    if not is_eventID_update:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Event with the id (" + str(event_id) + ") is not available")
+    
 
-        elif is_eventID_update == 0:
-            response_msg = "Event not updated. No Event found with this id :" + \
-                str(eventID)
-            error = True
-            data = None
-            #save flyer
-        with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
-            shutil.copyfileobj(file.file, image)
-
-        return Response("ok", response_msg, data, response_code, error)
-    except Exception as ex:
-        print("Error : ", ex)
+    #save flyer
+    with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
+        shutil.copyfileobj(file.file, image)
+    data = session.query(Event).filter(Event.id == event_id).one()
+    return data
