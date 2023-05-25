@@ -6,7 +6,6 @@ from app.utils.database import Database
 from app.auth import authentication
 from fastapi.exceptions import HTTPException
 #from sqlalchemy import and_, desc, or_
-import sqlalchemy
 from passlib.context import CryptContext
 from fastapi_jwt_auth import AuthJWT
 from fastapi.encoders import jsonable_encoder

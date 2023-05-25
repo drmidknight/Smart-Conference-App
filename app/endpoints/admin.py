@@ -44,7 +44,6 @@ async def admin_login(form_data: OAuth2PasswordRequestForm = Depends()):
     if data and pwd_context.verify(form_data.password, data.password):
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = authentication.create_access_token(data={"email": data.email}, expires_delta=access_token_expires)
-        #access_token = authentication.create_access_token(data={"email": data.email, "contact": data.contact})
 
         return{
             "access_token":access_token,

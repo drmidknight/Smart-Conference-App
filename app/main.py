@@ -1,10 +1,7 @@
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from fastapi.routing import APIRoute
 from app.routes.api import router as api_router
-from fastapi_jwt_auth import AuthJWT
-from app.schemas.schemas import Settings
 from inspect import re
 from fastapi.openapi.utils import get_openapi
 
@@ -27,11 +24,6 @@ app.add_middleware(
 async def index():
     
     return {"Home Page": "WELCOME TO SMART CONFERENCE APP"}
-
-
-@AuthJWT.load_config
-def get_config():
-    return Settings()
 
 
 app.include_router(api_router)

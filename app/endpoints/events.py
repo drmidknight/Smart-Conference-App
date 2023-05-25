@@ -1,22 +1,16 @@
-from fastapi import FastAPI, APIRouter, status, Depends, Security, File, UploadFile, Form
-from typing_extensions import Annotated
+from fastapi import APIRouter, status, Depends, Security, File, UploadFile, Form
 from app.schemas.schemas import *
 from app.response.response import Response
 from app.models.models import *
 from app.utils.database import Database
 from app.auth import authentication
 from app.utils.config import *
-from app.endpoints import admin
 from fastapi.exceptions import HTTPException
 from sqlalchemy import and_, desc, or_
 from passlib.context import CryptContext
-from fastapi_jwt_auth import AuthJWT
 from fastapi.encoders import jsonable_encoder
-from fastapi.security import (OAuth2PasswordBearer, OAuth2PasswordRequestForm)
+from fastapi.security import OAuth2PasswordRequestForm
 from app.mail.sendmail import *
-import uuid
-from sqlalchemy.orm import load_only
-from datetime import datetime, timedelta
 import shutil
 
 
