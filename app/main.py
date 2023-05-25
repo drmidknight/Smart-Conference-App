@@ -23,6 +23,11 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def index():
+    
+    return {"Home Page": "WELCOME TO SMART CONFERENCE APP"}
+
 
 @AuthJWT.load_config
 def get_config():
