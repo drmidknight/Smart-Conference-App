@@ -45,6 +45,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) , number_of_participants:str = Form(None),
                 description:str = Form(None), file: UploadFile = File(None),
+                how_to_join:str = Form(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
     admin_id = current_admin.id
@@ -66,6 +67,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     new_event.flyer = flyer_name
     new_event.start_date = start_date
     new_event.end_date = end_date
+    new_event.how_to_join = how_to_join
     new_event.registration_time = registration_time
     new_event.number_of_participants = number_of_participants
     new_event.description = description
