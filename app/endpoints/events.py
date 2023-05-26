@@ -23,7 +23,9 @@ router = APIRouter(
 )
 
 
-IMAGEDIR = "app/endpoints/images/"
+IMAGEDIR = "app/images/"
+
+PROGRAMOUTLINEDIR = "/app/program_outlines/"
 
 database = Database()
 engine = database.get_db_connection()
@@ -46,7 +48,6 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
                 description:str = Form(None), file: UploadFile = File(None),
-                
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
     admin_id = current_admin.id
@@ -85,6 +86,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
         "flyer": new_event.flyer,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
+        "admin_id": new_event.admin_id,
         "registration_time": new_event.registration_time,
         "number_of_participants": new_event.number_of_participants,
         "description": new_event.description
@@ -248,3 +250,13 @@ async def update_only_flyer(event_id: int, file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, image)
     data = session.query(Event).filter(Event.id == event_id).one()
     return data
+
+
+
+
+# from fastapi.responses import FileResponse
+
+# @router.get("/read_image")
+# async def read_image():
+#     return FileResponse("app/endpoints/images/aiti.png")
+

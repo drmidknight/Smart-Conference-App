@@ -91,37 +91,19 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
     
             
     html = f"""    
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">                    <br>
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">                
+                    <br>
                     <br><br>
                     <img src="/app/endpoints/images/aiti.png" alt="Event Flyer" weight="100" height="100" />
                     <br><br>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-6 col-lg-6 col-md-6">
-              <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="p-5">
-                      <div class="text-center">
-                        <img src="/app/endpoints/images/aiti.png" alt="" weight="100" height="100">
-                        <br><br>
-                          <h1 class="h5 text-gray-900 mb-4">{event_data.event_name} CONFERENCE</h1>
-                          </div>
-                        <p> Hi {instance.name} !,</p>
-                        Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference
-
-                          <br><br>
-                        <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
-                          <hr>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-    </div>
+                    <p>Hi {instance.name} !</p>
+                    <br>
+                    <p>Welcome to <b>SMART CONFERENCE APP</b></p>
+                    <br><br>
+                    Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference.
+                    <br><br>
+                    
+                    <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
 
                     
     """
