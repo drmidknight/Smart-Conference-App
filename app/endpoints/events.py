@@ -25,7 +25,7 @@ router = APIRouter(
 
 IMAGEDIR = "app/images/"
 
-PROGRAMOUTLINEDIR = "/app/program_outlines/"
+PROGRAMOUTLINEDIR = "app/outlines/"
 
 database = Database()
 engine = database.get_db_connection()
@@ -47,7 +47,8 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
-                description:str = Form(None), file: UploadFile = File(None),
+                description:str = Form(None), flyer: UploadFile = File(None),
+                program_outline: UploadFile = File(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
     admin_id = current_admin.id
@@ -61,12 +62,15 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
            detail=f"Event (" + \
         str(event_name) + ") already exists")
 
-    flyer_name:str = file.filename
+    flyer_name:str = flyer.filename
+
+    program_outline_name:str = program_outline.filename
 
     new_event = Event()
     new_event.event_name = event_name
     new_event.venue = venue
     new_event.flyer = flyer_name
+    new_event.program_outline = program_outline_name
     new_event.start_date = start_date
     new_event.end_date = end_date
     new_event.how_to_join = how_to_join
@@ -95,8 +99,12 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     session.close()
 
         #save flyer
-    with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
-        shutil.copyfileobj(file.file, image)
+    with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
+        shutil.copyfileobj(flyer.file, image)
+
+    # Save program outline file
+    with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
+        shutil.copyfileobj(program_outline.file, image)
     return data
 
 
@@ -230,13 +238,14 @@ async def count_all_Event():
 
 
 
-@router.put("/update_only_flyer")
-async def update_only_flyer(event_id: int, file: UploadFile = File(...)):
+@router.put("/add_only_flyer")
+async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_outline: UploadFile = File(None)):
     eventID = event_id
 
-    flyer_name:str = file.filename
+    flyer_name:str = flyer.filename
+    program_outline_name:str = program_outline.filename
     is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
-            Event.flyer: flyer_name
+            Event.flyer: flyer_name, Event.program_outline: program_outline_name
         }, synchronize_session=False)
     session.flush()
     session.commit()
@@ -246,10 +255,25 @@ async def update_only_flyer(event_id: int, file: UploadFile = File(...)):
     
 
     #save flyer
-    with open(f'{IMAGEDIR}{file.filename}', "wb") as image:
-        shutil.copyfileobj(file.file, image)
+    with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
+        shutil.copyfileobj(flyer.file, image)
+
+
+        #save program_outline
+    with open(f'{IMAGEDIR}{program_outline.filename}', "wb") as image:
+        shutil.copyfileobj(program_outline.file, image)
     data = session.query(Event).filter(Event.id == event_id).one()
     return data
+
+
+
+
+
+
+
+
+
+
 
 
 

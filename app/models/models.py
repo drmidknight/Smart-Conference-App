@@ -38,7 +38,7 @@ class Event(Base):
     start_date = db.Column(db.String(255), nullable=True)
     registration_time = db.Column(db.String(255), nullable=True)
     how_to_join = db.Column(db.String(255), nullable=True)
-    #program_outline = db.Column(db.String(255), nullable=True)
+    program_outline = db.Column(db.String(255), nullable=True)
     end_date = db.Column(db.String(255), nullable=True)
     number_of_participants = db.Column(db.Integer)
     description = db.Column(db.String(255), nullable=True)

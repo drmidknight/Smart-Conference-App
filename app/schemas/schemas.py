@@ -51,6 +51,7 @@ class UpdateEventRequest(BaseModel):
     flyer:Optional[str]
     number_of_participants:Optional[str]
     how_to_join:Optional[str]
+    program_outline:Optional[str]
     description:Optional[str]
 
 
