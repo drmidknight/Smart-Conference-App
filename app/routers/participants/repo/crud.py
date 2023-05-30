@@ -1,18 +1,12 @@
-from fastapi import APIRouter, status
-from app.services.participants.schemas import participants
-from app.models.models import Participant, Event
+from fastapi import status
+from app.routers.participants.schemas import participants
+from app.routers.events.models.models import Event
+from app.routers.participants.models.models import Participant
 from app.utils.database import Database
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from app.mail import sendmail
 
-
-# APIRouter creates path operations for staffs module
-router = APIRouter(
-    prefix="/participant",
-    tags=["Participant"],
-    responses={404: {"description": "Not found"}},
-)
 
 
 
@@ -31,8 +25,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@router.post("/add", response_description="Participant data added into the database")
-async def add_admin(participantRequest: participants.ParticipantRequest):
+
+async def add_participants(participantRequest: participants.ParticipantRequest):
 
     email_query = session.query(Participant).filter(
         Participant.email == participantRequest.email).first()
@@ -81,7 +75,7 @@ async def add_admin(participantRequest: participants.ParticipantRequest):
 
 
 
-@router.get("/getAllParticipant")
+
 async def all_Participant():
     data = session.query(Participant).all()
     return data
@@ -90,7 +84,7 @@ async def all_Participant():
 
 
 
-@router.get("/getParticipantById/{id}")
+
 async def get_Participant_By_Id(id: int):
     data = session.query(Participant).filter(Participant.id == id).all()
     
@@ -107,7 +101,7 @@ async def get_Participant_By_Id(id: int):
 
 
 
-@router.put("/update")
+
 async def updateParticipant(updateParticipant: participants.UpdateParticipant):
     participant_id = updateParticipant.id
     is_Participant_update = session.query(Participant).filter(Participant.id == participant_id).update({
@@ -140,7 +134,7 @@ async def updateParticipant(updateParticipant: participants.UpdateParticipant):
 
 
 
-@router.get("/phone_number_email/{phone_number_email}")
+
 async def phone_number_email(phone_number_email: str):
     if "@" in phone_number_email:
         participant = session.query(Participant).filter(
@@ -160,7 +154,7 @@ async def phone_number_email(phone_number_email: str):
 
 
 
-@router.get("/attend_program_by/{attend_by}")
+
 async def get_Participant_By_attend_by(attend_by: str):
     data = session.query(Participant).filter(
             Participant.attend_by == attend_by).all()
@@ -180,7 +174,7 @@ async def get_Participant_By_attend_by(attend_by: str):
 
 
 
-@router.delete("/delete/{id}")
+
 async def deleteParticipant(id: str):
     db_data = session.query(Participant).filter(Participant.id == id).update({
             Participant.status: 0
@@ -200,7 +194,7 @@ async def deleteParticipant(id: str):
 
 
 
-@router.get("/participant_event/{id}")
+
 async def show_participant_event_all(id: int):
     data = session.query(Participant).filter(
             Participant.event_id == Event.id).filter(Event.id == id).all()
@@ -218,7 +212,6 @@ async def show_participant_event_all(id: int):
 
 
 
-@router.get("/countParticipant")
 async def count_all_Participant():
     data = session.query(Participant).count()
     return data
@@ -227,7 +220,7 @@ async def count_all_Participant():
 
 
 
-@router.get("/countParticipantConfirm")
+
 async def count_all_Participant_Confirm():
     data = session.query(Participant).filter(Participant.status == 1).count()
     return data
@@ -237,7 +230,7 @@ async def count_all_Participant_Confirm():
 
 
 
-@router.get("/countParticipantNotConfirm")
+
 async def count_all_Participant_Not_Confirm():
     data = session.query(Participant).filter(Participant.status == 0).count()
     return data

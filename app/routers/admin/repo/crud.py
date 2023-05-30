@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends
 from app.schemas import admin
-from app.models.models import Admin
+from app.routers.admin.models.models import Admin
 from app.utils.database import Database
 from app.auth import authentication
 from fastapi.exceptions import HTTPException
@@ -10,13 +10,6 @@ from app.mail.sendmail import (sendEmailToNewAdmin, generate_reset_password_toke
 from app.utils.config import settings
 from datetime import timedelta
 
-
-# APIRouter creates path operations for staffs module
-admin_router = APIRouter(
-    prefix="/admin",
-    tags=["Admin"],
-    responses={404: {"description": "Not found"}},
-)
 
 
 
@@ -30,8 +23,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@admin_router.post('/login', response_model=admin.Token)
-async def admin_login(form_data: OAuth2PasswordRequestForm = Depends()):
+
+
+
+async def admin_authentication(form_data: OAuth2PasswordRequestForm = Depends()):
     
     data=session.query(Admin).filter(Admin.email==form_data.username).first()
 
@@ -56,8 +51,12 @@ async def admin_login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 
-@admin_router.post("/add", response_description="Admin data added into the database")
-async def add_admin(adminRequest: admin.AdminRequest):
+
+
+
+
+
+async def create_admin(adminRequest: admin.AdminRequest):
 
     db_query = session.query(Admin).filter(Admin.email == adminRequest.email).filter(
         Admin.contact == adminRequest.contact).first()
@@ -75,8 +74,8 @@ async def add_admin(adminRequest: admin.AdminRequest):
     new_admin.status = "Active"
     session.add(new_admin)
     session.flush()
-    session.refresh()
-    await sendEmailToNewAdmin([adminRequest.email], new_admin)
+    session.refresh(new_admin, attribute_names=['id'])
+    #await sendEmailToNewAdmin([adminRequest.email], new_admin)
     session.commit()
     session.close()
     return new_admin
@@ -86,15 +85,20 @@ async def add_admin(adminRequest: admin.AdminRequest):
 
 
 
-@admin_router.get("/getAllAdmin")
-async def all_admin():
+
+
+
+
+
+
+
+async def get_all_admin():
     data = session.query(Admin).filter(Admin.status == "Active").all()
     return data
 
 
 
 
-@admin_router.get("/getAdminById/{id}")
 async def getAdminById(id: str):
     data = session.query(Admin).filter(Admin.id == id).all()
     
@@ -109,7 +113,7 @@ async def getAdminById(id: str):
 
 
 
-@admin_router.put("/update")
+
 async def updateAdmin(updateAdmin: admin.UpdateAdmin):
     adminID = updateAdmin.id
     is_adminID_update = session.query(Admin).filter(Admin.id == adminID).update({
@@ -135,7 +139,6 @@ async def updateAdmin(updateAdmin: admin.UpdateAdmin):
 
 
 
-@admin_router.get("/getAdminByEmail/{email}")
 async def getAdminByEmail(email: str):
     data = session.query(Admin).filter(Admin.email == email).all()
     
@@ -161,7 +164,7 @@ async def getAdminByEmail(email: str):
 
 
 
-@admin_router.delete("/delete/{id}")
+
 async def deleteAdmin(id: str):
     db_data = session.query(Admin).filter(Admin.id == id).update({
             Admin.status: "InActive"
@@ -184,7 +187,6 @@ async def deleteAdmin(id: str):
 
 
 
-@admin_router.get("/countAdmin")
 async def count_all_Admin():
     data = session.query(Admin).count()
     return data

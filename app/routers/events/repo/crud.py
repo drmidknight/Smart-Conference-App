@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
-from app.services.events.schemas import events
-from app.models.models import Event, Admin
+from app.routers.events.schemas import events
+from app.routers.admin.models.models import Admin
+from app.routers.events.models.models import Event
 from app.utils.database import Database
 from app.auth import authentication
 from fastapi.exceptions import HTTPException
@@ -9,13 +10,6 @@ import shutil
 from app.response.response import Response
 
 
-
-# APIRouter creates path operations for events module
-events_router = APIRouter(
-    prefix="/event",
-    tags=["Event"],
-    responses={404: {"description": "Not found"}},
-)
 
 
 
@@ -39,7 +33,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@events_router.post("/add", response_description="Event data added into the database")
+
 async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
@@ -112,7 +106,6 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
 
 
 
-@events_router.get("/getAllEvents")
 async def all_event():
     data = session.query(Event).filter(Event.status == "Active").all()
     return data
@@ -122,7 +115,7 @@ async def all_event():
 
 
 
-@events_router.get("/getEventById/{id}")
+
 async def getEventById(id: str):
     data = session.query(Event).filter(Event.id == id).all()
     
@@ -140,7 +133,7 @@ async def getEventById(id: str):
 
 
 
-@events_router.put("/update")
+
 async def update_Event(updateEvent: events.UpdateEventRequest):
     eventID = updateEvent.id
     is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
@@ -170,7 +163,6 @@ async def update_Event(updateEvent: events.UpdateEventRequest):
 
 
 
-@events_router.get("/getEventByName/{event_name}")
 async def getEventByName(event_name: str):
     data = session.query(Event).filter(Event.event_name == event_name).all()
     
@@ -189,7 +181,7 @@ async def getEventByName(event_name: str):
 
 
 
-@events_router.delete("/delete/{id}")
+
 async def deleteEvent(id: int):
     db_data = session.query(Event).filter(Event.id == id).update({
             Event.status: "InActive"
@@ -208,7 +200,6 @@ async def deleteEvent(id: int):
 
 
 
-@events_router.get("/event_url/{event_name}")
 async def generate_url(event_name: str):
     data = session.query(Event).filter(Event.event_name == event_name).all()
     
@@ -221,7 +212,9 @@ async def generate_url(event_name: str):
 
 
 
-@events_router.get("/countEvent")
+
+
+
 async def count_all_Event():
     data = session.query(Event).count()
     return data
@@ -235,7 +228,6 @@ async def count_all_Event():
 
 
 
-@events_router.put("/add_only_flyer")
 async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_outline: UploadFile = File(None)):
     eventID = event_id
 
