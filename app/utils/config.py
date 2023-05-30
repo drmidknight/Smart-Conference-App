@@ -23,9 +23,8 @@ class Settings(BaseSettings):
     CONNECT_TIMEOUT = 60
     connect_args = {"connect_timeout":CONNECT_TIMEOUT}
 
-    # MAIL_USERNAME: str = 'bismarkotu1006@gmail.com'
-    # MAIL_PASSWORD: str = 'olimwedzhheuxfce'
-    # MAIL_FROM: str = 'bismarkotu1006@gmail.com'
+
+
     MAIL_USERNAME: str = 'obwebsitedesign@gmail.com'
     MAIL_PASSWORD: str = 'mqzcxllgcoprfxia'
     MAIL_FROM: str = 'obwebsitedesign@gmail.com'

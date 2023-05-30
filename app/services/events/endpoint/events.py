@@ -1,31 +1,28 @@
-from fastapi import APIRouter, status, Depends, Security, File, UploadFile, Form
-from app.schemas.schemas import *
-from app.response.response import Response
-from app.models.models import *
+from fastapi import APIRouter, status, Depends, File, UploadFile, Form
+from app.services.events.schemas import events
+from app.models.models import Event, Admin
 from app.utils.database import Database
 from app.auth import authentication
-from app.utils.config import *
 from fastapi.exceptions import HTTPException
-from sqlalchemy import and_, desc, or_
 from passlib.context import CryptContext
-from fastapi.encoders import jsonable_encoder
-from fastapi.security import OAuth2PasswordRequestForm
-from app.mail.sendmail import *
 import shutil
+from app.response.response import Response
 
 
 
-# APIRouter creates path operations for staffs module
-router = APIRouter(
+# APIRouter creates path operations for events module
+events_router = APIRouter(
     prefix="/event",
     tags=["Event"],
     responses={404: {"description": "Not found"}},
 )
 
 
-IMAGEDIR = "app/images/"
 
-PROGRAMOUTLINEDIR = "app/outlines/"
+
+IMAGEDIR = "app/other_docs/flyers/"
+
+PROGRAMOUTLINEDIR = "app/other_docs/program_outlines/"
 
 database = Database()
 engine = database.get_db_connection()
@@ -42,7 +39,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@router.post("/add", response_description="Event data added into the database")
+@events_router.post("/add", response_description="Event data added into the database")
 async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
@@ -115,7 +112,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
 
 
 
-@router.get("/getAllEvents")
+@events_router.get("/getAllEvents")
 async def all_event():
     data = session.query(Event).filter(Event.status == "Active").all()
     return data
@@ -125,7 +122,7 @@ async def all_event():
 
 
 
-@router.get("/getEventById/{id}")
+@events_router.get("/getEventById/{id}")
 async def getEventById(id: str):
     data = session.query(Event).filter(Event.id == id).all()
     
@@ -143,8 +140,8 @@ async def getEventById(id: str):
 
 
 
-@router.put("/update")
-async def update_Event(updateEvent: UpdateEventRequest):
+@events_router.put("/update")
+async def update_Event(updateEvent: events.UpdateEventRequest):
     eventID = updateEvent.id
     is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
             Event.event_name: updateEvent.event_name,
@@ -173,7 +170,7 @@ async def update_Event(updateEvent: UpdateEventRequest):
 
 
 
-@router.get("/getEventByName/{event_name}")
+@events_router.get("/getEventByName/{event_name}")
 async def getEventByName(event_name: str):
     data = session.query(Event).filter(Event.event_name == event_name).all()
     
@@ -192,7 +189,7 @@ async def getEventByName(event_name: str):
 
 
 
-@router.delete("/delete/{id}")
+@events_router.delete("/delete/{id}")
 async def deleteEvent(id: int):
     db_data = session.query(Event).filter(Event.id == id).update({
             Event.status: "InActive"
@@ -211,7 +208,7 @@ async def deleteEvent(id: int):
 
 
 
-@router.get("/event_url/{event_name}")
+@events_router.get("/event_url/{event_name}")
 async def generate_url(event_name: str):
     data = session.query(Event).filter(Event.event_name == event_name).all()
     
@@ -224,10 +221,10 @@ async def generate_url(event_name: str):
 
 
 
-@router.get("/countEvent")
+@events_router.get("/countEvent")
 async def count_all_Event():
     data = session.query(Event).count()
-    return Response("ok", "Event retrieved successfully.", data, 200, False)
+    return data
 
 
 
@@ -238,7 +235,7 @@ async def count_all_Event():
 
 
 
-@router.put("/add_only_flyer")
+@events_router.put("/add_only_flyer")
 async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_outline: UploadFile = File(None)):
     eventID = event_id
 
@@ -280,7 +277,7 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 
 # from fastapi.responses import FileResponse
 
-# @router.get("/read_image")
+# @events_router.get("/read_image")
 # async def read_image():
-#     return FileResponse("app/endpoints/images/aiti.png")
+#     return FileResponse("app/other_docs/flyers/African Union Day.jpeg")
 

@@ -1,21 +1,10 @@
-from fastapi import APIRouter, status, Depends, Security
-from app.schemas.schemas import *
-from app.response.response import Response
-from app.models.models import *
+from fastapi import APIRouter, status
+from app.services.participants.schemas import participants
+from app.models.models import Participant, Event
 from app.utils.database import Database
-from app.auth import authentication
 from fastapi.exceptions import HTTPException
-#from sqlalchemy import and_, desc, or_
 from passlib.context import CryptContext
-from fastapi_jwt_auth import AuthJWT
-from fastapi.encoders import jsonable_encoder
-from fastapi.security import (OAuth2PasswordBearer, OAuth2PasswordRequestForm)
 from app.mail import sendmail
-from uuid import uuid4
-from sqlalchemy.orm import load_only
-from typing import Union, Any
-from app.utils.config import *
-from datetime import datetime
 
 
 # APIRouter creates path operations for staffs module
@@ -43,7 +32,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/add", response_description="Participant data added into the database")
-async def add_admin(participantRequest: ParticipantRequest):
+async def add_admin(participantRequest: participants.ParticipantRequest):
 
     email_query = session.query(Participant).filter(
         Participant.email == participantRequest.email).first()
@@ -71,7 +60,7 @@ async def add_admin(participantRequest: ParticipantRequest):
     session.add(new_participant)
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
-    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant)
+    #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant)
     data = {
         "phone_number": new_participant.phone_number,
         "email": new_participant.email,
@@ -119,7 +108,7 @@ async def get_Participant_By_Id(id: int):
 
 
 @router.put("/update")
-async def updateParticipant(updateParticipant: UpdateParticipant):
+async def updateParticipant(updateParticipant: participants.UpdateParticipant):
     participant_id = updateParticipant.id
     is_Participant_update = session.query(Participant).filter(Participant.id == participant_id).update({
             Participant.name: updateParticipant.name,

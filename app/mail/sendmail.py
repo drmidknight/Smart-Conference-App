@@ -15,6 +15,7 @@ from jose import jwt
 from app.utils.database import Database
 from app.utils.config import settings
 from fastapi.responses import FileResponse
+import shutil
 
 
 config_credentials = dotenv_values(".env")
@@ -26,6 +27,10 @@ session = database.get_db_session(engine)
 
 class EmailSchema(BaseModel):
     email: List[EmailStr]
+
+
+
+PROGRAMOUTLINEDIR = "app/outlines/"
 
 
 
@@ -79,6 +84,12 @@ def generate_reset_password_token(expires_delta: int = None):
 #     ) -> JSONResponse:
 
 
+filename = "/app/outlines/DBC_COURSE OUTLINE.pdf"
+
+
+def read_flyer_image():
+    return FileResponse("app/other_docs/flyers/{event_data.flyer}")
+
 
 
 
@@ -86,49 +97,46 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
     event_data = session.query(Event).filter(Event.id == instance.event_id).first()
 
-    # def read_image():
-    #     return FileResponse("app/endpoints/images/{event_data.flyer}")
+    flyer_name = {event_data.flyer}
+
+    flyer = FileResponse("app/other_docs/flyers/{flyer_name}")
     
+    # <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
             
     html = f"""    
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">                    <br>
-                    <br><br>
-                    <img src="/app/endpoints/images/aiti.png" alt="Event Flyer" weight="100" height="100" />
-                    <br><br>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-6 col-lg-6 col-md-6">
-              <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="p-5">
-                      <div class="text-center">
-                        <img src="/app/endpoints/images/aiti.png" alt="" weight="100" height="100">
-                        <br><br>
-                          <h1 class="h5 text-gray-900 mb-4">{event_data.event_name} CONFERENCE</h1>
-                          </div>
-                        <p> Hi {instance.name} !,</p>
-                        Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference
 
-                          <br><br>
-                        <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
-                          <hr>
-                      </div>
-                    </div>
-                  </div>
+            <!doctype html>
+        <html lang="en">
+            <head>
+                <title>{event_data.event_name} CONFERENCE</title>
+            </head>
+
+            <body>
+                <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
+                {flyer}
+
+
+                    <h3>Hi {instance.name} </h3>
+                    <br>
+
+                     <br>
+                    <p>Welcome to <b>SMART CONFERENCE APP</b></p>
+                    <br><br>
+                    Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference.
+                    <br><br>
+                    
+                    <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
                 </div>
-              </div>
-            </div>
-          </div>
-    </div>
+
+            </body>
+        </html>
 
                     
     """
 
 
     message = MessageSchema(
-        subject="SMART CONFERENCE APP",
+        subject=" {event_data.event_name} CONFERENCE",
         recipients=email,
         body=html,
         subtype=MessageType.html,
@@ -166,6 +174,59 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
 
 async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Participant):
+
+    html = f"""                    
+                    <br>
+                    <p>Hi {instance.admin_name} !</p>
+                    <br>
+                    <p>You have requested to reset your password. Click on the button below to reset your password</p>
+
+                    <br><br>
+                    
+                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
+                    background: #0275d8; color:white;" href="http://localhost:4200/reset-password?token={instance.reset_password_token}">
+                    Reset password 
+                    </a>
+                    <br><br>
+                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser
+                    <br>
+                    <b>Link expires in 3 hours</b>
+                    </p>
+                    http://localhost:4200/reset-password?token={instance.reset_password_token}
+                    <br><br>
+                    <p><b>Ignore this email if you have not requested to reset your password</b></p>
+                    
+    """
+
+
+    message = MessageSchema(
+        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
+        recipients=email,
+        body=html,
+        subtype=MessageType.html)
+
+    fm = FastMail(conf)
+    await fm.send_message(message)
+    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async def sendEmailToNewAdmin(email: EmailSchema, instance: Participant):
 
     html = f"""                    
                     <br>
