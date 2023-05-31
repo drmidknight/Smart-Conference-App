@@ -13,9 +13,9 @@ from app.response.response import Response
 
 
 
-IMAGEDIR = "app/other_docs/flyers/"
+IMAGEDIR = "app/static/other_docs/flyers/"
 
-PROGRAMOUTLINEDIR = "app/other_docs/program_outlines/"
+PROGRAMOUTLINEDIR = "app/static/other_docs/program_outlines/"
 
 database = Database()
 engine = database.get_db_connection()
