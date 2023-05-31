@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 import jwt
-from app.routers.admin.models.models import Admin
+from app.models.models import Admin
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from fastapi import status, Security

@@ -1,10 +1,10 @@
-# from models.models import Admin
+from models.models import Admin
 from routers.admin.models.models import Admin
 from utils.database import Database
-# from models.models import Base
-from routers.admin.models.models import Base
-from routers.events.models.models import Base
-from routers.participants.models.models import Base
+from models.models import Base
+# from routers.admin.models.models import Base
+# from routers.events.models.models import Base
+# from routers.participants.models.models import Base
 from passlib.context import CryptContext
 from sqlalchemy import text
 
