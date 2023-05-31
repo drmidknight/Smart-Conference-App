@@ -6,7 +6,10 @@ from inspect import re
 from fastapi.openapi.utils import get_openapi
 
 
-app = FastAPI()
+
+app = FastAPI(docs_url="/")
+
+
 
 #origins = ["http://localhost:4300", "http://localhost:4200"]
 origins = ["*"]
