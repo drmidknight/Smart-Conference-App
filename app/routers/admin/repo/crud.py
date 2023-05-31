@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from app.schemas import admin
+from app.routers.admin.schemas import admin
 from app.models.models import Admin
 from app.utils.database import Database
 from app.auth import authentication

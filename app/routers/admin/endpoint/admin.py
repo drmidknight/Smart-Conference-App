@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from app.schemas import admin
 from app.utils.database import Database
+from app.routers.admin.schemas import admin
 from app.routers.admin.repo import crud
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm
