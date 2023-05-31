@@ -20,5 +20,5 @@ class Admin(Base):
     status = db.Column(db.String(255), nullable=True)
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-    event = relationship("Event")
-    attendance = relationship("Attendance")
+    # event = relationship("Event")
+    # attendance = relationship("Attendance")

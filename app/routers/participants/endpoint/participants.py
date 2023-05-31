@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status
 from app.routers.participants.schemas import participants
-from app.models.models import Participant, Event
+from app.routers.events.models.models import Event
+from app.routers.participants.models.models import Participant
 from app.utils.database import Database
-from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from app.mail import sendmail
 from app.routers.participants.repo import crud

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
 from app.routers.events.schemas import events
-from app.models.models import Event, Admin
+from app.routers.admin.models.models import Admin
+from app.routers.events.models.models import Event
 from app.utils.database import Database
 from app.auth import authentication
 from fastapi.exceptions import HTTPException

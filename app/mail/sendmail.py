@@ -1,7 +1,8 @@
 from typing import List
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr
-from app.models.models import Participant, Event
+from app.routers.events.models.models import Event
+from app.routers.participants.models.models import Participant
 from starlette.responses import JSONResponse
 from uuid import uuid4
 import random
