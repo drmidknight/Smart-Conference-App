@@ -195,17 +195,16 @@ async def deleteEvent(id: int):
     return data
 
 
-
-
-
-
 async def generate_url(event_name: str):
-    data = session.query(Event).filter(Event.event_name == event_name).all()
+    data = session.query(Event).filter(Event.event_name == event_name).first()
     
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Event with the event_name (" + str(event_name) + ") not found")
-    return data
+                            
+    db_event_name = data.event_name
+    event_url = f"http://localhost:4200/" + str(db_event_name) + ""
+    return event_url
 
 
 
