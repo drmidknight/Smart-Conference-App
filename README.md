@@ -34,32 +34,32 @@ Run the following command
 
 Setup environment variables; allowed environment variables `KEYWORDS`=`VALUES`:
 
-| KEYWORDS | VALUES | DEFAULT VALUE | VALUE TYPE | IS REQUIRED | 
-| :------------ | :---------------------: | :------------------: | :------------------: | :------------------: |
-| DB_TYPE | | Mysql | string | true |
-| DB_NAME | | smart_conference_app | string | true |
-| DB_USER | | root | string | true |
-| DB_PASSWORD | |  | string | true |
-| DB_PORT | | 3306 | integer | true |  
-| BASE_URL | | http://localhost:8000/ | string | true | 
-| ADMIN_EMAIL | | admin@admin.com | string | true |
-| ADMIN_PASSWORD | | openforme | string | true |
-| EMAIL_CODE_DURATION_IN_MINUTES | | 15 | integer | true |
-| ACCESS_TOKEN_DURATION_IN_MINUTES | | 60 | integer | true |
-| REFRESH_TOKEN_DURATION_IN_MINUTES | | 600 | integer | true |
-| PASSWORD_RESET_TOKEN_DURATION_IN_MINUTES | | 15 | integer | true |
-| ACCOUNT_VERIFICATION_TOKEN_DURATION_IN_MINUTES | | 15 | integer | true |
-| MAIL_USERNAME | | | string | true |
-| MAIL_PASSWORD | | | string | true |
-| MAIL_FROM | | | string | true |
-| MAIL_PORT | | | string | true |
-| MAIL_SERVER | | | string | true |
-| MAIL_FROM_NAME | | | string | true |
-| MAIL_TLS | | true | boolean | true |
-| MAIL_SSL | | false | boolean | true |
-| USE_CREDENTIALS | | true | boolean | true |
-| VALIDATE_CERTS | | true | boolean | true |
-| DEFAULT_MAIL_SUBJECT | | | string | true |
+| KEYWORDS | VALUES | DEFAULT VALUE | VALUE TYPE | 
+| :------------ | :---------------------: | :------------------: | :------------------: |
+| DB_TYPE | | Mysql | string 
+| DB_NAME | | smart_conference_app | string 
+| DB_USER | | root | string 
+| DB_PASSWORD | |  | string 
+| DB_PORT | | 3306 | integer   
+| BASE_URL | | http://localhost:8000/ | string  
+| ADMIN_EMAIL | | admin@admin.com | string 
+| ADMIN_PASSWORD | | openforme | string 
+| EMAIL_CODE_DURATION_IN_MINUTES | | 15 | integer 
+| ACCESS_TOKEN_DURATION_IN_MINUTES | | 60 | integer 
+| REFRESH_TOKEN_DURATION_IN_MINUTES | | 600 | integer 
+| PASSWORD_RESET_TOKEN_DURATION_IN_MINUTES | | 15 | integer 
+| ACCOUNT_VERIFICATION_TOKEN_DURATION_IN_MINUTES | | 15 | integer 
+| MAIL_USERNAME | | | string 
+| MAIL_PASSWORD | | | string 
+| MAIL_FROM | | | string 
+| MAIL_PORT | | | string 
+| MAIL_SERVER | | | string 
+| MAIL_FROM_NAME | | | string 
+| MAIL_TLS |  boolean 
+| MAIL_SSL | | false | boolean 
+| USE_CREDENTIALS |  boolean 
+| VALIDATE_CERTS |  boolean 
+| DEFAULT_MAIL_SUBJECT | | | string 
 
 
 
