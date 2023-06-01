@@ -30,7 +30,7 @@ class EmailSchema(BaseModel):
 
 
 
-PROGRAMOUTLINEDIR = "app/other_docs/program_outlines/"
+PROGRAMOUTLINEDIR = "app/program_outlines/"
 
 
 
@@ -84,11 +84,11 @@ def generate_reset_password_token(expires_delta: int = None):
 #     ) -> JSONResponse:
 
 
-filename = "app/other_docs/program_outlines/DBC_COURSE OUTLINE.pdf"
+filename = "app/program_outlines/DBC_COURSE OUTLINE.pdf"
 
 
 def read_flyer_image():
-    return FileResponse("app/other_docs/flyers/{event_data.flyer}")
+    return FileResponse("app/flyers/{event_data.flyer}")
 
 
 
@@ -99,8 +99,9 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
     flyer_name = {event_data.flyer}
 
-    flyer = FileResponse("app/other_docs/flyers/{flyer_name}")
+    flyer = FileResponse("app/flyers/{flyer_name}")
     
+
     # <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
             
     html = f"""    

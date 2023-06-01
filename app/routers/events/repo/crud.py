@@ -11,9 +11,9 @@ from app.response.response import Response
 
 
 
-IMAGEDIR = "app/other_docs/flyers/"
+IMAGEDIR = "app/flyers/"
 
-PROGRAMOUTLINEDIR = "app/other_docs/program_outlines/"
+PROGRAMOUTLINEDIR = "app/program_outlines/"
 
 
 
@@ -270,5 +270,5 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 
 # @events_router.get("/read_image")
 # async def read_image():
-#     return FileResponse("app/other_docs/flyers/African Union Day.jpeg")
+#     return FileResponse("app/flyers/African Union Day.jpeg")
 
