@@ -185,8 +185,6 @@ async def deleteAdmin(id: str):
 
 
 
-
-
 async def count_all_Admin():
     data = session.query(Admin).count()
     return data

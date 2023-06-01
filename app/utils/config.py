@@ -3,6 +3,11 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
+    PROJECT_NAME:str = "Smart Conference App"
+    PROJECT_VERSION: str = "1.0.0"
+
+
+
     MYSQL_SERVER: str = 'localhost'
     MYSQL_USER: str = 'root'
     MYSQL_PASSWORD: str = ''
