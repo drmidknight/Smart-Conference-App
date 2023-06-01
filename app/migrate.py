@@ -11,6 +11,8 @@ from sqlalchemy import text
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
+
 database = Database()
 engine = database.get_db_connection()
 db = database.get_db_session(engine)
