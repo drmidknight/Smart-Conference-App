@@ -21,8 +21,8 @@ services:
     restart: unless-stopped
     tty: true
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
       - 8000:8000
     env_file:
-      - .env
+      - ./app/local.env
