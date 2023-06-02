@@ -1,35 +1,12 @@
-FROM python:3.10.4-slim-buster
+FROM python:3.10
 
-# 
 WORKDIR /app
 
-
-# Set up Python behaviour
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV VIRTUAL_ENV=/opt/venv
-
-# Switch on virtual environment
-RUN python -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
-# Set the server port
-EXPOSE 2020
-
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -yqq build-essential gcc && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
-
-# Install Python dependencies
-RUN pip3 install --upgrade pip
-COPY ./app/requirements.txt ./
-RUN pip3 install -r app/requirements.txt
-
-
-# Copy all files
 COPY . /app
 
-# Start up the backend server
-# CMD [ "uvicorn", "app.main:app", "--workers", "4", "--host", "0.0.0.0", "--port", "2020" ]
+COPY ./app/requirements.txt /app
+
+RUN pip install --no-cache-dir --trusted-host pypi.python.org -r /app/requirements.txt
+
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

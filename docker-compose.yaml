@@ -1,130 +1,28 @@
-version: "3.9"
-# docker-compose --env-file ./docker.env up -d --build
-# docker-compose --env-file ./docker.env down
-
+version: "3"
 services:
-  app:
-    build:
-      context: ./app
-      dockerfile: dockerfile
-    image: master-image
-    restart: always
-    container_name: smart-conference-app
-    expose: 
-      - 80
-    networks:
-      - smart-conference-network
-    volumes:
-      - upload_data:/home/app/web/uploads
-      - static_data:/home/app/web/static
-    env_file:
-      - docker.env
-    depends_on:
-      - mysqli
-      - redis
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      DOCKER: 'true'
-      # DATABASE_URL: 'mysql://${DB_USER}:${DB_PASSWORD}@mysqli/${DB_NAME}'
-      DATABASE_URL: 'mysql://root:@localhost:3306/smart_conference_app?charset=utf8'
-
-
   mysql:
-    build:
-      context: ./mysql
-      dockerfile: dockerfile
-    container_name: smart-conference-mysql
-    restart: always
-    expose:
-      - 80
-    environment:
-      mysql_DEFAULT_EMAIL: ${mysql_DEFAULT_EMAIL}
-      mysql_DEFAULT_PASSWORD: ${mysql_DEFAULT_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks: 
-      - smart-conference-network
-    depends_on: 
-      - mysqli
-
-  mysqli:
-    image: postgis/postgis:12-master
-    container_name: smart-conference-mysqli
-    restart: always
-    networks: 
-      - smart-conference-network
-    expose:
-      - 5432
-    volumes:
-      - mysqli_data:/var/lib/mysqliql/data
-    environment: 
-      mysqli_PASSWORD: ${DB_PASSWORD}
-      mysqli_DB: ${DB_NAME}
-      mysqli_USER: root
-
-  redis:
-    restart: always
-    image: redis:latest
-    container_name: smart-conference-redis-server
-    command: redis-server --save 60 1 --loglevel warning
-    privileged: true
-    expose:
-      - 6379
-    networks: 
-      - smart-conference-network
-    volumes:
-      - redis_data:/data
-    env_file:
-      - docker.env
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes      
-
-  worker:
-    image: master-image
-    container_name: smart-conference-redis-worker
-    depends_on:
-      - redis
-      - app
-    command: python3 -m rds.worker # rq worker --name worker --url redis://redis:6379/0 
-    networks: 
-      - smart-conference-network
-    env_file:
-      - docker.env
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      DOCKER: 'true'
-      DATABASE_URL: 'mysql://root:@localhost:3306/smart_conference_app?charset=utf8'
-    volumes_from: 
-      - app:rw
-    restart: always
-
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: dockerfile
-    restart: always
+    container_name: mysql
+    platform: linux/x86_64
+    build: ./mysql/
     ports:
-      - ${WEB_PORT}:2000
-      - ${REDIS_PORT}:2001
-      - ${mysql_PORT}:2002
-      - ${mysqli_PORT}:2003
-    networks: 
-      - smart-conference-network
+      - "3306:3306"
+    volumes:
+      - ./mysql/db:/docker-entrypoint-initdb.d
+      - ./mysql/conf.d:/etc/mysql/conf.d
+    env_file:
+      - ./mysql/local.env
+    tty: true
+  api:
     depends_on:
-      - app
-    volumes_from: 
-      - app:rw
-
-volumes:
-  static_data:
-  upload_data:
-  mysql_data:
-  mysqli_data:
-  redis_data:
-    driver: local
-
-networks:
-  smart-conference-network:
-    driver: bridge
+      - mysql
+    container_name: fast_api
+    platform: linux/x86_64
+    build: .
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
