@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     MYSQL_USER: str = 'root'
     MYSQL_PASSWORD: str = 'P4ssW0rd'
     MYSQL_DB: str = 'smart_conference_app'
-    MYSQL_PORT: int = 3306
+    MYSQL_PORT: int = 3307
 
     #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
