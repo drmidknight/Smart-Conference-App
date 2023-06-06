@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     MYSQL_SERVER: str = 'localhost'
     MYSQL_USER: str = 'root'
-    MYSQL_PASSWORD: str = 'P4ssW0rd'
+    MYSQL_PASSWORD: str = ''
     MYSQL_DB: str = 'smart_conference_app'
     MYSQL_PORT: int = 3306
 

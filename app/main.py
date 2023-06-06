@@ -31,6 +31,7 @@ async def index():
 
 app.include_router(api_router)
 
+
 if __name__ == '__main__':
-    uvicorn.run("app.main:app", host='http://dev-1.aiti-kace.com.gh', port=8000, log_level="info",workers=4, reload = True)
+    uvicorn.run("main:app", host='0.0.0.0', port=2020, log_level="info", reload = True)
     print("running")
