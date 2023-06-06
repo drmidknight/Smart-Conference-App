@@ -1,11 +1,11 @@
 version: "3"
 services:
   mysql:
-    container_name: mysql
+    container_name: mysql-fastapi
     platform: linux/x86_64
     build: ./mysql/
     ports:
-      - "3306:3306"
+      - "3307:3307"
     volumes:
       - ./mysql/db:/docker-entrypoint-initdb.d
       - ./mysql/conf.d:/etc/mysql/conf.d

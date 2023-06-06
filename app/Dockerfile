@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-COPY ./app/requirements.txt /app
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir --trusted-host pypi.python.org -r /app/requirements.txt
 
