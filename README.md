@@ -28,6 +28,11 @@ Run the following command
     - python run.py
 
 
+- Running FastAPI Service On Docker 
+    - Start Docker Service
+    - Docker-compose build
+    - Docker-compose up
+
 
 
 
