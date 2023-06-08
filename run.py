@@ -1,10 +1,11 @@
 import uvicorn
+from app.main import index
 
 
 
 
 if __name__ == '__main__':
-    uvicorn.run("app.main:app", host='0.0.0.0', port=2020, log_level="info", reload = True)
+    uvicorn.run("app.main:app", host='0.0.0.0', port=8000, log_level="info", reload = True)
     print("running")
 
 # if __name__ == '__main__':

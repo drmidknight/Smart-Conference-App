@@ -6,7 +6,7 @@ COPY . /app
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir --trusted-host pypi.python.org -r /app/requirements.txt
+RUN pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
 
-EXPOSE 2020
-CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "2020"]
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
