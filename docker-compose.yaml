@@ -26,3 +26,18 @@ services:
       - 8000:8000
     env_file:
       - ./app/local.env
+
+
+
+  phpmyadmin:
+    image: phpmyadmin:5.1.1
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: appuser
+      PMA_PASSWORD: password
+      PMA_PORT: 3306
+    ports:
+      - "8090:80"
+    depends_on:
+      - mysql
+    restart: always
