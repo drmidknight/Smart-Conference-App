@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status
-from app.routers.participants.schemas import participants
-from app.routers.events.models.models import Event
-from app.routers.participants.models.models import Participant
-from app.utils.database import Database
+from routers.participants.schemas import participants
+from routers.events.models.models import Event
+from routers.participants.models.models import Participant
+from utils.database import Database
 from passlib.context import CryptContext
-from app.mail import sendmail
-from app.routers.participants.repo import crud
+from mail import sendmail
+from routers.participants.repo import crud
 
 
 # APIRouter creates path operations for staffs module

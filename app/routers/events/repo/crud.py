@@ -1,12 +1,12 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
-from app.routers.events.schemas import events
-from app.models.models import Admin, Event
-from app.utils.database import Database
-from app.auth import authentication
+from routers.events.schemas import events
+from models.models import Admin, Event
+from utils.database import Database
+from auth import authentication
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 import shutil
-from app.response.response import Response
+from response.response import Response
 
 
 

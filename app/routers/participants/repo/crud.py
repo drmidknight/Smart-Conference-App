@@ -1,10 +1,10 @@
 from fastapi import status
-from app.routers.participants.schemas import participants
-from app.models.models import Event,Participant
-from app.utils.database import Database
+from routers.participants.schemas import participants
+from models.models import Event,Participant
+from utils.database import Database
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
-from app.mail import sendmail
+from mail import sendmail
 
 
 
