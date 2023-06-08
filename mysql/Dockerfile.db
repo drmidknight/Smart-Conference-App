@@ -1,0 +1,15 @@
+FROM mysql:8.0
+
+
+ENV MYSQL_DATABASE=smart_conference_app \
+    MYSQL_ALLOW_EMPTY_PASSWORD=true
+
+COPY ./db/smart_conference_app.sql /docker-entrypoint-initdb.d/smart_conference_app.sql
+
+EXPOSE 3307
+
+# FROM mysql:8.0.32
+
+# EXPOSE 3307
+
+# CMD ["mysqld"]

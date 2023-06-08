@@ -1,22 +1,28 @@
 version: "3"
 services:
-  mysql:
-    container_name: mysql-fastapi
-    platform: linux/x86_64
-    build: ./mysql/
+  database:
+    container_name: fastapi-mysql-standalone
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile.db
     ports:
-      - "3306:3306"
+      - "3307:3307"
+    expose:
+      - 3307
     volumes:
-      - ./mysql/db:/docker-entrypoint-initdb.d
-      - ./mysql/conf.d:/etc/mysql/conf.d
-    env_file:
-      - ./mysql/local.env
+      - db-data:/var/lib/mysql
+    networks: 
+      - test_network
     tty: true
+    environment:
+      MYSQL_TCP_PORT: 3307
+    restart: always
+
+
   app:
     depends_on:
-      - mysql
+      - database
     container_name: fast_api
-    platform: linux/x86_64
     build: ./app
     restart: unless-stopped
     tty: true
@@ -26,18 +32,30 @@ services:
       - 8000:8000
     env_file:
       - ./app/local.env
+    networks: 
+      - test_network
 
 
 
   phpmyadmin:
     image: phpmyadmin:5.1.1
     environment:
-      PMA_HOST: mysql
-      PMA_USER: appuser
-      PMA_PASSWORD: password
-      PMA_PORT: 3306
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD:
+      PMA_PORT: 3307
     ports:
       - "8090:80"
     depends_on:
-      - mysql
+      - database
+    networks: 
+      - test_network
     restart: always
+
+networks: 
+  test_network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local

@@ -20,12 +20,18 @@ Run the following command
 
 
 ## RUNNING OR STARTING APPLICATON
-- Running FastAPI Service 
+- Running FastAPI Service Locally
     - uvicorn app.main:app --reload
 
     - OR
 
     - python run.py
+
+
+- Running FastAPI Service On Docker 
+    - Start Docker Service
+    - Docker-compose build
+    - Docker-compose up
 
 
 
