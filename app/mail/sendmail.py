@@ -115,20 +115,14 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
             <body>
                 <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
                 {flyer}
-
-
                     <h3>Hi {instance.name} </h3>
-                    <br>
-
-                     <br>
+                    <br><br>
                     <p>Welcome to <b>SMART CONFERENCE APP</b></p>
                     <br><br>
                     Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference.
                     <br><br>
-                    
                     <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
                 </div>
-
             </body>
         </html>
 
