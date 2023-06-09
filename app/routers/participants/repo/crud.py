@@ -299,3 +299,15 @@ async def add_participant_fields(field_name:str = Form(...), field_type:str = Fo
 async def all_Participant_Fields():
     data = session.query(ParticipantFields).all()
     return data
+
+
+
+
+
+async def get_Participant_Fields_By_Id(id: int):
+    data = session.query(ParticipantFields).filter(ParticipantFields.event_id == id).all()
+    
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"ParticipantFields with the id (" + str(id) + ") is not found")
+    return data

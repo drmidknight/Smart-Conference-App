@@ -189,3 +189,16 @@ async def create_participants_Fields(field_name:str = Form(...), field_type:str 
 async def all_Participant_Fields():
 
     return await crud.all_Participant_Fields()
+
+
+
+
+
+
+
+
+
+@router.get("/getParticipantFieldById/{id}")
+async def get_Participant_Fields_By_Id(id: int):
+    
+    return await crud.get_Participant_Fields_By_Id(id)
