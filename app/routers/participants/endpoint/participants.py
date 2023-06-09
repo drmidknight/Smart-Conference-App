@@ -1,11 +1,11 @@
-from fastapi import APIRouter, status
-from routers.participants.schemas import participants
-from routers.events.models.models import Event
-from routers.participants.models.models import Participant
-from utils.database import Database
+from fastapi import APIRouter, Form
+from app.routers.participants.schemas import participants
+from app.routers.events.models.models import Event
+from app.routers.participants.models.models import Participant
+from app.utils.database import Database
 from passlib.context import CryptContext
-from mail import sendmail
-from routers.participants.repo import crud
+from app.mail import sendmail
+from app.routers.participants.repo import crud
 
 
 # APIRouter creates path operations for staffs module
@@ -33,9 +33,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # PARTICIPANT FIELDS CRUD ENDPOINT
 
 @router.post("/add", response_description="Participant data added into the database")
-async def create_participants(participantRequest: participants.ParticipantRequest):
+async def create_participants(name:str = Form(...), phone_number:str = Form(...),
+                gender:str = Form(None), email:str = Form(...),
+                registration_time:str = Form(None) ,organization:str = Form(None),
+                  how_to_join:str = Form(None), location:str = Form(None),
+                  event_id:int = Form(None)):
 
-    return await crud.add_participants(participantRequest)
+    return await crud.add_participants(name,phone_number,gender,email,registration_time,
+                                       organization,how_to_join,location,event_id)
 
 
 
@@ -166,14 +171,15 @@ async def count_all_Participant_Not_Confirm():
 
 
 
-
-
-# PARTICIPANT FIELDS CRUD ENDPOINT
+# # PARTICIPANT FIELDS CRUD ENDPOINT
 
 @router.post("/addParticipantFields", response_description="Participant Field data added into the database")
-async def create_participants(participantFieldRequest: participants.ParticipantFieldRequest):
+async def create_participants_Fields(field_name:str = Form(...), field_type:str = Form(...),
+                field_validation:int = Form(None), field_max_length:int = Form(None),
+                field_min_length:int = Form(None) ,event_id:int = Form(...)):
 
-    return await crud.add_participant_fields(participantFieldRequest)
+    return await crud.add_participant_fields(field_name,field_type,field_validation,
+                                             field_max_length,field_min_length,event_id)
 
 
 

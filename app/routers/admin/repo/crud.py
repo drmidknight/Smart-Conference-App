@@ -1,13 +1,13 @@
 from fastapi import APIRouter, status, Depends
-from routers.admin.schemas import admin
-from models.models import Admin
-from utils.database import Database
-from auth import authentication
+from app.routers.admin.schemas import admin
+from app.models.models import Admin
+from app.utils.database import Database
+from app.auth import authentication
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm
-from mail.sendmail import (sendEmailToNewAdmin, generate_reset_password_token)
-from utils.config import settings
+from app.mail.sendmail import (sendEmailToNewAdmin, generate_reset_password_token)
+from app.utils.config import settings
 from datetime import timedelta
 
 

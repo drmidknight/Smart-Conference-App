@@ -1,7 +1,7 @@
 from typing import List
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr
-from models.models import Participant, Event
+from app.models.models import Participant, Event
 from starlette.responses import JSONResponse
 from uuid import uuid4
 import random
@@ -10,10 +10,10 @@ from dotenv  import dotenv_values
 from fastapi import Depends, File, UploadFile, Form, BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from datetime import datetime, time, timedelta
-from utils.config import *
+from app.utils.config import *
 from jose import jwt
-from utils.database import Database
-from utils.config import settings
+from app.utils.database import Database
+from app.utils.config import settings
 from fastapi.responses import FileResponse
 import shutil
 

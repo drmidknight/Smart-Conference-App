@@ -17,7 +17,7 @@ class Participant(Base):
     email = db.Column(db.String(255), nullable=True, unique=True)
     organization = db.Column(db.String(255), nullable=True)
     status = db.Column(Boolean, default=False, index=False)
-    attend_by = db.Column(db.String(255), nullable=True)
+    how_to_join = db.Column(db.String(255), nullable=True)
     registration_time = db.Column(db.String(255), nullable=True)
     location = db.Column(db.String(255), nullable=True)
     event_id = db.Column(db.Integer, ForeignKey('events.id'))
@@ -73,3 +73,25 @@ class Admin(Base):
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
     event = relationship("Event")
     attendance = relationship("Attendance")
+
+
+
+
+
+
+
+
+
+class ParticipantFields(Base):
+    __tablename__ = 'participant_fields'
+    id = db.Column(db.Integer, primary_key=True)
+    field_name = db.Column(db.String(255), nullable=True)
+    field_type = db.Column(db.String(255), nullable=True, unique=True)
+    field_validation = db.Column(db.Integer, nullable=True)
+    field_max_length = db.Column(db.String(255), nullable=True, unique=True)
+    field_min_length = db.Column(db.String(255), nullable=True)
+    status = db.Column(Boolean, default=False, index=False)
+    event_id = db.Column(db.Integer, ForeignKey('events.id'))
+    created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
+    updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+    #event = relationship("Event", back_populates="participant_fields")
