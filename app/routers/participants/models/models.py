@@ -30,7 +30,8 @@ class Participant(Base):
 
 
 
-class Participant(Base):
+
+class AddParticipantFields(Base):
     __tablename__ = 'add_participant_fields'
     id = db.Column(db.Integer, primary_key=True)
     field_name = db.Column(db.String(255), nullable=True)
