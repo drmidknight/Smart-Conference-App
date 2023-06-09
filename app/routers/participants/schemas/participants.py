@@ -30,3 +30,46 @@ class UpdateParticipant(BaseModel):
     registration_time:Optional[str]
     location:Optional[str]
     event_id: Optional[int]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ParticipantFieldRequest(BaseModel):
+    field_name:Optional[str]
+    field_type:Optional[str]
+    field_validation:Optional[int]
+    field_max_length:Optional[int]
+    field_min_length:Optional[int]
+    event_id:Optional[int]
+
+
+
+
+class UpdateParticipantField(BaseModel):
+    id:Optional[int]
+    field_name:Optional[str]
+    field_type:Optional[str]
+    field_validation:Optional[int]
+    field_max_length:Optional[int]
+    field_min_length:Optional[int]
+    event_id:Optional[int]

@@ -30,7 +30,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-
+# PARTICIPANT FIELDS CRUD ENDPOINT
 
 @router.post("/add", response_description="Participant data added into the database")
 async def create_participants(participantRequest: participants.ParticipantRequest):
@@ -154,3 +154,32 @@ async def count_all_Participant_Not_Confirm():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# PARTICIPANT FIELDS CRUD ENDPOINT
+
+@router.post("/addParticipantFields", response_description="Participant Field data added into the database")
+async def create_participants(participantFieldRequest: participants.ParticipantFieldRequest):
+
+    return await crud.add_participant_fields(participantFieldRequest)
+
+
+
+
+
+@router.get("/getAllParticipantFields")
+async def all_Participant_Fields():
+
+    return await crud.all_Participant_Fields()
