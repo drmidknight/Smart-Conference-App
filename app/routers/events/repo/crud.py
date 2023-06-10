@@ -89,7 +89,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     session.commit()
     session.close()
 
-        #save flyer
+    #save flyer
     with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
         shutil.copyfileobj(flyer.file, image)
 
