@@ -75,7 +75,7 @@ async def create_admin(adminRequest: admin.AdminRequest):
     session.add(new_admin)
     session.flush()
     session.refresh(new_admin, attribute_names=['id'])
-    #await sendEmailToNewAdmin([adminRequest.email], new_admin)
+    await sendEmailToNewAdmin([adminRequest.email], new_admin)
     session.commit()
     session.close()
     return new_admin
