@@ -57,7 +57,7 @@ async def add_participants(name:str = Form(...), phone_number:str = Form(...),
     session.add(new_participant)
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
-    #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant)
+    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant)
     data = {
         "phone_number": new_participant.phone_number,
         "email": new_participant.email,
