@@ -97,9 +97,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
     event_data = session.query(Event).filter(Event.id == instance.event_id).first()
 
-    flyer_name = {event_data.flyer}
-
-    flyer = FileResponse("app/flyers/{flyer_name}")
+   
     
 
     # <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
@@ -148,7 +146,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
             </head>
             <body>
                 <div class="container">
-                    <img src="/static/program_outlines/{flyer_name}" alt="Event Flyer">
+                    <img src="flyers/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" alt="Event Flyer">
                     <h3>Hi {instance.name}</h3>
                     <p>Welcome to <b>SMART CONFERENCE APP</b></p>
                     <p>Thanks for showing interest in attending the upcoming <b>{event_data.event_name}</b> conference.</p>
