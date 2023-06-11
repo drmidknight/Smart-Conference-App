@@ -104,29 +104,58 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
     # <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
             
-    html = f"""    
-
+    html = f"""
             <!doctype html>
-        <html lang="en">
+            <html lang="en">
             <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>{event_data.event_name} CONFERENCE</title>
-            </head>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        background-color: #f1f1f1;
+                        margin: 0;
+                        padding: 0;
+                    }}
 
+                    .container {{
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        padding: 40px;
+                        background-color: #ffffff;
+                        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+                        border-radius: 5px;
+                        max-width: 400px;
+                        margin: 0 auto;
+                        margin-top: 40px;
+                    }}
+
+                    .container img {{
+                        max-width: 100%;
+                        margin-bottom: 20px;
+                        border-radius: 5px;
+                    }}
+
+                    h3, p {{
+                        margin: 0;
+                        margin-bottom: 10px;
+                    }}
+                </style>
+            </head>
             <body>
-                <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
-                {flyer}
-                    <h3>Hi {instance.name} </h3>
-                    <br><br>
+                <div class="container">
+                    <img src="/static/program_outlines/{flyer_name}" alt="Event Flyer">
+                    <h3>Hi {instance.name}</h3>
                     <p>Welcome to <b>SMART CONFERENCE APP</b></p>
-                    <br><br>
-                    Thanks for showing interest to attend the upcoming <b> {event_data.event_name} </b> conference.
-                    <br><br>
-                    <p>We will send you a confirmation link for you to confirm attending the <b> {event_data.event_name} </b> conference</p>
+                    <p>Thanks for showing interest in attending the upcoming <b>{event_data.event_name}</b> conference.</p>
+                    <p>We will send you a confirmation link for you to confirm your attendance.</p>
                 </div>
             </body>
-        </html>
-
-                    
+            </html>
     """
 
 
