@@ -131,7 +131,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
 
 
     message = MessageSchema(
-        subject=" {event_data.event_name} CONFERENCE",
+        subject=" SMART CONFERENCE",
         recipients=email,
         body=html,
         subtype=MessageType.html,
