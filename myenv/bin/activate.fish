@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/preshacks/SmartConference/Smart_Conference_App/myenv"
+set -gx VIRTUAL_ENV "/home/preshacks/Desktop/smart conference/Smart-Conference-App/myenv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
