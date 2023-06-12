@@ -1,7 +1,7 @@
 alembic
 bcrypt
-cloudinary==1.24.0
-fastapi==0.92.0
+cloudinary
+fastapi
 fastapi_jwt_auth
 fastapi_mail
 passlib
@@ -11,7 +11,7 @@ python-dotenv
 python-multipart
 python-jose[cryptography]
 starlette
-sqlalchemy==2.0.4
+sqlalchemy
 uuid
-uvicorn==0.20.0
+uvicorn
 

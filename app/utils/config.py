@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     MYSQL_SERVER: str = 'localhost'
     MYSQL_USER: str = 'root'
-    MYSQL_PASSWORD: str = 'openforme'
+    MYSQL_PASSWORD: str = ''
     MYSQL_DB: str = 'smart_conference_app'
     MYSQL_PORT: str = '3307'
 
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
-    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:openforme@localhost:3307/smart_conference_app?charset=utf8"
+    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
