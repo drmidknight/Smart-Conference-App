@@ -5,6 +5,7 @@ from app.utils.database import Database
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from app.mail import sendmail
+from fastapi.responses import FileResponse
 
 
 
@@ -18,10 +19,15 @@ session = database.get_db_session(engine)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+IMAGEDIR = "app/flyers"
 
 
 
 
+async def read_flyer(event_id: int):
+    event_data = session.query(Event).filter(Event.id == event_id).first()
+    db_flyer_name = f'app/flyers/{event_data.flyer}'
+    return FileResponse(db_flyer_name)
 
 
 
@@ -57,7 +63,12 @@ async def add_participants(name:str = Form(...), phone_number:str = Form(...),
     session.add(new_participant)
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
-    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant)
+
+    event_data = session.query(Event).filter(Event.id == event_id).first()
+    read_flyer_image = read_flyer(event_id)
+    #db_flyer_name = f'app/flyers/{event_data.flyer}'
+
+    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
     data = {
         "phone_number": new_participant.phone_number,
         "email": new_participant.email,

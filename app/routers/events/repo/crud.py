@@ -7,6 +7,7 @@ from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 import shutil
 from app.response.response import Response
+from fastapi.responses import FileResponse
 
 
 
@@ -254,13 +255,11 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 
 
 
-
-
 # from fastapi.responses import FileResponse
 
 # @events_router.get("/read_image")
 # async def read_image():
-#     return FileResponse("app/flyers/African Union Day.jpeg")
+#     return FileResponse("app/flyers/kaleidoscope.jpg")
 
 # async def add_event(event_name:str = Form(...), venue:str = Form(...),
 #                 start_date:str = Form(...), end_date:str = Form(...),

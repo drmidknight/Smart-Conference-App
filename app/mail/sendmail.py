@@ -84,20 +84,19 @@ def generate_reset_password_token(expires_delta: int = None):
 #     ) -> JSONResponse:
 
 
-filename = "app/program_outlines/DBC_COURSE OUTLINE.pdf"
+IMAGEDIR = "app/flyers"
 
 
-def read_flyer_image():
-    return FileResponse("app/flyers/{event_data.flyer}")
+# async def read_image():
+#     return FileResponse("app/flyers/kaleidoscope.jpg")
 
 
-
-
-async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
+async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, read_flyer_image):
 
     event_data = session.query(Event).filter(Event.id == instance.event_id).first()
 
    
+    fileResponse = FileResponse(f'{IMAGEDIR}/{event_data.flyer}')
     
 
     # <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
@@ -146,9 +145,10 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant):
             </head>
             <body>
                 <div class="container">
-                    <img src="flyers/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" alt="Event Flyer">
+                    <p> Testing {read_flyer_image} </p>
+                    <img src="{fileResponse}" alt="Event Flyer" weight="100" height="100" alt="Event Flyer">
                     <h3>Hi {instance.name}</h3>
-                    <p>Welcome to <b>SMART CONFERENCE APP</b></p>
+                    <p>Welcome to <b>{event_data.event_name} CONFERENCE </b></p>
                     <p>Thanks for showing interest in attending the upcoming <b>{event_data.event_name}</b> conference.</p>
                     <p>We will send you a confirmation link for you to confirm your attendance.</p>
                 </div>

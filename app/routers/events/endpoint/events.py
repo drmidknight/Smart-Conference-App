@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 import shutil
 from app.response.response import Response
 from app.routers.events.repo import crud
+from fastapi.responses import FileResponse
 
 
 
@@ -33,7 +34,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-
+@events_router.get("/read_image")
+async def read_image():
+    return FileResponse("app/flyers/kaleidoscope.jpg")
 
 
 
