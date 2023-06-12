@@ -4,12 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 from typing import Any
 
-#POSTGRESSQL_URL = "postgresql+psycopg2://username:password@localhost/database_name"@
-#MYSQL_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
-#MYSQL_URL = "mysql+pymysql://root:Openforme@localhost:3307/fastapi_student_results?charset=utf8"
-
 
 metadata_obj = MetaData()
+
+#SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{settings.MYSQL_USER}:{settings.MYSQL_PASSWORD}@{settings.MYSQL_SERVER}:3307/{settings.MYSQL_DB}"
+
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URL, 
                        pool_size=settings.POOL_SIZE, 

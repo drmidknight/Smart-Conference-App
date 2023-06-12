@@ -10,11 +10,13 @@ class Settings(BaseSettings):
 
     MYSQL_SERVER: str = 'localhost'
     MYSQL_USER: str = 'root'
-    MYSQL_PASSWORD: str = ''
+    MYSQL_PASSWORD: str = 'openforme'
     MYSQL_DB: str = 'smart_conference_app'
-    MYSQL_PORT: int = 3307
+    MYSQL_PORT: str = '3307'
 
- #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
+    #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_SERVER}:{MYSQL_PORT}/{MYSQL_DB}"
+
+    #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
     SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
