@@ -107,7 +107,7 @@ CREATE TABLE `participants` (
   `email` varchar(255) DEFAULT NULL,
   `organization` varchar(255) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
-  `attend_by` varchar(255) DEFAULT NULL,
+  `how_to_join` varchar(255) DEFAULT NULL,
   `registration_time` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `event_id` int(11) DEFAULT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE `participants` (
 -- Dumping data for table `participants`
 --
 
-INSERT INTO `participants` (`id`, `name`, `phone_number`, `gender`, `email`, `organization`, `status`, `attend_by`, `registration_time`, `location`, `event_id`, `created_at`, `updated_at`) VALUES
+INSERT INTO `participants` (`id`, `name`, `phone_number`, `gender`, `email`, `organization`, `status`, `how_to_join`, `registration_time`, `location`, `event_id`, `created_at`, `updated_at`) VALUES
 (1, 'Nana Kwesi', '1234567890', 'Male', 'nana@gmial.com', 'AITI-KACE', 0, 'Onsite', '09:30AM', 'Bolga', 2, '2023-05-31 12:53:24', '2023-05-31 12:53:24');
 
 --

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Form
-from app.routers.participants.schemas import participants
-from app.routers.events.models.models import Event
-from app.routers.participants.models.models import Participant
-from app.utils.database import Database
+from routers.participants.schemas import participants
+from routers.events.models.models import Event
+from routers.participants.models.models import Participant
+from utils.database import Database
 from passlib.context import CryptContext
-from app.mail import sendmail
-from app.routers.participants.repo import crud
+from mail import sendmail
+from routers.participants.repo import crud
 from fastapi.responses import FileResponse
 
 
@@ -102,10 +102,10 @@ async def phone_number_email(phone_number_email: str):
 
 
 
-@router.get("/attend_program_by/{attend_by}")
-async def get_Participant_By_attend_by(attend_by: str):
+@router.get("/attend_program_by/{how_to_join}")
+async def get_Participant_By_how_to_join(how_to_join: str):
     
-    return await crud.get_Participant_By_attend_by(attend_by)
+    return await crud.get_Participant_By_how_to_join(how_to_join)
 
 
 

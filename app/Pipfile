@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+alembic = "*"
+bcrypt = "*"
+cloudinary = "*"
+fastapi = "*"
+fastapi-jwt-auth = "*"
+fastapi-mail = "*"
+passlib = "*"
+pydantic = {extras = ["email"], version = "*"}
+pymysql = "*"
+python-dotenv = "*"
+python-multipart = "*"
+python-jose = {extras = ["cryptography"], version = "*"}
+starlette = "*"
+sqlalchemy = "*"
+uuid = "*"
+uvicorn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

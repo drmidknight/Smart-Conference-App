@@ -17,7 +17,7 @@ class Participant(Base):
     email = db.Column(db.String(255), nullable=True, unique=True)
     organization = db.Column(db.String(255), nullable=True)
     status = db.Column(Boolean, default=False, index=False)
-    attend_by = db.Column(db.String(255), nullable=True)
+    how_to_join = db.Column(db.String(255), nullable=True)
     registration_time = db.Column(db.String(255), nullable=True)
     location = db.Column(db.String(255), nullable=True)
     event_id = db.Column(db.Integer, ForeignKey('events.id'))

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from app.routers.admin.endpoint import admin
-from app.routers.events.endpoint import events
-from app.routers.participants.endpoint import participants
-from app.routers.attendances.endpoint import attendances
+from routers.admin.endpoint import admin
+from routers.events.endpoint import events
+from routers.participants.endpoint import participants
+from routers.attendances.endpoint import attendances
 
 
 router = APIRouter()

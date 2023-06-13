@@ -1,23 +1,31 @@
 version: "3"
 services:
-  mysql:
-    container_name: mysql
-    platform: linux/x86_64
-    build: ./mysql/
+  database:
+    image: mysql:5.6
+    container_name: fastapi-mysql-standalone
+    environment:
+       - MYSQL_ROOT_PASSWORD=
+       - MYSQL_DATABASE=smart_conference_app
+       - MYSQL_USER=root
+       - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile.db
     ports:
       - "3306:3306"
+    expose:
+      - 3306
     volumes:
-      - ./mysql/db:/docker-entrypoint-initdb.d
-      - ./mysql/conf.d:/etc/mysql/conf.d
-    env_file:
-      - ./mysql/local.env
-    tty: true
-    networks:
+      - db-data:/var/lib/mysql
+    networks: 
       - test_network
+    tty: true
+    restart: always
+
 
   app:
     depends_on:
-      - mysql
+      - database
     container_name: fast_api
     build: ./app
     restart: unless-stopped
@@ -28,22 +36,10 @@ services:
       - 8000:8000
     env_file:
       - ./app/local.env
-    networks:
+    networks: 
       - test_network
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    environment:
-      PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD:
-      PMA_PORT: 3306
-    ports:
-      - "8090:80"
-    depends_on:
-      - mysql
-    networks:
-      - test_network
+
 
   # phpmyadmin:
   #   image: phpmyadmin:5.1.1
@@ -56,11 +52,11 @@ services:
   #     - "8090:80"
   #   depends_on:
   #     - database
-  #   networks:
+  #   networks: 
   #     - test_network
   #   restart: always
 
-networks:
+networks: 
   test_network:
     driver: bridge
 

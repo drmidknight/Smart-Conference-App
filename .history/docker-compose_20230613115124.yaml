@@ -12,8 +12,6 @@ services:
     env_file:
       - ./mysql/local.env
     tty: true
-    networks:
-      - test_network
 
   app:
     depends_on:

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
-from app.routers.events.schemas import events
-from app.models.models import Admin, Event
-from app.utils.database import Database
-from app.auth import authentication
+from routers.events.schemas import events
+from models.models import Admin, Event
+from utils.database import Database
+from auth import authentication
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 import shutil
-from app.response.response import Response
+from response.response import Response
 from fastapi.responses import FileResponse
 
 
@@ -239,7 +239,7 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 
 
         #save program_outline
-    with open(f'{IMAGEDIR}{program_outline.filename}', "wb") as image:
+    with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
         shutil.copyfileobj(program_outline.file, image)
     data = session.query(Event).filter(Event.id == event_id).one()
     return data

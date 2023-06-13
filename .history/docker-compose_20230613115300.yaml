@@ -12,8 +12,6 @@ services:
     env_file:
       - ./mysql/local.env
     tty: true
-    networks:
-      - test_network
 
   app:
     depends_on:
@@ -36,7 +34,7 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_USER: root
-      PMA_PASSWORD:
+      PMA_PASSWORD: password
       PMA_PORT: 3306
     ports:
       - "8090:80"

@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from app.api_routes.api import router as api_router
+from api_routes.api import router as api_router
 from inspect import re
 from fastapi.openapi.utils import get_openapi
 

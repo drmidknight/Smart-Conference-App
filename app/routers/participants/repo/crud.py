@@ -1,10 +1,10 @@
 from fastapi import status, Form
-from app.routers.participants.schemas import participants
-from app.models.models import Event,Participant, ParticipantFields
-from app.utils.database import Database
+from routers.participants.schemas import participants
+from models.models import Event,Participant, ParticipantFields
+from utils.database import Database
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
-from app.mail import sendmail
+from mail import sendmail
 from fastapi.responses import FileResponse
 
 
@@ -78,7 +78,7 @@ async def add_participants(name:str = Form(...), phone_number:str = Form(...),
         "gender": new_participant.gender,
         "name": new_participant.name,
         "organization": new_participant.organization,
-        "attend_by": new_participant.how_to_join,
+        "how_to_join": new_participant.how_to_join,
         "location": new_participant.location
     }
     session.commit()
@@ -124,7 +124,7 @@ async def updateParticipant(updateParticipant: participants.UpdateParticipant):
             Participant.gender: updateParticipant.gender,
             Participant.email: updateParticipant.email,
             Participant.organization: updateParticipant.organization,
-            Participant.attend_by: updateParticipant.attend_by,
+            Participant.how_to_join: updateParticipant.how_to_join,
             Participant.registration_time: updateParticipant.registration_time,
             Participant.location: updateParticipant.location,
             Participant.event_id: updateParticipant.event_id,
@@ -169,16 +169,16 @@ async def phone_number_email(phone_number_email: str):
 
 
 
-async def get_Participant_By_attend_by(attend_by: str):
+async def get_Participant_By_how_to_join(how_to_join: str):
     data = session.query(Participant).filter(
-            Participant.attend_by == attend_by).all()
+            Participant.how_to_join == how_to_join).all()
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Attend by (" + str(attend_by) + ") is not available")
-    elif attend_by == "virtual":
-            data = session.query(Participant).filter(Participant.attend_by == attend_by).all()
-    elif attend_by == "onsite":
-            data = session.query(Participant).filter(Participant.attend_by == attend_by).all()
+            detail=f"Attend by (" + str(how_to_join) + ") is not available")
+    elif how_to_join == "virtual":
+            data = session.query(Participant).filter(Participant.how_to_join == how_to_join).all()
+    elif how_to_join == "onsite":
+            data = session.query(Participant).filter(Participant.how_to_join == how_to_join).all()
     return data
 
 

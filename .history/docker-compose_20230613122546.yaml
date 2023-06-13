@@ -35,7 +35,7 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     environment:
       PMA_HOST: mysql
-      PMA_USER: root
+      PMA_USER: appuser
       PMA_PASSWORD:
       PMA_PORT: 3306
     ports:

@@ -1,6 +1,6 @@
 import secrets
 from pydantic import BaseSettings
-import os
+
 
 class Settings(BaseSettings):
     PROJECT_NAME:str = "Smart Conference App"
@@ -8,17 +8,17 @@ class Settings(BaseSettings):
 
 
 
-    MYSQL_SERVER = os.getenv("DATABASE_HOST")
-    MYSQL_USER :str = os.environ.get("DATABASE_USER")
-    MYSQL_PASSWORD :str= os.environ.get("DATABASE_PASSWORD")
+    MYSQL_SERVER: str = 'mysql'
+    MYSQL_USER: str = 'root'
+    MYSQL_PASSWORD: str = ''
     MYSQL_DB: str = 'smart_conference_app'
     MYSQL_PORT: str = '3306'
 
-    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3306/smart_conference_app"
+    #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_SERVER}:{MYSQL_PORT}/{MYSQL_DB}"
 
     #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
-    # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{MYSQL_USER}:@mysql:3306/smart_conference_app?charset=utf8"
+    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://appuser:@mysql:3306/smart_conference_app?charset=utf8"
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60

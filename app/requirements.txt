@@ -14,4 +14,3 @@ starlette
 sqlalchemy
 uuid
 uvicorn
-
