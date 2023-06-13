@@ -39,7 +39,7 @@ services:
       PMA_PASSWORD:
       PMA_PORT: 3131
     ports:
-      - "8090:80"
+      - "8099:80"
     depends_on:
       - mysql
     networks:
