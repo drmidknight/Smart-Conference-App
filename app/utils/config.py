@@ -12,9 +12,9 @@ class Settings(BaseSettings):
     MYSQL_USER :str = os.environ.get("DATABASE_USER")
     MYSQL_PASSWORD :str= os.environ.get("DATABASE_PASSWORD")
     MYSQL_DB: str = 'smart_conference_app'
-    MYSQL_PORT: str = '3306'
+    MYSQL_PORT: str = '3307'
 
-    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3306/smart_conference_app"
+    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3307/smart_conference_app"
 
     #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app?charset=utf8"
 
