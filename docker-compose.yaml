@@ -25,7 +25,7 @@ services:
     volumes:
       - ./app:/app
     ports:
-      - 8000:8000
+      - 2020:2020
     env_file:
       - ./app/local.env
     networks:
