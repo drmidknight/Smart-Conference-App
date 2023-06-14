@@ -12,9 +12,9 @@ from fastapi.responses import FileResponse
 
 
 
-IMAGEDIR = "app/flyers/"
+IMAGEDIR = "flyers/"
 
-PROGRAMOUTLINEDIR = "app/program_outlines/"
+PROGRAMOUTLINEDIR = "program_outlines/"
 
 
 
@@ -39,7 +39,8 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
-                description:str = Form(None),
+                description:str = Form(None), flyer: UploadFile = File(None),
+                program_outline: UploadFile = File(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
     admin_id = current_admin.id
@@ -53,14 +54,15 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
            detail=f"Event (" + \
         str(event_name) + ") already exists")
 
-    #flyer_name:str = flyer.filename
-    #program_outline_name:str = program_outline.filename
+    flyer_name:str = flyer.filename
+
+    program_outline_name:str = program_outline.filename
 
     new_event = Event()
     new_event.event_name = event_name
     new_event.venue = venue
-    #new_event.flyer = flyer_name
-    #new_event.program_outline = program_outline_name
+    new_event.flyer = flyer_name
+    new_event.program_outline = program_outline_name
     new_event.start_date = start_date
     new_event.end_date = end_date
     new_event.how_to_join = how_to_join
@@ -87,6 +89,14 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     }
     session.commit()
     session.close()
+
+    #save flyer
+    with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
+        shutil.copyfileobj(flyer.file, image)
+
+    # Save program outline file
+    with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
+        shutil.copyfileobj(program_outline.file, image)
     return data
 
 

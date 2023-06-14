@@ -30,7 +30,7 @@ class EmailSchema(BaseModel):
 
 
 
-PROGRAMOUTLINEDIR = "app/program_outlines/"
+PROGRAMOUTLINEDIR = "program_outlines/"
 
 
 

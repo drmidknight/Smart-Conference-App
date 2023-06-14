@@ -4,9 +4,15 @@
     git clone https://github.com/Catalyst-OTU/Smart_Conference_App.git
 
 
-## Installing Packages
+## Installing Packages for Windows
 - Run the following commad
     > pip install -r app/requirements.txt
+
+## Installing Packages for Linux
+- Run the following commad
+    > pip install pipenve
+    > pipenv shell
+    > pipenv install
 
 
 
