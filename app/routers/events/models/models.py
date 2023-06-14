@@ -19,7 +19,7 @@ class Event(Base):
     venue = db.Column(db.String(255), nullable=True)
     flyer = db.Column(db.String(255), nullable=True)
     start_date = db.Column(db.String(255), nullable=True)
-    registration_time = db.Column(db.String(255), nullable=True)
+    registration_time = db.Column(db.Integer(255), nullable=True)
     how_to_join = db.Column(db.String(255), nullable=True)
     program_outline = db.Column(db.String(255), nullable=True)
     end_date = db.Column(db.String(255), nullable=True)
