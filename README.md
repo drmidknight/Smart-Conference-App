@@ -10,9 +10,9 @@
 
 ## Installing Packages for Linux
 - Run the following commad
-    > pip install pipenve
-    > pipenv shell
-    > pipenv install
+    - pip install pipenve
+    - pipenv shell
+    - pipenv install
 
 
 
