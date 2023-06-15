@@ -14,6 +14,7 @@ from fastapi.responses import FileResponse
 
 IMAGEDIR = "flyers/"
 
+
 PROGRAMOUTLINEDIR = "program_outlines/"
 
 
