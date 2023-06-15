@@ -31,17 +31,13 @@ async def read_flyer(event_id: int):
 
 
 
-async def add_participants(name:str = Form(...), phone_number:str = Form(...),
-                gender:str = Form(None), email:str = Form(...),
-                registration_time:str = Form(None) ,organization:str = Form(None),
-                  how_to_join:str = Form(None), location:str = Form(None),
-                  event_id:int = Form(None)):
+async def add_participants(participantRequest: participants.ParticipantRequest):
 
     email_query = session.query(Participant).filter(
-        Participant.email == email).first()
+        Participant.email == participantRequest.email).first()
     
     phone_query = session.query(Participant).filter(
-        Participant.phone_number == phone_number).first()
+        Participant.phone_number == participantRequest.phone_number).first()
 
     if email_query or phone_query:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
@@ -49,23 +45,23 @@ async def add_participants(name:str = Form(...), phone_number:str = Form(...),
 
 
     new_participant = Participant()
-    new_participant.name = name
-    new_participant.phone_number = phone_number
-    new_participant.gender = gender
-    new_participant.email = email
-    new_participant.organization = organization
-    new_participant.how_to_join = how_to_join
-    new_participant.registration_time = registration_time
-    new_participant.location = location
-    new_participant.event_id = event_id
+    new_participant.name = participantRequest.name
+    new_participant.phone_number = participantRequest.phone_number
+    new_participant.gender = participantRequest.gender
+    new_participant.email = participantRequest.email
+    new_participant.organization = participantRequest.organization
+    new_participant.how_to_join = participantRequest.how_to_join
+    new_participant.registration_time = participantRequest.registration_time
+    new_participant.location = participantRequest.location
+    new_participant.event_id = participantRequest.event_id
     new_participant.status = 0
     
     session.add(new_participant)
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
 
-    event_data = session.query(Event).filter(Event.id == event_id).first()
-    read_flyer_image = read_flyer(event_id)
+    event_data = session.query(Event).filter(Event.id == participantRequest.event_id).first()
+    read_flyer_image = read_flyer(participantRequest.event_id)
     #db_flyer_name = f'app/flyers/{event_data.flyer}'
 
     await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)

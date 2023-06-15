@@ -28,25 +28,20 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-@router.get("/read_image/{event_id}")
-async def read_flyer(event_id: int):
-    event_data = session.query(Event).filter(Event.id == event_id).first()
-    db_flyer_name = f'app/flyers/{event_data.flyer}'
-    return FileResponse(db_flyer_name)
+# @router.get("/read_image/{event_id}")
+# async def read_flyer(event_id: int):
+#     event_data = session.query(Event).filter(Event.id == event_id).first()
+#     db_flyer_name = f'app/flyers/{event_data.flyer}'
+#     return FileResponse(db_flyer_name)
 
 
 
 # PARTICIPANT CRUD ENDPOINT
 
 @router.post("/add", response_description="Participant data added into the database")
-async def create_participants(name:str = Form(...), phone_number:str = Form(...),
-                gender:str = Form(None), email:str = Form(...),
-                registration_time:str = Form(None) ,organization:str = Form(None),
-                  how_to_join:str = Form(None), location:str = Form(None),
-                  event_id:int = Form(None)):
+async def create_participants(participantRequest: participants.ParticipantRequest):
 
-    return await crud.add_participants(name,phone_number,gender,email,registration_time,
-                                       organization,how_to_join,location,event_id)
+    return await crud.add_participants(participantRequest)
 
 
 

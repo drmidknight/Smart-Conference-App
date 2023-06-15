@@ -7,15 +7,15 @@ from typing import Optional
 
 
 class ParticipantRequest(BaseModel):
-    name:Optional[str]
-    phone_number:Optional[str]
-    gender:Optional[str]
-    email:Optional[str]
-    organization:Optional[str]
-    how_to_join:Optional[str]
-    registration_time:Optional[str]
-    location:Optional[str]
-    event_id: Optional[int]
+    name:Optional[str] = None
+    phone_number:Optional[str] = None
+    gender:Optional[str] = None
+    email:Optional[str] = None
+    organization:Optional[str] = None
+    how_to_join:Optional[str] = None
+    registration_time:Optional[str] = None
+    location:Optional[str] = None
+    event_id: Optional[int] = None
 
 
 
