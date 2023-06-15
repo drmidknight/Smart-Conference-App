@@ -196,7 +196,7 @@ async def all_Participant_Fields():
 
 
 
-@router.get("/getParticipantFieldById/{id}")
-async def get_Participant_Fields_By_Id(id: int):
+@router.get("/getParticipantFieldByEventId/{event_id}")
+async def get_Participant_Fields_By_Event_Id(event_id: int):
     
-    return await crud.get_Participant_Fields_By_Id(id)
+    return await crud.get_Participant_Fields_By_Id(event_id)
