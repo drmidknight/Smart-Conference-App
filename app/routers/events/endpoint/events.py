@@ -41,10 +41,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @events_router.post("/add", response_description="Event data added into the database")
-async def add_event(eventRequest: events.EventRequest,
+async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(None),
+                 program_outline: UploadFile = File(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
-    return await crud.add_event(eventRequest, current_admin
+    return await crud.add_event(eventRequest, flyer, program_outline current_admin
     )
 
 

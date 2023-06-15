@@ -35,7 +35,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-async def add_event(eventRequest: events.EventRequest,
+async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(None),
+                 program_outline: UploadFile = File(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
     admin_id = current_admin.id
@@ -49,9 +50,9 @@ async def add_event(eventRequest: events.EventRequest,
            detail=f"Event (" + \
         str(eventRequest.event_name) + ") already exists")
 
-    flyer_name:str = eventRequest.flyer.filename
+    flyer_name:str = flyer.filename
 
-    program_outline_name:str = eventRequest.program_outline.filename
+    program_outline_name:str = program_outline.filename
 
     new_event = Event()
     new_event.event_name = eventRequest.event_name
@@ -87,12 +88,12 @@ async def add_event(eventRequest: events.EventRequest,
     session.close()
 
     #save flyer
-    with open(f'{IMAGEDIR}{flyer_name}', "wb") as image:
-        shutil.copyfileobj(eventRequest.flyer.file, image)
+    with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
+        shutil.copyfileobj(flyer.file, image)
 
     # Save program outline file
-    with open(f'{PROGRAMOUTLINEDIR}{program_outline_name}', "wb") as image:
-        shutil.copyfileobj(eventRequest.program_outline.file, image)
+    with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
+        shutil.copyfileobj(program_outline.file, image)
     return data
 
 

@@ -17,8 +17,8 @@ class EventRequest(BaseModel):
     how_to_join:Optional[str] = None
     number_of_participants:Optional[str] = None
     description:Optional[str] = None
-    flyer: UploadFile = File(None)
-    program_outline: UploadFile = File(None)
+    # flyer: UploadFile = File(None)
+    # program_outline: UploadFile = File(None)
 
     class Config():
         orm_mode = True
