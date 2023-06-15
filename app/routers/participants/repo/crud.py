@@ -268,17 +268,15 @@ async def count_all_Participant_Not_Confirm():
 
 
 
-async def add_participant_fields(field_name:str = Form(...), field_type:str = Form(...),
-                field_validation:int = Form(None), field_max_length:int = Form(None),
-                field_min_length:int = Form(None) ,event_id:int = Form(...) ):
+async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
 
     new_participant_field = ParticipantFields()
-    new_participant_field.field_name = field_name
-    new_participant_field.field_type = field_type
-    new_participant_field.field_validation = field_validation
-    new_participant_field.field_max_length = field_max_length
-    new_participant_field.field_min_length = field_min_length
-    new_participant_field.event_id = event_id
+    new_participant_field.field_name = participantFieldRequest.field_name
+    new_participant_field.field_type = participantFieldRequest.field_type
+    new_participant_field.field_validation = participantFieldRequest.field_validation
+    new_participant_field.field_max_length = participantFieldRequest.field_max_length
+    new_participant_field.field_min_length = participantFieldRequest.field_min_length
+    new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
     session.add(new_participant_field)
