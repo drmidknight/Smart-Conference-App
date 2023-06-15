@@ -33,6 +33,7 @@ services:
       - ./app/local.env
     networks:
       - test_network
+    restart: always
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -47,6 +48,7 @@ services:
       - mysql
     networks:
       - test_network
+    restart: always
 
   # phpmyadmin:
   #   image: phpmyadmin:5.1.1
