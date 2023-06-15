@@ -175,12 +175,9 @@ async def count_all_Participant_Not_Confirm():
 # # PARTICIPANT FIELDS CRUD ENDPOINT
 
 @router.post("/addParticipantFields", response_description="Participant Field data added into the database")
-async def create_participants_Fields(field_name:str = Form(...), field_type:str = Form(...),
-                field_validation:int = Form(None), field_max_length:int = Form(None),
-                field_min_length:int = Form(None) ,event_id:int = Form(...)):
+async def create_participants_Fields(participantFieldRequest: participants.ParticipantFieldRequest):
 
-    return await crud.add_participant_fields(field_name,field_type,field_validation,
-                                             field_max_length,field_min_length,event_id)
+    return await crud.add_participant_fields(participantFieldRequest)
 
 
 
