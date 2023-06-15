@@ -45,7 +45,7 @@ async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(N
                  program_outline: UploadFile = File(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
-    return await crud.add_event(eventRequest, flyer, program_outline current_admin
+    return await crud.add_event(eventRequest, flyer, program_outline, current_admin
     )
 
 
