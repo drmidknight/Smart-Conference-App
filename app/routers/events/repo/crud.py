@@ -12,10 +12,10 @@ from fastapi.responses import FileResponse
 
 
 
-IMAGEDIR = "flyers/"
+IMAGEDIR = "app/flyers/"
 
 
-PROGRAMOUTLINEDIR = "program_outlines/"
+PROGRAMOUTLINEDIR = "app/program_outlines/"
 
 
 
