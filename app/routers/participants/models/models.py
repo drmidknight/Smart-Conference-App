@@ -36,7 +36,7 @@ class ParticipantFields(Base):
     id = db.Column(db.Integer, primary_key=True)
     field_name = db.Column(db.String(255), nullable=True)
     field_type = db.Column(db.String(255), nullable=True, unique=True)
-    field_validation = db.Column(db.Integer, nullable=True)
+    field_validation = db.Column(db.String(255), nullable=True)
     field_max_length = db.Column(db.String(255), nullable=True, unique=True)
     field_min_length = db.Column(db.String(255), nullable=True)
     status = db.Column(Boolean, default=False, index=False)

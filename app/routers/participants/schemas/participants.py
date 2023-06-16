@@ -58,9 +58,9 @@ class UpdateParticipant(BaseModel):
 class ParticipantFieldRequest(BaseModel):
     field_name:Optional[str]
     field_type:Optional[str]
-    field_validation:Optional[int]
-    field_max_length:Optional[int]
-    field_min_length:Optional[int]
+    field_validation:Optional[str]
+    field_max_length:Optional[str]
+    field_min_length:Optional[str]
     event_id:Optional[int]
 
 
@@ -70,7 +70,7 @@ class UpdateParticipantField(BaseModel):
     id:Optional[int]
     field_name:Optional[str]
     field_type:Optional[str]
-    field_validation:Optional[int]
-    field_max_length:Optional[int]
-    field_min_length:Optional[int]
+    field_validation:Optional[str]
+    field_max_length:Optional[str]
+    field_min_length:Optional[str]
     event_id:Optional[int]
