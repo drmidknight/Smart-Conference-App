@@ -73,8 +73,8 @@ def generate_reset_password_token(expires_delta: int = None):
 #     return ''.join(random.choice(chars) for _ in range(size))
 
 
-# async def read_image():
-#     return FileResponse("app/endpoints/images/aiti.png")
+async def read_image():
+    return FileResponse("app/static/images/AG.jpg")
 
 
 

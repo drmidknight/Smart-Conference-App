@@ -34,9 +34,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-# @events_router.get("/read_image")
-# async def read_image():
-#     return FileResponse("app/flyers/kaleidoscope.jpg")
+@events_router.get("/read_image")
+async def read_image():
+    return FileResponse("app/static/images/AG.jpg")
 
 
 
