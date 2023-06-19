@@ -10,6 +10,7 @@ import shutil
 from response.response import Response
 from routers.events.repo import crud
 from fastapi.responses import FileResponse
+import os
 
 
 
@@ -30,13 +31,27 @@ session = database.get_db_session(engine)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+IMAGEDIR = "/"
+
+@events_router.post("post_image")
+def upload(flyer: UploadFile = File(None)):
+    try:
+        contents = flyer.file.read()
+        with open(flyer.filename, 'wb') as f:
+            f.write(contents)
+    except Exception:
+        return {"message": "There was an error uploading the file"}
+    finally:
+        flyer.file.close()
+
+    return {"message": f"Successfully uploaded {flyer.filename}"}
 
 
 
 
 @events_router.get("/read_image")
 async def read_image():
-    return FileResponse("app/static/images/AG.jpg")
+    return FileResponse("AG.jpg")
 
 
 

@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse
 
 
 
-IMAGEDIR = "app/flyers/"
+IMAGEDIR = "app/routers/events/repo/"
 
 
 PROGRAMOUTLINEDIR = "app/program_outlines/"
@@ -53,6 +53,8 @@ async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(N
 
     flyer_name:str = flyer.filename
 
+    flyer_path:str = flyer.filename
+
     program_outline_name:str = program_outline.filename
 
     new_event = Event()
@@ -77,7 +79,6 @@ async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(N
         "venue": new_event.venue,
         "status": new_event.status,
         "program_outline": new_event.program_outline,
-        "flyer": new_event.flyer,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
         "admin_id": new_event.admin_id,
@@ -88,13 +89,34 @@ async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(N
     session.commit()
     session.close()
 
-    #save flyer
-    with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
-        shutil.copyfileobj(flyer.file, image)
+    try:
+        flyer_contents = flyer.file.read()
+        with open(flyer.filename, 'wb') as f:
+            f.write(flyer_contents)
+    except Exception:
+        return {"message": "There was an error uploading flyer"}
+    finally:
+        flyer.file.close()
 
-    # Save program outline file
-    with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
-        shutil.copyfileobj(program_outline.file, image)
+
+    try:
+        program_outline_contents = program_outline.file.read()
+        with open(program_outline.filename, 'wb') as f:
+            f.write(program_outline_contents)
+    except Exception:
+        return {"message": "There was an error uploading program_outline"}
+    finally:
+        program_outline.file.close()
+
+    # #save flyer
+    # with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
+    #     shutil.copyfileobj(flyer.file, image)
+
+    # # Save program outline file
+    # with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
+    #     shutil.copyfileobj(program_outline.file, image)
+
+
     return data
 
 

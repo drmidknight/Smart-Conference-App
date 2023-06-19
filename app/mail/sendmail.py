@@ -87,8 +87,8 @@ async def read_image():
 IMAGEDIR = "app/flyers"
 
 
-# async def read_image():
-#     return FileResponse("app/flyers/kaleidoscope.jpg")
+async def read_image():
+    return FileResponse("app/flyers/AG.jpg")
 
 
 async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, read_flyer_image):
