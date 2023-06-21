@@ -52,7 +52,7 @@ Setup environment variables; allowed environment variables `KEYWORDS`=`VALUES`:
 | DB_NAME | | smart_conference_app | string 
 | DB_USER | | root | string 
 | DB_PASSWORD | |  | string 
-| DB_PORT | | 3306/3307 | integer   
+| DB_PORT | | 3131 | integer   
 | BASE_URL | | http://localhost:8000/ | string  
 | ADMIN_EMAIL | | admin@admin.com | string 
 | ADMIN_PASSWORD | | openforme | string 
