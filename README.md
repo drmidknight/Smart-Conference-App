@@ -1,15 +1,15 @@
 # PROJECT DESCRIPTION
 
-## Ready to setup the project:
-    git clone https://github.com/Catalyst-OTU/Smart_Conference_App.git
+## Ready to set up the project:
+    git clone https://github.com/GI-KACE-DEV/Smart-Conference-App.git
 
 
 ## Installing Packages for Windows
-- Run the following commad
+- Run the following command
     > pip install -r app/requirements.txt
 
 ## Installing Packages for Linux
-- Run the following commad
+- Run the following command
     - pip install pipenve
     - pipenv shell
     - pipenv install
@@ -26,7 +26,7 @@ Run the following command
     - python migrate.py
 
 
-## RUNNING OR STARTING APPLICATON
+## RUNNING OR STARTING APPLICATION
 - Running FastAPI Service Locally
     - uvicorn main:app --reload
 
