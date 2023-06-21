@@ -40,7 +40,7 @@ class Event(Base):
     how_to_join = db.Column(db.String(255), nullable=True)
     program_outline = db.Column(db.String(255), nullable=True)
     end_date = db.Column(db.String(255), nullable=True)
-    number_of_participants = db.Column(db.Integer)
+    number_of_participants = db.Column(db.String(255), nullable=True)
     description = db.Column(db.String(255), nullable=True)
     admin_id = db.Column(db.Integer, ForeignKey("admins.id"))
     status = db.Column(db.String(255), nullable=True)

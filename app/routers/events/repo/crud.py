@@ -1,5 +1,7 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
-from routers.events.schemas import events
+from routers.events.schemas.events import EventRequest, UpdateEventRequest
+# from routers.admin.models.models import Admin
+# from routers.events.models.models import Event
 from models.models import Admin, Event
 from utils.database import Database
 from auth import authentication
@@ -9,7 +11,7 @@ import shutil
 from response.response import Response
 from fastapi.responses import FileResponse
 
-
+ 
 
 
 IMAGEDIR = "app/routers/events/repo/"
@@ -34,40 +36,36 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-
-
-async def add_event(eventRequest: events.EventRequest,flyer: UploadFile = File(None),
+async def add_event(addEvent: EventRequest,flyer: UploadFile = File(None),
                  program_outline: UploadFile = File(None),
                 current_admin: Admin = Depends(authentication.get_current_user)):
     
     admin_id = current_admin.id
 
     db_query = session.query(Event).filter(
-            Event.event_name == eventRequest.event_name
+            Event.event_name == addEvent.event_name
         ).first()
 
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail=f"Event (" + \
-        str(eventRequest.event_name) + ") already exists")
+        str(addEvent.event_name) + ") already exists")
 
     flyer_name:str = flyer.filename
-
-    flyer_path:str = flyer.filename
 
     program_outline_name:str = program_outline.filename
 
     new_event = Event()
-    new_event.event_name = eventRequest.event_name
-    new_event.venue = eventRequest.venue
+    new_event.event_name = addEvent.event_name
+    new_event.venue = addEvent.venue
+    new_event.start_date = addEvent.start_date
+    new_event.end_date = addEvent.end_date
+    new_event.how_to_join = addEvent.how_to_join
+    new_event.registration_time = addEvent.registration_time
+    new_event.number_of_participants = addEvent.number_of_participants
+    new_event.description = addEvent.description
     new_event.flyer = flyer_name
     new_event.program_outline = program_outline_name
-    new_event.start_date = eventRequest.start_date
-    new_event.end_date = eventRequest.end_date
-    new_event.how_to_join = eventRequest.how_to_join
-    new_event.registration_time = eventRequest.registration_time
-    new_event.number_of_participants = eventRequest.number_of_participants
-    new_event.description = eventRequest.description
     new_event.admin_id = admin_id
     new_event.status = "Active"
     
@@ -155,7 +153,7 @@ async def getEventById(id: str):
 
 
 
-async def update_Event(updateEvent: events.UpdateEventRequest):
+async def update_Event(updateEvent: UpdateEventRequest):
     eventID = updateEvent.id
     is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
             Event.event_name: updateEvent.event_name,
@@ -346,7 +344,7 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 #     session.commit()
 #     session.close()
 
-#     #save flyer
+#     #save flyer    
 #     with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
 #         shutil.copyfileobj(flyer.file, image)
 
