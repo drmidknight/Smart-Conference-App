@@ -22,7 +22,8 @@
 
 - Database Migration and Data Seeding
 Run the following command
-    - python app/migrate.py
+    - cd app folder
+    - python migrate.py
 
 
 ## RUNNING OR STARTING APPLICATON
