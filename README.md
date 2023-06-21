@@ -27,7 +27,7 @@ Run the following command
 
 ## RUNNING OR STARTING APPLICATON
 - Running FastAPI Service Locally
-    - uvicorn app.main:app --reload
+    - uvicorn main:app --reload
 
     - OR
 
