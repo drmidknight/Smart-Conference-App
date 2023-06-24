@@ -2,12 +2,13 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from api_routes.api import router as api_router
+from utils.config import settings
 from inspect import re
 from fastapi.openapi.utils import get_openapi
 
 
 
-app = FastAPI(docs_url="/")
+app = FastAPI(docs_url="/", title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
 
 

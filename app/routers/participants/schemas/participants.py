@@ -63,6 +63,9 @@ class ParticipantFieldRequest(BaseModel):
     field_min_length:Optional[str]
     event_id:Optional[int]
 
+    class Config:
+        orm_mode = True
+
 
 
 

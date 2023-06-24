@@ -1,11 +1,21 @@
 from pydantic import BaseModel, EmailStr, Field
-from fastapi import File, UploadFile, Form
+from fastapi import Form
 from typing import Optional
 
 
 
 
 
+
+# class EventRequest(BaseModel):
+#     event_name:str
+#     venue:str
+#     start_date:str
+#     end_date:str
+#     registration_time:Optional[str]
+#     how_to_join:Optional[str]
+#     number_of_participants:str
+#     description:Optional[str]
 
 
 class EventRequest(BaseModel):
@@ -17,8 +27,6 @@ class EventRequest(BaseModel):
     how_to_join:Optional[str]
     number_of_participants:Optional[str]
     description:Optional[str]
-    # flyer: UploadFile = File(None)
-    # program_outline: UploadFile = File(None)
 
     class Config():
         orm_mode = True

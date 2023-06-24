@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, File, UploadFile
 from routers.participants.schemas import participants
 from routers.events.models.models import Event
 from routers.participants.models.models import Participant
 from utils.database import Database
 from passlib.context import CryptContext
-from mail import sendmail
 from routers.participants.repo import crud
-from fastapi.responses import FileResponse
+
 
 
 # APIRouter creates path operations for staffs module
@@ -157,46 +156,3 @@ async def count_all_Participant_Not_Confirm():
     return await crud.count_all_Participant_Not_Confirm()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # PARTICIPANT FIELDS CRUD ENDPOINT
-
-@router.post("/addParticipantFields", response_description="Participant Field data added into the database")
-async def create_participants_Fields(participantFieldRequest: participants.ParticipantFieldRequest):
-
-    return await crud.add_participant_fields(participantFieldRequest)
-
-
-
-
-
-@router.get("/getAllParticipantFields")
-async def all_Participant_Fields():
-
-    return await crud.all_Participant_Fields()
-
-
-
-
-
-
-
-
-
-@router.get("/getParticipantFieldByEventId/{event_id}")
-async def get_Participant_Fields_By_Event_Id(event_id: int):
-    
-    return await crud.get_Participant_Fields_By_Id(event_id)

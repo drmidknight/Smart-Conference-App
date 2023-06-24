@@ -23,7 +23,7 @@ class Participant(Base):
     event_id = db.Column(db.Integer, ForeignKey('events.id'))
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-    event = relationship("Event", back_populates="participants")
+    events = relationship("Event", back_populates="participants")
     #attendance_id = db.Column(db.Integer, ForeignKey('attendances.id'))
 
 
@@ -46,7 +46,7 @@ class Event(Base):
     status = db.Column(db.String(255), nullable=True)
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-    participants = relationship("Participant", back_populates="event")
+    participants = relationship("Participant", back_populates="events")
 
 
 class Attendance(Base):

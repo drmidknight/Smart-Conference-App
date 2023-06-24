@@ -1,7 +1,5 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
-from routers.events.schemas.events import EventRequest, UpdateEventRequest
-#from routers.admin.models.models import Admin
-#from routers.events.models.models import Event
+from routers.events.schemas import events
 from models.models import Admin, Event
 from utils.database import Database
 from auth import authentication
@@ -11,6 +9,7 @@ import shutil
 from response.response import Response
 from routers.events.repo import crud
 from fastapi.responses import FileResponse
+from sqlalchemy import text
 import os
 
 
@@ -66,66 +65,109 @@ IMAGEDIR = "/"
 
 
 @events_router.post("/add", response_description="Event data added into the database")
-async def add_event(addEvent: EventRequest,
-                # program_outline: UploadFile = File(None), flyer: UploadFile = File(None),
-                current_admin: Admin = Depends(authentication.get_current_user)):
+async def add_event(event_name:str = Form(...), venue:str = Form(...),
+                start_date:str = Form(...), end_date:str = Form(...),
+                registration_time:str = Form(None) ,how_to_join:str = Form(None),
+                  number_of_participants:str = Form(None),
+                description:str = Form(None), flyer: UploadFile = File(None),
+                program_outline: UploadFile = File(None),
+                #current_admin: Admin = Depends(authentication.get_current_user)
+                ):
     
-    admin_id = current_admin.id
-
-    db_query = session.query(Event).filter(
-            Event.event_name == addEvent.event_name
-        ).first()
-
-    if db_query is not None:
-        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-           detail=f"Event (" + \
-        str(addEvent.event_name) + ") already exists")
-
-    #flyer_name:str = flyer.filename
-
-    #program_outline_name:str = program_outline.filename
+    return await crud.add_event(
+        event_name,venue,start_date,end_date,
+        registration_time,how_to_join,number_of_participants,
+        description,flyer,program_outline
+    )
 
 
-    new_event = Event()
-    new_event.event_name = addEvent.event_name
-    new_event.venue = addEvent.venue
-    new_event.start_date = addEvent.start_date
-    new_event.end_date = addEvent.end_date
-    new_event.how_to_join = addEvent.how_to_join
-    new_event.registration_time = addEvent.registration_time
-    new_event.number_of_participants = addEvent.number_of_participants
-    new_event.description = addEvent.description
-    new_event.flyer = "flyer_name"
-    new_event.program_outline = "program_outline_name"
-    new_event.admin_id = admin_id
-    new_event.status = "Active"
+# async def add_event(event_name:str, venue:str,
+#                 start_date:str, end_date:str,
+#                 registration_time:str ,how_to_join:str,
+#                   number_of_participants:str,
+#                 description:str, flyer: UploadFile = File(None),
+#                 program_outline: UploadFile = File(None),
+#                 #current_admin: Admin = Depends(authentication.get_current_user)
+#                 ):
     
-    session.add(new_event)
-    # session.flush()
-    # session.refresh(new_event, attribute_names=['id'])
-    session.commit()
-    session.close()
-
-    # try:
-    #     flyer_contents = flyer.file.read()
-    #     with open(flyer.filename, 'wb') as f:
-    #         f.write(flyer_contents)
-    # except Exception:
-    #     return {"message": "There was an error uploading flyer"}
-    # finally:
-    #     flyer.file.close()
+#     return await crud.add_event(
+#         event_name,venue,start_date,end_date,
+#         registration_time,how_to_join,number_of_participants,
+#         description,flyer,program_outline
+#     )
 
 
-    # try:
-    #     program_outline_contents = program_outline.file.read()
-    #     with open(program_outline.filename, 'wb') as f:
-    #         f.write(program_outline_contents)
-    # except Exception:
-    #     return {"message": "There was an error uploading program_outline"}
-    # finally:
-    #     program_outline.file.close()
+
+
+
+
+
+
+
+
+
+
+
+# async def add_event(addEvent: EventRequest,
+#                 program_outline: UploadFile = File(None), flyer: UploadFile = File(None),
+#                 current_admin: Admin = Depends(authentication.get_current_user)):
+    
+#     admin_id = current_admin.id
+
+#     db_query = session.query(Event).filter(
+#             Event.event_name == addEvent.event_name
+#         ).first()
+
+#     if db_query is not None:
+#         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+#            detail=f"Event (" + \
+#         str(addEvent.event_name) + ") already exists")
+
+#     flyer_name:str = flyer.filename
+
+#     program_outline_name:str = program_outline.filename
+
+
+#     new_event = Event(
+#     event_name = addEvent.event_name,
+#     venue = addEvent.venue,
+#     start_date = addEvent.start_date,
+#     end_date = addEvent.end_date,
+#     how_to_join = addEvent.how_to_join,
+#     registration_time = addEvent.registration_time,
+#     number_of_participants = addEvent.number_of_participants,
+#     description = addEvent.description,
+#     flyer = flyer_name,
+#     program_outline = program_outline_name,
+#     admin_id = admin_id,
+#     status = "Active"
+#     )
+#     session.add(new_event)
+#     # session.flush()
+#     # session.refresh(new_event, attribute_names=['id'])
+#     session.commit()
+#     session.close()
+
+#     # try:
+#     #     flyer_contents = flyer.file.read()
+#     #     with open(flyer.filename, 'wb') as f:
+#     #         f.write(flyer_contents)
+#     # except Exception:
+#     #     return {"message": "There was an error uploading flyer"}
+#     # finally:
+#     #     flyer.file.close()
+
+
+#     # try:
+#     #     program_outline_contents = program_outline.file.read()
+#     #     with open(program_outline.filename, 'wb') as f:
+#     #         f.write(program_outline_contents)
+#     # except Exception:
+#     #     return {"message": "There was an error uploading program_outline"}
+#     # finally:
+#     #     program_outline.file.close()
         
-    return new_event
+#     return new_event
 
 
 
@@ -155,7 +197,7 @@ async def getEventById(id: str):
 
 
 @events_router.put("/update")
-async def update_Event(updateEvent: UpdateEventRequest):
+async def update_Event(updateEvent: events.UpdateEventRequest):
     
     return await crud.update_Event(updateEvent)
 
