@@ -77,7 +77,6 @@ async def all_Participant_Fields():
 
 
 async def get_Participant_Fields_By_Id(event_id: int):
-    #data = session.query(ParticipantFields).filter(ParticipantFields.event_id == id).first()
 
     data = session.query(ParticipantFields).filter(
         ParticipantFields.event_id == Event.id,
@@ -96,11 +95,10 @@ async def get_Participant_Fields_By_Id(event_id: int):
         "field_type": data.field_type,
         "field_validation": data.field_validation,
         "field_max_length": data.field_max_length,
+        "field_min_length": data.field_min_length
     }             
 
     return full_data
-
-
 
 
 
@@ -131,6 +129,7 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         "field_type": data.field_type,
         "field_validation": data.field_validation,
         "field_max_length": data.field_max_length,
+        "field_min_length": data.field_min_length
     }             
 
     return full_data
