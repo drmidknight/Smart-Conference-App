@@ -25,7 +25,7 @@ engine = database.get_db_connection()
 session = database.get_db_session(engine)
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 
 
@@ -69,7 +69,7 @@ async def get_Participant_Fields_By_Event_Id(event_id: int):
 
 
 
-@participantfields_router.get("/get_flyer_By_Event_Id/{event_id}")
+@participantfields_router.get("/getflyerByEventId/{event_id}")
 async def get_flyer_By_Event_Id(event_id: str):
     data = session.query(Event).filter(Event.id == event_id).first()
 
@@ -98,8 +98,7 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
 
 
 
-
-@participantfields_router.get("/get_flyer_By_Event_name/{event_name}")
+@participantfields_router.get("/getflyerByEventName/{event_name}")
 async def get_flyer_By_Event_name(event_name: str):
     data = session.query(Event).filter(Event.event_name == event_name).first()
 
