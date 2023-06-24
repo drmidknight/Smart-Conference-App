@@ -83,7 +83,7 @@ async def get_Participant_Fields_By_Id(event_id: int):
         ParticipantFields.event_id == Event.id,
         Event.id == event_id).first()
 
-    event_data = session.query(Event).filter(Event.id == id).first()
+    event_data = session.query(Event).filter(Event.id == event_id).first()
     
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

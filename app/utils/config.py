@@ -15,9 +15,17 @@ class Settings(BaseSettings):
     MYSQL_PORT: str = '3131'
     SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3131/smart_conference_app"
 
+
+
     #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3131/smart_conference_app"
 
-    # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{MYSQL_USER}:@mysql:3306/smart_conference_app?charset=utf8"
+
+
+
+
+
+
+
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
