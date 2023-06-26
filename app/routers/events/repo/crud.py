@@ -174,6 +174,7 @@ async def update_Event(updateEvent: UpdateEventRequest):
     is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
             Event.event_name: updateEvent.event_name,
             Event.venue: updateEvent.venue,
+            Event.how_to_join: updateEvent.how_to_join,
             Event.start_date: updateEvent.start_date,
             Event.end_date: updateEvent.end_date,
             Event.registration_time: updateEvent.registration_time,
@@ -229,6 +230,9 @@ async def deleteEvent(id: int):
 
     data = session.query(Event).filter(Event.id == id).one()
     return data
+
+
+
 
 
 async def generate_url(event_name: str):
