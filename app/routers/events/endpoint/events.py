@@ -56,8 +56,8 @@ IMAGEDIR = "/"
 
 
 
-@events_router.post("/add", response_description="Event data added into the database")
-async def add_event(eventRequest: EventRequest,
+@events_router.post("/addEventWithOutFile", response_description="Event data added into the database")
+async def add_event_without_file(eventRequest: EventRequest,
                     #flyer: UploadFile = File(None),program_outline: UploadFile = File(None),
                  #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
@@ -66,21 +66,25 @@ async def add_event(eventRequest: EventRequest,
 
 
 
-# @events_router.post("/add", response_description="Event data added into the database")
-# async def add_event(event_name:str = Form(...), venue:str = Form(...),
-#                 start_date:str = Form(...), end_date:str = Form(...),
-#                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
-#                   number_of_participants:str = Form(None),
-#                 description:str = Form(None), flyer: UploadFile = File(None),
-#                 program_outline: UploadFile = File(None),
-#                 #current_admin: Admin = Depends(authentication.get_current_user)
-#                 ):
+
+
+
+
+@events_router.post("/addEventWithFile", response_description="Event data added into the database")
+async def add_eventWithFile(event_name:str = Form(...), venue:str = Form(...),
+                start_date:str = Form(...), end_date:str = Form(...),
+                registration_time:str = Form(None) ,how_to_join:str = Form(None),
+                  number_of_participants:str = Form(None),
+                description:str = Form(None), flyer: UploadFile = File(None),
+                program_outline: UploadFile = File(None),
+                #current_admin: Admin = Depends(authentication.get_current_user)
+                ):
     
-#     return await crud.add_event(
-#         event_name,venue,start_date,end_date,
-#         registration_time,how_to_join,number_of_participants,
-#         description,flyer,program_outline
-#     )
+    return await crud.add_event_with_files(
+        event_name,venue,start_date,end_date,
+        registration_time,how_to_join,number_of_participants,
+        description,flyer,program_outline
+    )
 
 
 # async def add_event(event_name:str, venue:str,

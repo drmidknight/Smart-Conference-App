@@ -8,12 +8,19 @@ from typing import Optional, List
 
 class ParticipantRequest(BaseModel):
     name:Optional[str]
+    full_name:Optional[str]
+    first_name:Optional[str]
+    last_name:Optional[str]
+    other_name:Optional[str]
     phone_number:Optional[str]
+    contact:Optional[str]
     gender:Optional[str]
     email:Optional[str]
-    organization:Optional[str]
+    address:Optional[str]
     how_to_join:Optional[str]
     registration_time:Optional[str]
+    organization:Optional[str]
+    time:Optional[str]
     location:Optional[str]
     event_id: Optional[int]
 

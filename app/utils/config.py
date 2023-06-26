@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
 
 
-    # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3131/smart_conference_app"
+    #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3131/smart_conference_app"
 
 
 
