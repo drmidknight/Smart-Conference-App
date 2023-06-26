@@ -1,7 +1,7 @@
 from fastapi import Form
 from pydantic import BaseModel, EmailStr, Field
 from fastapi import Form
-from typing import Optional
+from typing import Optional, List
 
 
 
@@ -53,10 +53,16 @@ class UpdateParticipant(BaseModel):
 
 
 
-
+# class ParticipantFieldRequest(BaseModel):
+#     field_name: List[str] = []
+#     field_type:List[str] = []
+#     field_validation:List[str] = []
+#     field_max_length:List[str] = []
+#     field_min_length:List[str] = []
+#     event_id:Optional[int]
 
 class ParticipantFieldRequest(BaseModel):
-    field_name:Optional[str]
+    field_name: Optional[str]
     field_type:Optional[str]
     field_validation:Optional[str]
     field_max_length:Optional[str]
