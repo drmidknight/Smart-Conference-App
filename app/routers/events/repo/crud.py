@@ -33,41 +33,39 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-async def add_event(event_name:str = Form(...), venue:str = Form(...),
-                start_date:str = Form(...), end_date:str = Form(...),
-                registration_time:str = Form(None) ,how_to_join:str = Form(None),
-                  number_of_participants:str = Form(None),
-                description:str = Form(None), flyer: UploadFile = File(None),
-                program_outline: UploadFile = File(None),
+
+
+async def add_event(addEvent: EventRequest,
+                    #flyer: UploadFile = File(None),program_outline: UploadFile = File(None),
                 #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
     
     #admin_id = current_admin.id
 
     db_query = session.query(Event).filter(
-            Event.event_name == event_name
+            Event.event_name == addEvent.event_name
         ).first()
 
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail=f"Event (" + \
-        str(event_name) + ") already exists")
+        str(addEvent.event_name) + ") already exists")
 
-    flyer_name:str = flyer.filename
+    # flyer_name:str = flyer.filename
 
-    program_outline_name:str = program_outline.filename
+    # program_outline_name:str = program_outline.filename
 
     new_event = Event()
-    new_event.event_name = event_name
-    new_event.venue = venue
-    new_event.flyer = flyer_name
-    new_event.program_outline = program_outline_name
-    new_event.start_date = start_date
-    new_event.end_date = end_date
-    new_event.how_to_join = how_to_join
-    new_event.registration_time = registration_time
-    new_event.number_of_participants = number_of_participants
-    new_event.description = description
+    new_event.event_name = addEvent.event_name
+    new_event.venue = addEvent.venue
+    new_event.start_date = addEvent.start_date
+    new_event.end_date = addEvent.end_date
+    new_event.how_to_join = addEvent.how_to_join
+    new_event.registration_time = addEvent.registration_time
+    new_event.number_of_participants = addEvent.number_of_participants
+    new_event.description = addEvent.description
+    new_event.flyer = "flyer_name"
+    new_event.program_outline = "program_outline_name"
     #new_event.admin_id = admin_id
     new_event.status = "Active"
     
@@ -78,10 +76,10 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
         "event_name": new_event.event_name,
         "venue": new_event.venue,
         "status": new_event.status,
-        "flyer": new_event.flyer,
+        "program_outline": new_event.program_outline,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
-        #"admin_id": new_event.admin_id,
+        "admin_id": new_event.admin_id,
         "registration_time": new_event.registration_time,
         "number_of_participants": new_event.number_of_participants,
         "description": new_event.description
@@ -89,96 +87,35 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     session.commit()
     session.close()
 
-        #save flyer
-    with open(f'{flyer.filename}', "wb") as image:
-        shutil.copyfileobj(flyer.file, image)
+    # try:
+    #     flyer_contents = flyer.file.read()
+    #     with open(flyer.filename, 'wb') as f:
+    #         f.write(flyer_contents)
+    # except Exception:
+    #     return {"message": "There was an error uploading flyer"}
+    # finally:
+    #     flyer.file.close()
 
-    # Save program outline file
-    with open(f'{program_outline.filename}', "wb") as image:
-        shutil.copyfileobj(program_outline.file, image)
+
+    # try:
+    #     program_outline_contents = program_outline.file.read()
+    #     with open(program_outline.filename, 'wb') as f:
+    #         f.write(program_outline_contents)
+    # except Exception:
+    #     return {"message": "There was an error uploading program_outline"}
+    # finally:
+    #     program_outline.file.close()
+
+    # #save flyer
+    # with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
+    #     shutil.copyfileobj(flyer.file, image)
+
+    # # Save program outline file
+    # with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
+    #     shutil.copyfileobj(program_outline.file, image)
+
+
     return data
-
-
-# async def add_event(addEvent: EventRequest,flyer: UploadFile = File(None),
-#                  program_outline: UploadFile = File(None),
-#                 current_admin: Admin = Depends(authentication.get_current_user)):
-    
-#     admin_id = current_admin.id
-
-#     db_query = session.query(Event).filter(
-#             Event.event_name == addEvent.event_name
-#         ).first()
-
-#     if db_query is not None:
-#         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-#            detail=f"Event (" + \
-#         str(addEvent.event_name) + ") already exists")
-
-#     flyer_name:str = flyer.filename
-
-#     program_outline_name:str = program_outline.filename
-
-#     new_event = Event()
-#     new_event.event_name = addEvent.event_name
-#     new_event.venue = addEvent.venue
-#     new_event.start_date = addEvent.start_date
-#     new_event.end_date = addEvent.end_date
-#     new_event.how_to_join = addEvent.how_to_join
-#     new_event.registration_time = addEvent.registration_time
-#     new_event.number_of_participants = addEvent.number_of_participants
-#     new_event.description = addEvent.description
-#     new_event.flyer = flyer_name
-#     new_event.program_outline = program_outline_name
-#     new_event.admin_id = admin_id
-#     new_event.status = "Active"
-    
-#     session.add(new_event)
-#     session.flush()
-#     session.refresh(new_event, attribute_names=['id'])
-#     data = {
-#         "event_name": new_event.event_name,
-#         "venue": new_event.venue,
-#         "status": new_event.status,
-#         "program_outline": new_event.program_outline,
-#         "start_date": new_event.start_date,
-#         "end_date": new_event.end_date,
-#         "admin_id": new_event.admin_id,
-#         "registration_time": new_event.registration_time,
-#         "number_of_participants": new_event.number_of_participants,
-#         "description": new_event.description
-#     }
-#     session.commit()
-#     session.close()
-
-#     try:
-#         flyer_contents = flyer.file.read()
-#         with open(flyer.filename, 'wb') as f:
-#             f.write(flyer_contents)
-#     except Exception:
-#         return {"message": "There was an error uploading flyer"}
-#     finally:
-#         flyer.file.close()
-
-
-#     try:
-#         program_outline_contents = program_outline.file.read()
-#         with open(program_outline.filename, 'wb') as f:
-#             f.write(program_outline_contents)
-#     except Exception:
-#         return {"message": "There was an error uploading program_outline"}
-#     finally:
-#         program_outline.file.close()
-
-#     # #save flyer
-#     # with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
-#     #     shutil.copyfileobj(flyer.file, image)
-
-#     # # Save program outline file
-#     # with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
-#     #     shutil.copyfileobj(program_outline.file, image)
-
-
-#     return data
 
 
 
@@ -237,6 +174,7 @@ async def update_Event(updateEvent: UpdateEventRequest):
     is_eventID_update = session.query(Event).filter(Event.id == eventID).update({
             Event.event_name: updateEvent.event_name,
             Event.venue: updateEvent.venue,
+            Event.how_to_join: updateEvent.how_to_join,
             Event.start_date: updateEvent.start_date,
             Event.end_date: updateEvent.end_date,
             Event.registration_time: updateEvent.registration_time,
@@ -292,6 +230,9 @@ async def deleteEvent(id: int):
 
     data = session.query(Event).filter(Event.id == id).one()
     return data
+
+
+
 
 
 async def generate_url(event_name: str):
@@ -368,66 +309,68 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 # async def read_image():
 #     return FileResponse("app/flyers/kaleidoscope.jpg")
 
-# async def add_event(event_name:str = Form(...), venue:str = Form(...),
-#                 start_date:str = Form(...), end_date:str = Form(...),
-#                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
-#                   number_of_participants:str = Form(None),
-#                 description:str = Form(None), flyer: UploadFile = File(None),
-#                 program_outline: UploadFile = File(None),
-#                 current_admin: Admin = Depends(authentication.get_current_user)):
+
+async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...),
+                start_date:str = Form(...), end_date:str = Form(...),
+                registration_time:str = Form(None) ,how_to_join:str = Form(None),
+                  number_of_participants:str = Form(None),
+                description:str = Form(None), flyer: UploadFile = File(None),
+                program_outline: UploadFile = File(None),
+                #current_admin: Admin = Depends(authentication.get_current_user)
+                ):
     
-#     admin_id = current_admin.id
+    #admin_id = current_admin.id
 
-#     db_query = session.query(Event).filter(
-#             Event.event_name == event_name
-#         ).first()
+    db_query = session.query(Event).filter(
+            Event.event_name == event_name
+        ).first()
 
-#     if db_query is not None:
-#         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-#            detail=f"Event (" + \
-#         str(event_name) + ") already exists")
+    if db_query is not None:
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+           detail=f"Event (" + \
+        str(event_name) + ") already exists")
 
-#     flyer_name:str = flyer.filename
+    flyer_name:str = flyer.filename
 
-#     program_outline_name:str = program_outline.filename
+    program_outline_name:str = program_outline.filename
 
-#     new_event = Event()
-#     new_event.event_name = event_name
-#     new_event.venue = venue
-#     new_event.flyer = flyer_name
-#     new_event.program_outline = program_outline_name
-#     new_event.start_date = start_date
-#     new_event.end_date = end_date
-#     new_event.how_to_join = how_to_join
-#     new_event.registration_time = registration_time
-#     new_event.number_of_participants = number_of_participants
-#     new_event.description = description
-#     new_event.admin_id = admin_id
-#     new_event.status = "Active"
+    new_event = Event()
+    new_event.event_name = event_name
+    new_event.venue = venue
+    new_event.flyer = flyer_name
+    new_event.program_outline = program_outline_name
+    new_event.start_date = start_date
+    new_event.end_date = end_date
+    new_event.how_to_join = how_to_join
+    new_event.registration_time = registration_time
+    new_event.number_of_participants = number_of_participants
+    new_event.description = description
+    #new_event.admin_id = admin_id
+    new_event.status = "Active"
     
-#     session.add(new_event)
-#     session.flush()
-#     session.refresh(new_event, attribute_names=['id'])
-#     data = {
-#         "event_name": new_event.event_name,
-#         "venue": new_event.venue,
-#         "status": new_event.status,
-#         "flyer": new_event.flyer,
-#         "start_date": new_event.start_date,
-#         "end_date": new_event.end_date,
-#         "admin_id": new_event.admin_id,
-#         "registration_time": new_event.registration_time,
-#         "number_of_participants": new_event.number_of_participants,
-#         "description": new_event.description
-#     }
-#     session.commit()
-#     session.close()
+    session.add(new_event)
+    session.flush()
+    session.refresh(new_event, attribute_names=['id'])
+    data = {
+        "event_name": new_event.event_name,
+        "venue": new_event.venue,
+        "status": new_event.status,
+        "flyer": new_event.flyer,
+        "start_date": new_event.start_date,
+        "end_date": new_event.end_date,
+        #"admin_id": new_event.admin_id,
+        "registration_time": new_event.registration_time,
+        "number_of_participants": new_event.number_of_participants,
+        "description": new_event.description
+    }
+    session.commit()
+    session.close()
 
-#     #save flyer    
-#     with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
-#         shutil.copyfileobj(flyer.file, image)
+        #save flyer
+    with open(f'{flyer.filename}', "wb") as image:
+        shutil.copyfileobj(flyer.file, image)
 
-#     # Save program outline file
-#     with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
-#         shutil.copyfileobj(program_outline.file, image)
-#     return data
+    # Save program outline file
+    with open(f'{program_outline.filename}', "wb") as image:
+        shutil.copyfileobj(program_outline.file, image)
+    return data

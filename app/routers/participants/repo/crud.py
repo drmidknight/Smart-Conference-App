@@ -39,19 +39,31 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
     phone_query = session.query(Participant).filter(
         Participant.phone_number == participantRequest.phone_number).first()
 
-    if email_query or phone_query:
+
+    contact_query = session.query(Participant).filter(
+        Participant.contact == participantRequest.contact).first()
+
+
+    if email_query or phone_query or contact_query:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail=f"Participant with email or phone number already exists")
 
 
     new_participant = Participant()
     new_participant.name = participantRequest.name
+    new_participant.full_name = participantRequest.full_name
+    new_participant.first_name = participantRequest.first_name
+    new_participant.last_name = participantRequest.last_name
+    new_participant.other_name = participantRequest.other_name
     new_participant.phone_number = participantRequest.phone_number
+    new_participant.contact = participantRequest.contact
     new_participant.gender = participantRequest.gender
     new_participant.email = participantRequest.email
-    new_participant.organization = participantRequest.organization
+    new_participant.address = participantRequest.address
     new_participant.how_to_join = participantRequest.how_to_join
     new_participant.registration_time = participantRequest.registration_time
+    new_participant.organization = participantRequest.organization
+    new_participant.time = participantRequest.time
     new_participant.location = participantRequest.location
     new_participant.event_id = participantRequest.event_id
     new_participant.status = 0
@@ -64,7 +76,7 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
     read_flyer_image = read_flyer(participantRequest.event_id)
     #db_flyer_name = f'app/flyers/{event_data.flyer}'
 
-    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
+    #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
     data = {
         "phone_number": new_participant.phone_number,
         "email": new_participant.email,
@@ -79,7 +91,7 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
     }
     session.commit()
     session.close()
-    return data
+    return new_participant
 
 
 
