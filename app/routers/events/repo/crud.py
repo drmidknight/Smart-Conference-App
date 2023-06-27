@@ -318,7 +318,7 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
 
 
     flyer_name = f"flyer-" + str(event_name) + ".jpg"
-    program_outline_name = f"program_outline-" + str(event_name) + ".jpg"
+    program_outline_name = f"program_outline-" + str(event_name) + ".pdf"
 
     new_event = Event()
     new_event.event_name = event_name
