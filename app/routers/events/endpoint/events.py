@@ -57,13 +57,13 @@ IMAGEDIR = "/"
 
 
 
-@events_router.post("/addEventWithOutFile", response_description="Event data added into the database")
-async def add_event_without_file(eventRequest: EventRequest,
-                    #flyer: Optional[UploadFile] = File(None),program_outline: Optional[UploadFile] = File(None),
-                 #current_admin: Admin = Depends(authentication.get_current_user)
-                ):
+# @events_router.post("/addEventWithOutFile", response_description="Event data added into the database")
+# async def add_event_without_file(eventRequest: EventRequest,
+#                     #flyer: Optional[UploadFile] = File(None),program_outline: Optional[UploadFile] = File(None),
+#                  #current_admin: Admin = Depends(authentication.get_current_user)
+#                 ):
     
-    return await crud.add_event(eventRequest)
+#     return await crud.add_event(eventRequest)
 
 
 
