@@ -12,6 +12,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy import text
 import os
 from routers.events.schemas.events import EventRequest, UpdateEventRequest
+from typing import Optional, List
 
 
 
@@ -58,7 +59,7 @@ IMAGEDIR = "/"
 
 @events_router.post("/addEventWithOutFile", response_description="Event data added into the database")
 async def add_event_without_file(eventRequest: EventRequest,
-                    #flyer: UploadFile = File(None),program_outline: UploadFile = File(None),
+                    #flyer: Optional[UploadFile] = File(None),program_outline: Optional[UploadFile] = File(None),
                  #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
     
@@ -75,8 +76,8 @@ async def add_eventWithFile(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
-                description:str = Form(None), flyer: UploadFile = File(None),
-                program_outline: UploadFile = File(None),
+                description:str = Form(None), flyer: Optional[UploadFile] = File(None),
+                program_outline: Optional[UploadFile] = File(None),
                 #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
     

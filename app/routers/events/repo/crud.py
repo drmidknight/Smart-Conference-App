@@ -9,6 +9,7 @@ from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 import shutil
 from response.response import Response
+from typing import Optional, List
 from fastapi.responses import FileResponse
 
  
@@ -36,7 +37,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def add_event(addEvent: EventRequest,
-                    #flyer: UploadFile = File(None),program_outline: UploadFile = File(None),
+                    #flyer: Optional[UploadFile] = File(None),program_outline: Optional[UploadFile] = File(None),
                 #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
     
@@ -51,9 +52,8 @@ async def add_event(addEvent: EventRequest,
            detail=f"Event (" + \
         str(addEvent.event_name) + ") already exists")
 
-    # flyer_name:str = flyer.filename
-
-    # program_outline_name:str = program_outline.filename
+    flyer_name = f"flyer-" + str(addEvent.event_name) + ".jpg"
+    program_outline_name = f"program_outline-" + str(addEvent.event_name) + ".jpg"
 
     new_event = Event()
     new_event.event_name = addEvent.event_name
@@ -64,8 +64,8 @@ async def add_event(addEvent: EventRequest,
     new_event.registration_time = addEvent.registration_time
     new_event.number_of_participants = addEvent.number_of_participants
     new_event.description = addEvent.description
-    new_event.flyer = "flyer_name"
-    new_event.program_outline = "program_outline_name"
+    new_event.flyer = flyer_name
+    new_event.program_outline = program_outline_name
     #new_event.admin_id = admin_id
     new_event.status = "Active"
     
@@ -89,30 +89,22 @@ async def add_event(addEvent: EventRequest,
 
     # try:
     #     flyer_contents = flyer.file.read()
-    #     with open(flyer.filename, 'wb') as f:
+    #     with open(flyer_name, 'wb') as f:
     #         f.write(flyer_contents)
     # except Exception:
     #     return {"message": "There was an error uploading flyer"}
     # finally:
-    #     flyer.file.close()
+    #     flyer_name
 
 
     # try:
     #     program_outline_contents = program_outline.file.read()
-    #     with open(program_outline.filename, 'wb') as f:
+    #     with open(program_outline_name, 'wb') as f:
     #         f.write(program_outline_contents)
     # except Exception:
     #     return {"message": "There was an error uploading program_outline"}
     # finally:
-    #     program_outline.file.close()
-
-    # #save flyer
-    # with open(f'{IMAGEDIR}{flyer.filename}', "wb") as image:
-    #     shutil.copyfileobj(flyer.file, image)
-
-    # # Save program outline file
-    # with open(f'{PROGRAMOUTLINEDIR}{program_outline.filename}', "wb") as image:
-    #     shutil.copyfileobj(program_outline.file, image)
+    #     program_outline_name
 
 
     return data
@@ -144,20 +136,11 @@ async def getEventById(id: str):
 
     #fileResponse = FileResponse(f'{data.flyer}')
 
-    # db_data = {
-    #     "event_name": data.event_name,
-    #     "venue": data.venue,
-    #     "status": data.status,
-    #     "flyer_name": data.flyer,
-    #     "start_date": data.start_date,
-    #     "end_date": data.end_date,
-    #     "admin_id": data.admin_id,
-    #     "registration_time": data.registration_time,
-    #     "number_of_participants": data.number_of_participants,
-    #     "description": data.description
-    # }
+    db_data = {
+        "flyer_name": data.event_name,
+    }
 
-    return data
+    return db_data
 
 
 
@@ -244,6 +227,8 @@ async def generate_url(event_name: str):
                             
     db_event_name = data.event_name
     event_url = f"http://localhost:4200/" + str(db_event_name) + ""
+    # event_url = f"flyer-" + str(db_event_name) + ".jpg"
+
     return event_url
 
 
@@ -314,11 +299,11 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
-                description:str = Form(None), flyer: UploadFile = File(None),
-                program_outline: UploadFile = File(None),
+                description:str = Form(None), flyer: Optional[UploadFile] = File(None),
+                program_outline: Optional[UploadFile] = File(None),
                 #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
-    
+
     #admin_id = current_admin.id
 
     db_query = session.query(Event).filter(
@@ -330,9 +315,10 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
            detail=f"Event (" + \
         str(event_name) + ") already exists")
 
-    flyer_name:str = flyer.filename
 
-    program_outline_name:str = program_outline.filename
+
+    flyer_name = f"flyer-" + str(event_name) + ".jpg"
+    program_outline_name = f"program_outline-" + str(event_name) + ".jpg"
 
     new_event = Event()
     new_event.event_name = event_name
@@ -355,7 +341,8 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
         "event_name": new_event.event_name,
         "venue": new_event.venue,
         "status": new_event.status,
-        "flyer": new_event.flyer,
+        "flyer_name": new_event.flyer,
+        "program_outline_name": new_event.program_outline,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
         #"admin_id": new_event.admin_id,
@@ -366,11 +353,33 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
     session.commit()
     session.close()
 
-        #save flyer
-    with open(f'{flyer.filename}', "wb") as image:
-        shutil.copyfileobj(flyer.file, image)
 
-    # Save program outline file
-    with open(f'{program_outline.filename}', "wb") as image:
-        shutil.copyfileobj(program_outline.file, image)
+    try:
+        flyer_contents = flyer.file.read()
+        with open(flyer_name, 'wb') as f:
+            f.write(flyer_contents)
+    except Exception:
+        return {"message": "There was an error uploading flyer"}
+    finally:
+        flyer_name
+
+
+    try:
+        program_outline_contents = program_outline.file.read()
+        with open(program_outline_name, 'wb') as f:
+            f.write(program_outline_contents)
+    except Exception:
+        return {"message": "There was an error uploading program_outline"}
+    finally:
+        program_outline_name
+
+
+
+    #     #save flyer
+    # with open(f'{flyer_name}', "wb") as image:
+    #     shutil.copyfileobj(flyer.file, image)
+
+    # # Save program outline file
+    # with open(f'{program_outline_name}', "wb") as image:
+    #     shutil.copyfileobj(program_outline.file, image)
     return data
