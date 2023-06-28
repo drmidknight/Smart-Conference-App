@@ -138,11 +138,11 @@ async def getEventById(id: str):
 
     #fileResponse = FileResponse(f'{data.flyer}')
 
-    db_data = {
-        "flyer_name": data.event_name,
-    }
+    # db_data = {
+    #     "flyer_name": data.event_name,
+    # }
 
-    return db_data
+    return data
 
 
 
@@ -253,10 +253,7 @@ async def count_all_Event():
 
 
 
-async def add_only_flyer(event_id: int, flyer: Optional[UploadFile] = File(None), program_outline: Optional[UploadFile] = File(None)):
-    eventID = event_id
-    
-    db_data = session.query(Event).filter(Event.id == event_id).first()
+
 async def add_only_flyer(event_id: int, flyer: Optional[UploadFile] = File(None), program_outline: Optional[UploadFile] = File(None)):
     eventID = event_id
     
@@ -500,7 +497,6 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
     # with open(f'{program_outline_name}', "wb") as image:
     #     shutil.copyfileobj(program_outline.file, image)
     return data
-
 
 
 

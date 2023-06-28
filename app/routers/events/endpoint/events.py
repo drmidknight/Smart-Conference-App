@@ -263,7 +263,7 @@ async def count_all_Event():
 
 
 
-@events_router.put("/add_only_flyer")
+@events_router.put("/uploadFiles")
 async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_outline: UploadFile = File(None)):
     
     return await crud.add_only_flyer(event_id,flyer,program_outline)
@@ -321,14 +321,14 @@ from utils.config import settings
 
 
 
-from fastapi.responses import FileResponse
+# from fastapi.responses import FileResponse
 
-@events_router.get("/read_image")
-async def read_image():
-    #dirname = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
-    dirname = os.path.join(os.getcwd(), "flyer")
+# @events_router.get("/read_image")
+# async def read_image():
+#     #dirname = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
+#     dirname = os.path.join(os.getcwd(), "flyer")
 
-    return FileResponse(f"{dirname}/FEMITECH.jpg")
+#     return FileResponse(f"{dirname}/FEMITECH.jpg")
 
-    #return FileResponse("app/flyers/FEMITECH.jpg")
+#     #return FileResponse("app/flyers/FEMITECH.jpg")
 
