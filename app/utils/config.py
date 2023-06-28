@@ -62,6 +62,20 @@ class Settings(BaseSettings):
     ALGORITHM = "HS256"
     #ACCESS_TOKEN_EXPIRE_MINUTES = 2
 
+
+
+    flyer_upload_dir = os.path.join(os.getcwd(), "flyer")
+    # Create the flyer directory if it doesn't exist
+    if not os.path.exists(flyer_upload_dir):
+        os.makedirs(flyer_upload_dir)
+
+    program_outline_upload_dir = os.path.join(os.getcwd(), "program_outline")
+    # Create the program_outline directory if it doesn't exist
+    if not os.path.exists(program_outline_upload_dir):
+        os.makedirs(program_outline_upload_dir)
+
+
+
     class Config:
         case_sensitive = True
 

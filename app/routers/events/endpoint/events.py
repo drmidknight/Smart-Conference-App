@@ -72,7 +72,7 @@ IMAGEDIR = "/"
 
 
 @events_router.post("/addEventWithFile", response_description="Event data added into the database")
-async def add_eventWithFile(event_name:str = Form(...), venue:str = Form(...),
+async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
@@ -80,7 +80,7 @@ async def add_eventWithFile(event_name:str = Form(...), venue:str = Form(...),
                 program_outline: Optional[UploadFile] = File(None),
                 #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
-    
+        
     return await crud.add_event_with_files(
         event_name,venue,start_date,end_date,
         registration_time,how_to_join,number_of_participants,
@@ -275,6 +275,46 @@ async def add_only_flyer(event_id: int, flyer: UploadFile = File(None), program_
 
 
 
+from utils.config import settings
+
+# @events_router.post("/uploader")
+# async def add_only_files(flyer: Optional[UploadFile] = File(None), program_outline: Optional[UploadFile] = File(None)):
+
+#     flyer_name = f"flyer-" + str("event_name") + ".jpg"
+#     program_outline_name = f"program_outline-" + str("event_name") + ".pdf"
+
+#        # get flyer destination path
+#     flyer_dest = os.path.join(settings.flyer_upload_dir, flyer_name)
+#     print(flyer_dest)
+
+
+#        # get program_outline destination path
+#     program_outline_dest = os.path.join(settings.program_outline_upload_dir, program_outline_name)
+#     print(program_outline_dest)
+
+
+
+#     try:
+#         flyer_contents = flyer.file.read()
+#         with open(flyer_dest, 'wb') as f:
+#             f.write(flyer_contents)
+#     except Exception:
+#         return {"message": "There was an error uploading flyer"}
+#     finally:
+#         flyer_name
+
+
+#     try:
+#         program_outline_contents = program_outline.file.read()
+#         with open(program_outline_dest, 'wb') as f:
+#             f.write(program_outline_contents)
+#     except Exception:
+#         return {"message": "There was an error uploading program_outline"}
+#     finally:
+#         program_outline_name
+
+
+#     return {"message": "files uploaded successfully"}
 
 
 
