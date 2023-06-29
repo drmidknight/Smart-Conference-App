@@ -77,34 +77,30 @@ from utils.config import settings
 
 
 async def get_Participant_Fields_By_Id(event_id: int):
-
-    data = session.query(ParticipantFields).filter(
-        ParticipantFields.event_id == Event.id,
-        Event.id == event_id).first()
-
-    event_data = session.query(Event).filter(Event.id == event_id).first()
     
-    if not data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Event with the id (" + str(id) + ") is not found")
 
+    participantFields_data = session.query(ParticipantFields).filter(
+         ParticipantFields.event_id == event_id).first()
+    
+    if not participantFields_data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event with the id {event_id} is not available under ParticipantFields")
+    data = session.query(Event).filter(Event.id == event_id).first()
     flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
     program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
 
-    full_data = {
-        "event_name": event_data.event_name,
+    db_data = {
+        "event_name": data.event_name,
         "flyer": flyer_path,
         "program_outline": program_outline_path,
-        "field_name": data.field_name,
-        "field_type": data.field_type,
-        "field_validation": data.field_validation,
-        "field_max_length": data.field_max_length,
-        "field_min_length": data.field_min_length
-    }             
-
-    return full_data
-
-
+        "field_name": participantFields_data.field_name,
+        "field_type": participantFields_data.field_type,
+        "field_validation": participantFields_data.field_validation,
+        "field_max_length": participantFields_data.field_max_length,
+        "field_min_length": participantFields_data.field_min_length
+    }
+    return db_data
+    
 
 
 
@@ -115,31 +111,24 @@ async def get_Participant_Fields_By_Id(event_id: int):
 
 
 async def get_Participant_Fields_By_Event_Name(event_name: str):
-    data = session.query(ParticipantFields).filter(
-        ParticipantFields.event_id == Event.id,
-        Event.event_name == event_name
-        ).first()
+    participantFields_data = session.query(ParticipantFields).filter(
+         ParticipantFields.event_id == Event.id, Event.event_name == event_name).first()
     
-    event_data = session.query(Event).filter(Event.event_name == event_name).first()
-
-    if not data:
+    if not participantFields_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"event (" + str(event_name) + ") is not found")
-
-
+                            detail=f"Event name {event_name} is not available under ParticipantFields")
+    data = session.query(Event).filter(Event.event_name == event_name).first()
     flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
     program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
 
-    full_data = {
-        "id": data.id,
-        "event_name": event_data.event_name,
+    db_data = {
+        "event_name": data.event_name,
         "flyer": flyer_path,
         "program_outline": program_outline_path,
-        "field_name": data.field_name,
-        "field_type": data.field_type,
-        "field_validation": data.field_validation,
-        "field_max_length": data.field_max_length,
-        "field_min_length": data.field_min_length
-    }             
-
-    return full_data
+        "field_name": participantFields_data.field_name,
+        "field_type": participantFields_data.field_type,
+        "field_validation": participantFields_data.field_validation,
+        "field_max_length": participantFields_data.field_max_length,
+        "field_min_length": participantFields_data.field_min_length
+    }
+    return db_data
