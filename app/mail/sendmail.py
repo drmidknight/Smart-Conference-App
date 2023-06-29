@@ -153,7 +153,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             
             p {{
                 font-size: 14px;
-                color: #E0B0FF;
+                color: #000000;
                 font-weight: normal;
             }}
             
@@ -205,7 +205,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             h3, p {{
                 margin: 0;
                 margin-bottom: 18px;
-                color: #000000;
+                color: #cc8899;
                 font-family: Arial, sans-serif;
             }}
             
@@ -216,7 +216,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             
             p {{
                 font-size: 16px;
-                color: #E0B0FF;
+                color: #000000;
                 font-weight: normal;
             }}
             
@@ -228,7 +228,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             }}
             
             .thankyou-section {{
-                background-color: #FFFFFF;
+                background-color: #cc8899;
                 padding: 17pxpx;
                 border-radius: 4px;
                 margin-bottom: 19px;
