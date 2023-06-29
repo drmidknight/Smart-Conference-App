@@ -136,13 +136,22 @@ async def getEventById(id: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Event with the id {id} is not available")
 
-    #fileResponse = FileResponse(f'{data.flyer}')
+    flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
 
-    # db_data = {
-    #     "flyer_name": data.event_name,
-    # }
-
-    return data
+    db_data = {
+        "event_name": data.event_name,
+        "venue": data.venue,
+        "status": data.status,
+        "flyer": flyer_path,
+        "program_outline": program_outline_path,
+        "start_date": data.start_date,
+        "end_date": data.end_date,
+        "registration_time": data.registration_time,
+        "number_of_participants": data.number_of_participants,
+        "description": data.description
+    }
+    return db_data
 
 
 
@@ -185,12 +194,28 @@ async def update_Event(updateEvent: UpdateEventRequest):
 
 
 async def getEventByName(event_name: str):
-    data = session.query(Event).filter(Event.event_name == event_name).all()
-    
+    data = session.query(Event).filter(Event.event_name == event_name).first()
+
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Event with the event_name (" + str(event_name) + ") not found")
-    return data
+                 detail=f"Event with the event_name (" + str(event_name) + ") not found")
+
+    flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+
+    db_data = {
+        "event_name": data.event_name,
+        "venue": data.venue,
+        "status": data.status,
+        "flyer": flyer_path,
+        "program_outline": program_outline_path,
+        "start_date": data.start_date,
+        "end_date": data.end_date,
+        "registration_time": data.registration_time,
+        "number_of_participants": data.number_of_participants,
+        "description": data.description
+    }
+    return db_data
 
 
 
