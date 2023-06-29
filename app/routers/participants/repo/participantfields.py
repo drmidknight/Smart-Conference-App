@@ -72,7 +72,7 @@ async def all_Participant_Fields():
 
 
 
-
+from utils.config import settings
 
 
 
@@ -88,9 +88,13 @@ async def get_Participant_Fields_By_Id(event_id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Event with the id (" + str(id) + ") is not found")
 
+    flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
 
     full_data = {
         "event_name": event_data.event_name,
+        "flyer": flyer_path,
+        "program_outline": program_outline_path,
         "field_name": data.field_name,
         "field_type": data.field_type,
         "field_validation": data.field_validation,
@@ -122,9 +126,15 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"event (" + str(event_name) + ") is not found")
 
+
+    flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+
     full_data = {
         "id": data.id,
         "event_name": event_data.event_name,
+        "flyer": flyer_path,
+        "program_outline": program_outline_path,
         "field_name": data.field_name,
         "field_type": data.field_type,
         "field_validation": data.field_validation,

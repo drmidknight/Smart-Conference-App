@@ -68,20 +68,35 @@ async def get_Participant_Fields_By_Event_Id(event_id: int):
 
 
 import os
+# @participantfields_router.get("/getflyerByEventId/{event_id}")
+# async def get_flyer_By_Event_Id(event_id: str):
+#     data = session.query(Event).filter(Event.id == event_id).first()
 
-@participantfields_router.get("/getflyerByEventId/{event_id}")
-async def get_flyer_By_Event_Id(event_id: str):
-    data = session.query(Event).filter(Event.id == event_id).first()
+#     dirname = os.path.join(os.getcwd(), "flyer")
 
-    dirname = os.path.join(os.getcwd(), "flyer")
+#     fileResponse = FileResponse(f"{dirname}/{data.flyer}")
 
-    fileResponse = FileResponse(f"{dirname}/{data.flyer}")
-
-    if not data or fileResponse:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"{data.event_name} event flyer does not exist")
+#     if not data or fileResponse:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"{data.event_name} event flyer does not exist")
     
-    return FileResponse(f"{dirname}/{data.flyer}")
+#     return f"{dirname}/{data.flyer}"
+
+
+
+# @participantfields_router.get("/getflyerByEventId/{event_id}")
+# async def get_flyer_By_Event_Id(event_id: str):
+#     data = session.query(Event).filter(Event.id == event_id).first()
+
+#     dirname = os.path.join(os.getcwd(), "flyer")
+
+#     fileResponse = FileResponse(f"{dirname}/{data.flyer}")
+
+#     if not data or fileResponse:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"{data.event_name} event flyer does not exist")
+    
+#     return FileResponse(f"{dirname}/{data.flyer}")
 
 
 
@@ -99,16 +114,16 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
 
 
 
-@participantfields_router.get("/getflyerByEventName/{event_name}")
-async def getflyerByEventName(event_name: str):
-    data = session.query(Event).filter(Event.event_name == event_name).first()
+# @participantfields_router.get("/getflyerByEventName/{event_name}")
+# async def getflyerByEventName(event_name: str):
+#     data = session.query(Event).filter(Event.event_name == event_name).first()
 
-    dirname = os.path.join(os.getcwd(), "flyer")
+#     dirname = os.path.join(os.getcwd(), "flyer")
 
-    fileResponse = FileResponse(f"{dirname}/{data.flyer}")
+#     fileResponse = FileResponse(f"{dirname}/{data.flyer}")
 
-    if not data or fileResponse:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"{data.event_name} event flyer does not exist")
+#     if not data or fileResponse:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"{data.event_name} event flyer does not exist")
     
-    return FileResponse(f"{dirname}/{data.flyer}")
+#     return FileResponse(f"{dirname}/{data.flyer}")
