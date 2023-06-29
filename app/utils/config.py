@@ -8,16 +8,16 @@ class Settings(BaseSettings):
 
 
 
-    # MYSQL_SERVER = os.getenv("DATABASE_HOST")
-    # MYSQL_USER :str = os.environ.get("DATABASE_USER")
-    # MYSQL_PASSWORD :str= os.environ.get("DATABASE_PASSWORD")
-    # MYSQL_DB: str = 'smart_conference_app'
-    # MYSQL_PORT: str = '3131'
-    # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3131/smart_conference_app"
+    MYSQL_SERVER = os.getenv("DATABASE_HOST")
+    MYSQL_USER :str = os.environ.get("DATABASE_USER")
+    MYSQL_PASSWORD :str= os.environ.get("DATABASE_PASSWORD")
+    MYSQL_DB: str = 'smart_conference_app'
+    MYSQL_PORT: str = '3131'
+    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3131/smart_conference_app"
 
 
 
-    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3131/smart_conference_app"
+    # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3131/smart_conference_app"
 
 
 
