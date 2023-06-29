@@ -109,136 +109,148 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             <title>{event_data.event_name} CONFERENCE</title>
             <!DOCTYPE html>
             <html>
-            <head>
-                    <style>
-                        @media only screen and (max-width: 600px) {{
-                            /* Styles for mobile devices */
-                            
-                            body {{
-                                font-family: Arial, sans-serif;
-                                background-color: #f1f1f1;
-                                margin: 0;
-                                padding: 0;
-                            }}
-                            .container {{
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                justify-content: center;
-                                text-align: center;
-                                padding: 20px;
-                                background-color: #f9f9f9;
-                                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-                                border-radius: 5px;
-                                margin: 0 auto;
-                                margin-top: 20px;
-                            }}
-                            .container img {{
-                                max-width: 100%;
-                                margin-bottom: 10px;
-                                border-radius: 5px;
-                            }}
-                            h3, p {{
-                                margin: 0;
-                                margin-bottom: 12px;
-                                color: #333333;
-                                font-family: Arial, sans-serif;
-                            }}
-                            h3 {{
-                                font-size: 18px;
-                                font-weight: bold;
-                            }}
-                            p {{
-                                font-size: 14px;
-                                color: #666666;
-                                font-weight: normal;
-                            }}
-                            .welcome-section {{
-                                background-color: #e6f1ff;
-                                padding: 12px;
-                                border-radius: 4px;
-                                margin-bottom: 14px;
-                            }}
-                            .thankyou-section {{
-                                background-color: #FFA500
-;
-                                padding: 15px;
-                                border-radius: 5px;
-                            }}
-                        }}
-
-                        @media only screen and (min-width: 601px) {{
-                            /* Styles for desktop devices */
-                            body {{
-                                font-family: Arial, sans-serif;
-                                background-color: #FFA500
-;
-                                margin: 0;
-                                padding: 0;
-                            }}
-                            .container {{
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                justify-content: center;
-                                text-align: center;
-                                padding: 40px;
-                                background-color: #f9f9f9;
-                                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-                                border-radius: 5px;
-                                max-width: 400px;
-                                margin: 0 auto;
-                                margin-top: 40px;
-                            }}
-                            .container img {{
-                                max-width: 100%;
-                                margin-bottom: 20px;
-                                border-radius: 5px;
-                            }}
-                            h3, p {{
-                                margin: 0;
-                                margin-bottom: 18px;
-                                color: #333333;
-                                font-family: Arial, sans-serif;
-                            }}
-                            h3 {{
-                                font-size: 25px;
-                                font-weight: bold;
-                            }}
-                            p {{
-                                font-size: 16px;
-                                color: #666666;
-                                font-weight: normal;
-                            }}
-                            .welcome-section {{
-                                background-color: #e6f1ff;
-                                padding: 17px;
-                                border-radius: 4px;
-                                margin-bottom: 19px;
-                            }}
-                            .thankyou-section {{
-                                background-color: #FFA500
-;
-                                padding: 20px;
-                                border-radius: 5px;
-                            }}
-                        }}
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="welcome-section">
-                            <h4>Hi <b>{instance.name}</b></h4>
-                            <h3>Welcome to <b>{event_data.event_name} CONFERENCE</b></h3>
-                        </div>
-                        <div class="thankyou-section">
-                            <p>Thanks for showing interest in attending the upcoming <b>{event_data.event_name}</b> conference.</p>
-                            <p>We will send you a confirmation link for you to confirm your attendance.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                    """
+            <style>
+                @media only screen and (max-width: 600px) {{
+            /* Styles for mobile devices */
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #E0B0FF;
+                margin: 0;
+                padding: 0;
+            }}
+            
+            .container {{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 20px;
+                background-color: #E0B0FF; 
+                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                margin: 0 auto;
+                margin-top: 20px;
+            }}
+            
+            .container img {{
+                max-width: 100%;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }}
+            
+            h3, p {{
+                margin: 0;
+                margin-bottom: 12px;
+                color: #000000;
+                font-family: Arial, sans-serif;
+            }}
+            
+            h3 {{
+                font-size: 18px;
+                font-weight: bold;
+            }}
+            
+            p {{
+                font-size: 14px;
+                color: #E0B0FF;
+                font-weight: normal;
+            }}
+            
+            .welcome-section {{
+                background-color: #FFFFFF;
+                padding: 12px;
+                border-radius: 4px;
+                margin-bottom: 14px;
+            }}
+            
+            .thankyou-section {{
+                background-color: #FFFFFF;
+                padding: 12px;
+                border-radius: 4px;
+                margin-bottom:14px
+            }}
+        }}
+        
+        @media only screen and (min-width: 601px) {{
+            /* Styles for desktop devices */
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #E0B0FF;
+                margin: 0;
+                padding: 0;
+            }}
+            
+            .container {{
+                display: inline-flex; /* Updated to inline-flex */
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 40px;
+                background-color: #E0B0FF;
+                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                max-width: 400px;
+                margin: 0 auto;
+                margin-top: 40px;
+            }}
+            
+            .container img {{
+                max-width: 100%;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }}
+            
+            h3, p {{
+                margin: 0;
+                margin-bottom: 18px;
+                color: #000000;
+                font-family: Arial, sans-serif;
+            }}
+            
+            h3 {{
+                font-size: 25px;
+                font-weight: bold;
+            }}
+            
+            p {{
+                font-size: 16px;
+                color: #E0B0FF;
+                font-weight: normal;
+            }}
+            
+            .welcome-section {{
+                background-color: #FFFFFF;
+                padding: 17px;
+                border-radius: 4px;
+                margin-bottom: 19px;
+            }}
+            
+            .thankyou-section {{
+                background-color: #FFFFFF;
+                padding: 17pxpx;
+                border-radius: 4px;
+                margin-bottom: 19px;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <img src="http://dev-1.aiti-kace.com.gh:2020/event/read_image" width="600" height="400">
+    <div class="container">
+        <div class="welcome-section">
+            <h4>Hi <b>{instance.name}</b></h4>
+            <h3>Welcome to <b>{event_data.event_name} CONFERENCE</b></h3>
+        </div>
+        <div class="thankyou-section">
+            <p>Thanks for showing interest in attending the upcoming <b>{event_data.event_name}</b> conference.</p>
+            <p>We will send you a confirmation link for you to confirm your attendance.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
 
     message = MessageSchema(
         subject=" SMART CONFERENCE",

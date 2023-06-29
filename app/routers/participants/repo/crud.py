@@ -74,9 +74,9 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
 
     event_data = session.query(Event).filter(Event.id == participantRequest.event_id).first()
     read_flyer_image = read_flyer(participantRequest.event_id)
-    #db_flyer_name = f'app/flyers/{event_data.flyer}'
+    db_flyer_name = f'app/flyers/{event_data.flyer}'
 
-    #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
+    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
     data = {
         "phone_number": new_participant.phone_number,
         "email": new_participant.email,
