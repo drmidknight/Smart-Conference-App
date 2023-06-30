@@ -113,8 +113,8 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
                 @media only screen and (max-width: 600px) {{
             /* Styles for mobile devices */
             body {{
-                font-family: Arial, sans-serif;
-                background-color: #E0B0FF;
+                font-family: 'Roboto', sans-serif;
+                background-color: #000000;
                 margin: 0;
                 padding: 0;
             }}
@@ -126,7 +126,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
                 justify-content: center;
                 text-align: center;
                 padding: 20px;
-                background-color: #E0B0FF; 
+                background-color: #000000; 
                 box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
                 border-radius: 5px;
                 margin: 0 auto;
@@ -142,30 +142,30 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             h3, p {{
                 margin: 0;
                 margin-bottom: 12px;
-                color: #000000;
-                font-family: Arial, sans-serif;
+                color: #FFFFFF;
+                font-family: 'Roboto', sans-serif;;
             }}
             
             h3 {{
-                font-size: 18px;
+                font-size: 25px;
                 font-weight: bold;
             }}
             
             p {{
-                font-size: 14px;
-                color: #000000;
+                font-size: 25px;
+                color: #FFFFFF;
                 font-weight: normal;
             }}
             
             .welcome-section {{
-                background-color: #FFFFFF;
+                background-color: #000000;
                 padding: 12px;
                 border-radius: 4px;
                 margin-bottom: 14px;
             }}
             
             .thankyou-section {{
-                background-color: #FFFFFF;
+                background-color: #000000;
                 padding: 12px;
                 border-radius: 4px;
                 margin-bottom:14px
@@ -175,8 +175,8 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
         @media only screen and (min-width: 601px) {{
             /* Styles for desktop devices */
             body {{
-                font-family: Arial, sans-serif;
-                background-color: #E0B0FF;
+                font-family: 'Roboto', sans-serif;
+                background-color: #34495e;
                 margin: 0;
                 padding: 0;
             }}
@@ -188,7 +188,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
                 justify-content: center;
                 text-align: center;
                 padding: 40px;
-                background-color: #E0B0FF;
+                background-color: #34495e;
                 box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
                 border-radius: 5px;
                 max-width: 400px;
@@ -205,8 +205,8 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             h3, p {{
                 margin: 0;
                 margin-bottom: 18px;
-                color: #cc8899;
-                font-family: Arial, sans-serif;
+                color: #2c3e50;
+                font-family: 'Roboto', sans-serif;;
             }}
             
             h3 {{
@@ -228,8 +228,8 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
             }}
             
             .thankyou-section {{
-                background-color: #cc8899;
-                padding: 17pxpx;
+                background-color: #FFFFFF;
+                padding: 17px;
                 border-radius: 4px;
                 margin-bottom: 19px;
             }}
