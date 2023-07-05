@@ -6,23 +6,33 @@ from typing import Optional, List
 
 
 
+
 class ParticipantRequest(BaseModel):
-    name:Optional[str]
-    full_name:Optional[str]
-    first_name:Optional[str]
-    last_name:Optional[str]
-    other_name:Optional[str]
-    phone_number:Optional[str]
-    contact:Optional[str]
-    gender:Optional[str]
-    email:Optional[str]
-    address:Optional[str]
-    how_to_join:Optional[str]
-    registration_time:Optional[str]
-    organization:Optional[str]
-    time:Optional[str]
-    location:Optional[str]
+    form_values:Optional[str]
     event_id: Optional[int]
+
+
+    class Config:
+        orm_mode = True
+
+
+# class ParticipantRequest(BaseModel):
+#     name:Optional[str]
+#     full_name:Optional[str]
+#     first_name:Optional[str]
+#     last_name:Optional[str]
+#     other_name:Optional[str]
+#     phone_number:Optional[str]
+#     contact:Optional[str]
+#     gender:Optional[str]
+#     email:Optional[str]
+#     address:Optional[str]
+#     how_to_join:Optional[str]
+#     registration_time:Optional[str]
+#     organization:Optional[str]
+#     time:Optional[str]
+#     location:Optional[str]
+#     event_id: Optional[int]
 
 
 
@@ -57,7 +67,8 @@ class UpdateParticipant(BaseModel):
 
 
 
-
+class Field(BaseModel):
+    fields: Optional[str]
 
 
 # class ParticipantFieldRequest(BaseModel):
@@ -69,11 +80,7 @@ class UpdateParticipant(BaseModel):
 #     event_id:Optional[int]
 
 class ParticipantFieldRequest(BaseModel):
-    field_name: Optional[str]
-    field_type:Optional[str]
-    field_validation:Optional[str]
-    field_max_length:Optional[str]
-    field_min_length:Optional[str]
+    fields: Optional[str]
     event_id:Optional[int]
 
     class Config:

@@ -9,5 +9,5 @@ from routers.participants.endpoint import participantfields
 router = APIRouter()
 router.include_router(admin.admin_router)
 router.include_router(events.events_router)
-router.include_router(participants.router)
+#router.include_router(participants.router)
 router.include_router(participantfields.participantfields_router)

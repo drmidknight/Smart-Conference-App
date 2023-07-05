@@ -1,4 +1,4 @@
-from fastapi import status, Form
+from fastapi import status, Form, Request
 from routers.participants.schemas import participants
 from models.models import Participant, ParticipantFields, Event
 from utils.database import Database
@@ -29,15 +29,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # PARTICIPANT FIELDS CRUD ENDPOINT
 
 
-
 async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
 
     new_participant_field = ParticipantFields()
-    new_participant_field.field_name = participantFieldRequest.field_name
-    new_participant_field.field_type = participantFieldRequest.field_type
-    new_participant_field.field_validation = participantFieldRequest.field_validation
-    new_participant_field.field_max_length = participantFieldRequest.field_max_length
-    new_participant_field.field_min_length = participantFieldRequest.field_min_length
+    new_participant_field.fields = participantFieldRequest.fields
     new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
@@ -45,16 +40,13 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
     session.flush()
     session.refresh(new_participant_field, attribute_names=['id'])
     data = {
-        "field_name": new_participant_field.field_name,
-        "field_type": new_participant_field.field_type,
-        "field_validation": new_participant_field.field_validation,
-        "field_max_length": new_participant_field.field_max_length,
-        "field_min_length": new_participant_field.field_min_length,
+        "field_name": new_participant_field.fields,
         "event_id": new_participant_field.event_id
     }
     session.commit()
     session.close()
     return data
+
 
 
 
@@ -95,11 +87,7 @@ async def get_Participant_Fields_By_Id(event_id: int):
         "event_name": event_data.event_name,
         "flyer": flyer_path,
         "program_outline": program_outline_path,
-        "field_name": data.field_name,
-        "field_type": data.field_type,
-        "field_validation": data.field_validation,
-        "field_max_length": data.field_max_length,
-        "field_min_length": data.field_min_length
+        "field_name": data.fields
     }             
 
     return full_data
@@ -108,6 +96,35 @@ async def get_Participant_Fields_By_Id(event_id: int):
 
 
 
+
+
+
+
+# async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
+
+#     new_participant_field = ParticipantFields()
+#     new_participant_field.field_name = participantFieldRequest.field_name
+#     new_participant_field.field_type = participantFieldRequest.field_type
+#     new_participant_field.field_validation = participantFieldRequest.field_validation
+#     new_participant_field.field_max_length = participantFieldRequest.field_max_length
+#     new_participant_field.field_min_length = participantFieldRequest.field_min_length
+#     new_participant_field.event_id = participantFieldRequest.event_id
+#     new_participant_field.status = 1
+    
+#     session.add(new_participant_field)
+#     session.flush()
+#     session.refresh(new_participant_field, attribute_names=['id'])
+#     data = {
+#         "field_name": new_participant_field.field_name,
+#         "field_type": new_participant_field.field_type,
+#         "field_validation": new_participant_field.field_validation,
+#         "field_max_length": new_participant_field.field_max_length,
+#         "field_min_length": new_participant_field.field_min_length,
+#         "event_id": new_participant_field.event_id
+#     }
+#     session.commit()
+#     session.close()
+#     return data
 
 
 
@@ -135,11 +152,7 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         "event_name": event_data.event_name,
         "flyer": flyer_path,
         "program_outline": program_outline_path,
-        "field_name": data.field_name,
-        "field_type": data.field_type,
-        "field_validation": data.field_validation,
-        "field_max_length": data.field_max_length,
-        "field_min_length": data.field_min_length
+        "field_name": data.fields
     }             
 
     return full_data
