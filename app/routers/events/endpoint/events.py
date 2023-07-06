@@ -328,7 +328,7 @@ async def read_image():
     #dirname = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
     dirname = os.path.join(os.getcwd(), "flyer")
 
-    return FileResponse(f"{dirname}/FEMITECH.jpg")
+    return FileResponse(f"{dirname}/EID AL-ADHA.png")
 
 #     #return FileResponse("app/flyers/FEMITECH.jpg")
 
