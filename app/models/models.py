@@ -17,7 +17,7 @@ class Participant(Base):
     event_id = db.Column(db.Integer, ForeignKey('events.id'))
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-
+    events = relationship("Event", back_populates="participants")
 
 
 
