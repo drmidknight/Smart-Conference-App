@@ -56,38 +56,113 @@ class UpdateParticipant(BaseModel):
 
 
 class Options(BaseModel):
-    zero:Optional[str]
-    one:Optional[str]
+    zero:Optional[str] | None = None
+    one:Optional[str] | None = None
 
 
 
 class Validators(BaseModel):
-    email:Optional[str]
-    maximum:Optional[str]
-    maxLength:Optional[str]
-    minimum:Optional[str]
-    minLength:Optional[str]
-    required:Optional[str]
+    email:Optional[str] | None = None
+    maximum:Optional[int] | None = None
+    maxLength:Optional[int] | None = None
+    minimum:Optional[int] | None = None
+    minLength:Optional[int] | None = None
+    required:Optional[str] | None = None
 
 
 
 class Fields(BaseModel):
-    fieldName:Optional[str]
-    fieldType:Optional[str]
+    fieldName:Optional[str] | None = None
+    fieldType:Optional[str] | None = None
     options:Optional[list[Options]] | None = None
     validators: Optional[list[Validators]] | None = None
 
 
 
 class ParticipantFieldRequest(BaseModel):
-    fields: Optional[list[Fields]] | None = None
+    fields: Optional[list[str]] | None = None
     event_id:Optional[int]
 
 
 
 
     class Config:
-        orm_mode = True
+        orm_mode = True,
+        schema_extra = {
+            "fields": [
+                {
+                    "fieldName": "name",
+                    "fieldType": "textField",
+                    "options": [
+                        {
+                            "zero": "",
+                            "one": ""
+                        }
+                    ],
+                    "validators": [
+                        {
+                            "email": "",
+                            "maximum": "",
+                            "maxLength": "50",
+                            "minimum": "",
+                            "minLength": "3",
+                            "required": "true"
+                        }
+                    ]
+                },
+
+                {
+                    "fieldName": "gender",
+                    "fieldType": "dropdown",
+                    "options": [
+                        {
+                            "zero": "male",
+                            "one": "female"
+                        }
+                    ],
+                    "validators": [
+                        {
+                            "email": "",
+                            "maximum": "",
+                            "maxLength": "",
+                            "minimum": "",
+                            "minLength": "",
+                            "required": "true"
+                        }
+                    ]
+                },
+
+                {
+                    "fieldName": "email",
+                    "fieldType": "textField",
+                    "options": [
+                        {
+                            "zero": "",
+                            "one": ""
+                        }
+                    ],
+                    "validators": [
+                        {
+                            "email": "",
+                            "maximum": "",
+                            "maxLength": "50",
+                            "minimum": "",
+                            "minLength": "3",
+                            "required": "true"
+                        }
+                    ]
+                }
+            ]
+        }
+
+
+
+
+
+
+
+
+
 
 
 
