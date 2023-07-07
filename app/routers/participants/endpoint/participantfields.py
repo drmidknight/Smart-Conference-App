@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from routers.participants.repo import participantfields
 from fastapi.responses import FileResponse
 from fastapi.exceptions import HTTPException
-from typing import Optional, List
+from typing import Optional, List, Any
 
 
 
@@ -34,7 +34,7 @@ session = database.get_db_session(engine)
 
 # # PARTICIPANT FIELDS CRUD ENDPOINT
 
-@participantfields_router.post("/addParticipantFields", response_description="Participant Field data added into the database")
+@participantfields_router.post("/addParticipantFields",  response_description="Participant Field data added into the database")
 async def create_participants_Fields(participantFieldRequest: participants.ParticipantFieldRequest):
 
     return await participantfields.add_participant_fields(participantFieldRequest)
@@ -44,7 +44,7 @@ async def create_participants_Fields(participantFieldRequest: participants.Parti
 
 
 @participantfields_router.get("/getAllParticipantFields")
-async def all_Participant_Fields():
+async def all_Participant_Fields()-> Any:
 
     return await participantfields.all_Participant_Fields()
 

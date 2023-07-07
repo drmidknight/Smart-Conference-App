@@ -323,17 +323,8 @@ from utils.config import settings
 
 @events_router.get("/getflyerEventById/{id}")
 async def get_flyer_Event_By_Id(id: str):
-    data = session.query(Event).filter(Event.id == id).first()
-
-    dirname = os.path.join(os.getcwd(), "flyer")
-
-    fileResponse = FileResponse(f"{dirname}/{data.flyer}")
-
-    if not data or fileResponse:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Event flyer does not exist")
     
-    return fileResponse
+    return crud.get_flyer_Event_By_Id(id)
 
 
 
@@ -351,13 +342,13 @@ async def get_flyer_By_Event_By_Name(event_name: str):
 
     dirname = os.path.join(os.getcwd(), "flyer")
 
-    fileResponse = FileResponse(f"{dirname}/{data.flyer}")
+    eventByNamefileResponse = FileResponse(f"{dirname}/{data.flyer}")
 
-    if not data or fileResponse:
+    if data or eventByNamefileResponse is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Event flyer does not exist")
     
-    return fileResponse
+    return eventByNamefileResponse
 
 
 

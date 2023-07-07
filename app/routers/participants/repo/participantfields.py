@@ -6,7 +6,8 @@ from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from mail import sendmail
 from fastapi.responses import FileResponse
-
+import json
+from typing import Any
 
 
 
@@ -27,7 +28,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # PARTICIPANT FIELDS CRUD ENDPOINT
-
 
 async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
 
@@ -50,12 +50,36 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
 
 
 
+
+
+
+# async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
+
+#     new_participant_field = ParticipantFields()
+#     new_participant_field.fields = participantFieldRequest.fields
+#     new_participant_field.event_id = participantFieldRequest.event_id
+#     new_participant_field.status = 1
+    
+#     session.add(new_participant_field)
+#     session.flush()
+#     session.refresh(new_participant_field, attribute_names=['id'])
+#     data = {
+#         "field_name": new_participant_field.fields,
+#         "event_id": new_participant_field.event_id
+#     }
+#     session.commit()
+#     session.close()
+#     return data
+
+
+
+
 from sqlalchemy import and_, desc
 
 
 
 
-async def all_Participant_Fields():
+async def all_Participant_Fields()-> Any:
     data = session.query(ParticipantFields).all()
     return data
 

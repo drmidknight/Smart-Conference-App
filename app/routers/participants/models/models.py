@@ -60,7 +60,7 @@ class Participant(Base):
 class ParticipantFields(Base):
     __tablename__ = 'participant_fields'
     id = db.Column(db.Integer, primary_key=True)
-    fields = db.Column(db.Text, nullable=True)
+    fields = db.Column(db.JSON, nullable=True)
     event_id = db.Column(db.Integer, ForeignKey('events.id'))
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))

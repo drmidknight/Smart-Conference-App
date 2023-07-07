@@ -1,7 +1,8 @@
 from fastapi import Form
 from pydantic import BaseModel, EmailStr, Field
 from fastapi import Form
-from typing import Optional, List
+from typing import Any, Callable, List, Optional, Sequence
+from pydantic.fields import ModelField
 
 
 
@@ -54,34 +55,36 @@ class UpdateParticipant(BaseModel):
 
 
 
+class Options(BaseModel):
+    zero:Optional[str]
+    one:Optional[str]
 
 
 
+class Validators(BaseModel):
+    email:Optional[str]
+    maximum:Optional[str]
+    maxLength:Optional[str]
+    minimum:Optional[str]
+    minLength:Optional[str]
+    required:Optional[str]
 
 
 
+class Fields(BaseModel):
+    fieldName:Optional[str]
+    fieldType:Optional[str]
+    options:Optional[list[Options]] | None = None
+    validators: Optional[list[Validators]] | None = None
 
 
-
-
-
-
-
-class Field(BaseModel):
-    fields: Optional[str]
-
-
-# class ParticipantFieldRequest(BaseModel):
-#     field_name: List[str] = []
-#     field_type:List[str] = []
-#     field_validation:List[str] = []
-#     field_max_length:List[str] = []
-#     field_min_length:List[str] = []
-#     event_id:Optional[int]
 
 class ParticipantFieldRequest(BaseModel):
-    fields: Optional[str]
+    fields: Optional[list[Fields]] | None = None
     event_id:Optional[int]
+
+
+
 
     class Config:
         orm_mode = True
@@ -89,11 +92,11 @@ class ParticipantFieldRequest(BaseModel):
 
 
 
-class UpdateParticipantField(BaseModel):
-    id:Optional[int]
-    field_name:Optional[str]
-    field_type:Optional[str]
-    field_validation:Optional[str]
-    field_max_length:Optional[str]
-    field_min_length:Optional[str]
-    event_id:Optional[int]
+# class UpdateParticipantField(BaseModel):
+#     id:Optional[int]
+#     field_name:Optional[str]
+#     field_type:Optional[str]
+#     field_validation:Optional[str]
+#     field_max_length:Optional[str]
+#     field_min_length:Optional[str]
+#     event_id:Optional[int]
