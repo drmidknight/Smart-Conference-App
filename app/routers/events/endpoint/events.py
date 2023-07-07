@@ -321,6 +321,52 @@ from utils.config import settings
 
 
 
+@events_router.get("/getflyerEventById/{id}")
+async def get_flyer_Event_By_Id(id: str):
+    data = session.query(Event).filter(Event.id == id).first()
+
+    dirname = os.path.join(os.getcwd(), "flyer")
+
+    fileResponse = FileResponse(f"{dirname}/{data.flyer}")
+
+    if not data or fileResponse:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event flyer does not exist")
+    
+    return fileResponse
+
+
+
+
+
+
+
+
+
+
+
+@events_router.get("/getflyerByEventByName/{event_name}")
+async def get_flyer_By_Event_By_Name(event_name: str):
+    data = session.query(Event).filter(Event.event_name == event_name).first()
+
+    dirname = os.path.join(os.getcwd(), "flyer")
+
+    fileResponse = FileResponse(f"{dirname}/{data.flyer}")
+
+    if not data or fileResponse:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event flyer does not exist")
+    
+    return fileResponse
+
+
+
+
+
+
+
+
+
 # from fastapi.responses import FileResponse
 
 @events_router.get("/read_image")
@@ -331,4 +377,8 @@ async def read_image():
     return FileResponse(f"{dirname}/EID AL-ADHA.png")
 
 #     #return FileResponse("app/flyers/FEMITECH.jpg")
+
+
+
+
 
