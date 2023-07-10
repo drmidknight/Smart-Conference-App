@@ -1,7 +1,7 @@
 from fastapi import Form
 from pydantic import BaseModel, EmailStr, Field
 from fastapi import Form
-from typing import Any, Callable, List, Optional, Sequence
+from typing import Any, Callable, List, Optional, Sequence, Tuple
 from pydantic.fields import ModelField
 
 
@@ -56,32 +56,50 @@ class UpdateParticipant(BaseModel):
 
 
 class Options(BaseModel):
-    zero:Optional[str] | None = None
-    one:Optional[str] | None = None
+    zero:Optional[str]
+    one:Optional[str]
 
 
 
 class Validators(BaseModel):
-    email:Optional[str] | None = None
-    maximum:Optional[int] | None = None
-    maxLength:Optional[int] | None = None
-    minimum:Optional[int] | None = None
-    minLength:Optional[int] | None = None
-    required:Optional[str] | None = None
+    email:Optional[str]
+    maximum:Optional[int]
+    maxLength:Optional[int]
+    minimum:Optional[int]
+    minLength:Optional[int]
+    required:Optional[str]
 
 
 
 class Fields(BaseModel):
-    fieldName:Optional[str] | None = None
-    fieldType:Optional[str] | None = None
-    options:Optional[list[Options]] | None = None
-    validators: Optional[list[Validators]] | None = None
+    fieldName:Optional[str]
+    fieldType:Optional[str]
+    options: list[Options]
+    validators: list[Validators]
+
+
+
+data =[{
+    "fieldName": "name",
+    "fieldType": "textField",
+    "options": "",
+    "validators":{ "required": "true", "email": "", "maxLength": 60, "minLength": 4, "maximum": "", "minimum": "" }
+  }]
+
 
 
 
 class ParticipantFieldRequest(BaseModel):
-    fields: Optional[list[Fields]] | None = None
+    fields: Any
     event_id:Optional[int]
+
+
+
+
+
+
+
+
 
 
 
@@ -93,13 +111,11 @@ class ParticipantFieldRequest(BaseModel):
                 {
                     "fieldName": "name",
                     "fieldType": "textField",
-                    "options": [
+                    "options":
                         {
-                            "zero": "",
-                            "one": ""
-                        }
-                    ],
-                    "validators": [
+                            "0": ""
+                        },
+                    "validators":
                         {
                             "email": "",
                             "maximum": "",
@@ -108,49 +124,6 @@ class ParticipantFieldRequest(BaseModel):
                             "minLength": "3",
                             "required": "true"
                         }
-                    ]
-                },
-
-                {
-                    "fieldName": "gender",
-                    "fieldType": "dropdown",
-                    "options": [
-                        {
-                            "zero": "male",
-                            "one": "female"
-                        }
-                    ],
-                    "validators": [
-                        {
-                            "email": "",
-                            "maximum": "",
-                            "maxLength": "",
-                            "minimum": "",
-                            "minLength": "",
-                            "required": "true"
-                        }
-                    ]
-                },
-
-                {
-                    "fieldName": "email",
-                    "fieldType": "textField",
-                    "options": [
-                        {
-                            "zero": "",
-                            "one": ""
-                        }
-                    ],
-                    "validators": [
-                        {
-                            "email": "",
-                            "maximum": "",
-                            "maxLength": "50",
-                            "minimum": "",
-                            "minLength": "3",
-                            "required": "true"
-                        }
-                    ]
                 }
             ]
         }

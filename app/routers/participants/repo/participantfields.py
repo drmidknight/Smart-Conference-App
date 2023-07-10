@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from mail import sendmail
 from fastapi.responses import FileResponse
 import json
-from typing import Any
+from typing import Any, Optional
 from fastapi.encoders import jsonable_encoder
 
 
@@ -31,9 +31,20 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # PARTICIPANT FIELDS CRUD ENDPOINT
 
 async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
+    
+    db_query = session.query(ParticipantFields).filter(
+            ParticipantFields.event_id == participantFieldRequest.event_id
+        ).first()
 
+
+    if db_query is not None:
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+           detail=f"Event (" + \
+        str(participantFieldRequest.event_id) + ") already exists")
+    
+    
     new_participant_field = ParticipantFields()
-    new_participant_field.fields = participantFieldRequest.fields
+    new_participant_field.fields = json.dumps(participantFieldRequest.fields)
     new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
@@ -50,32 +61,6 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
 
 
 
-
-
-
-
-# async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
-
-#     new_participant_field = ParticipantFields()
-#     new_participant_field.fields = participantFieldRequest.fields
-#     new_participant_field.event_id = participantFieldRequest.event_id
-#     new_participant_field.status = 1
-    
-#     session.add(new_participant_field)
-#     session.flush()
-#     session.refresh(new_participant_field, attribute_names=['id'])
-#     data = {
-#         "field_name": new_participant_field.fields,
-#         "event_id": new_participant_field.event_id
-#     }
-#     session.commit()
-#     session.close()
-#     return data
-
-
-
-
-from sqlalchemy import and_, desc
 
 
 
@@ -114,7 +99,7 @@ async def get_Participant_Fields_By_Id(event_id: int):
     #     "field_name": data.fields
     # }             
 
-    return data
+    return  data
 
 
 
