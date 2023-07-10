@@ -9,7 +9,7 @@ from pydantic.fields import ModelField
 
 
 class ParticipantRequest(BaseModel):
-    form_values:Optional[str]
+    form_values:Any
     event_id: Optional[int]
 
 

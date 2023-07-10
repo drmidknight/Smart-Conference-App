@@ -6,7 +6,7 @@ from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from mail import sendmail
 from fastapi.responses import FileResponse
-
+import json
 
 
 
@@ -33,38 +33,24 @@ async def read_flyer(event_id: int):
 
 async def add_participants(participantRequest: participants.ParticipantRequest):
 
-    email_query = session.query(Participant).filter(
-        Participant.email == participantRequest.email).first()
+    # email_query = session.query(Participant).filter(
+    #     Participant.email == participantRequest.email).first()
     
-    phone_query = session.query(Participant).filter(
-        Participant.phone_number == participantRequest.phone_number).first()
+    # phone_query = session.query(Participant).filter(
+    #     Participant.phone_number == participantRequest.phone_number).first()
 
 
-    contact_query = session.query(Participant).filter(
-        Participant.contact == participantRequest.contact).first()
+    # contact_query = session.query(Participant).filter(
+    #     Participant.contact == participantRequest.contact).first()
 
 
-    if email_query or phone_query or contact_query:
-        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-           detail=f"Participant with email or phone number already exists")
+    # if email_query or phone_query or contact_query:
+    #     raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+    #        detail=f"Participant with email or phone number already exists")
 
 
     new_participant = Participant()
-    new_participant.name = participantRequest.name
-    new_participant.full_name = participantRequest.full_name
-    new_participant.first_name = participantRequest.first_name
-    new_participant.last_name = participantRequest.last_name
-    new_participant.other_name = participantRequest.other_name
-    new_participant.phone_number = participantRequest.phone_number
-    new_participant.contact = participantRequest.contact
-    new_participant.gender = participantRequest.gender
-    new_participant.email = participantRequest.email
-    new_participant.address = participantRequest.address
-    new_participant.how_to_join = participantRequest.how_to_join
-    new_participant.registration_time = participantRequest.registration_time
-    new_participant.organization = participantRequest.organization
-    new_participant.time = participantRequest.time
-    new_participant.location = participantRequest.location
+    new_participant.form_values = json.dumps(participantRequest.form_values)
     new_participant.event_id = participantRequest.event_id
     new_participant.status = 0
     
@@ -72,23 +58,11 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
 
-    event_data = session.query(Event).filter(Event.id == participantRequest.event_id).first()
-    read_flyer_image = read_flyer(participantRequest.event_id)
-    db_flyer_name = f'app/flyers/{event_data.flyer}'
+    #event_data = session.query(Event).filter(Event.id == participantRequest.event_id).first()
+    #read_flyer_image = read_flyer(participantRequest.event_id)
+    #db_flyer_name = f'app/flyers/{event_data.flyer}'
 
-    await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
-    data = {
-        "phone_number": new_participant.phone_number,
-        "email": new_participant.email,
-        "status": new_participant.status,
-        "registration_time": new_participant.registration_time,
-        "event_id": new_participant.event_id,
-        "gender": new_participant.gender,
-        "name": new_participant.name,
-        "organization": new_participant.organization,
-        "how_to_join": new_participant.how_to_join,
-        "location": new_participant.location
-    }
+    #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
     session.commit()
     session.close()
     return new_participant

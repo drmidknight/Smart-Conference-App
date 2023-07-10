@@ -82,10 +82,10 @@ async def updateParticipant(updateParticipant: participants.UpdateParticipant):
 
 
 
-@router.get("/phone_number_email/{phone_number_email}")
-async def phone_number_email(phone_number_email: str):
+# @router.get("/phone_number_email/{phone_number_email}")
+# async def phone_number_email(phone_number_email: str):
     
-    return await crud.phone_number_email(phone_number_email)
+#     return await crud.phone_number_email(phone_number_email)
 
 
 
@@ -96,10 +96,10 @@ async def phone_number_email(phone_number_email: str):
 
 
 
-@router.get("/attend_program_by/{how_to_join}")
-async def get_Participant_By_how_to_join(how_to_join: str):
+# @router.get("/attend_program_by/{how_to_join}")
+# async def get_Participant_By_how_to_join(how_to_join: str):
     
-    return await crud.get_Participant_By_how_to_join(how_to_join)
+#     return await crud.get_Participant_By_how_to_join(how_to_join)
 
 
 
@@ -108,10 +108,10 @@ async def get_Participant_By_how_to_join(how_to_join: str):
 
 
 
-@router.delete("/delete/{id}")
-async def deleteParticipant(id: str):
+# @router.delete("/delete/{id}")
+# async def deleteParticipant(id: str):
     
-    return await crud.deleteParticipant(id)
+#     return await crud.deleteParticipant(id)
 
 
 
@@ -119,10 +119,10 @@ async def deleteParticipant(id: str):
 
 
 
-@router.get("/participant_event/{id}")
-async def show_participant_event_all(id: int):
+# @router.get("/participant_event/{id}")
+# async def show_participant_event_all(id: int):
     
-    return await crud.show_participant_event_all(id)
+#     return await crud.show_participant_event_all(id)
 
 
 
@@ -132,27 +132,27 @@ async def show_participant_event_all(id: int):
 
 
 
-@router.get("/countParticipant")
-async def count_all_Participant():
+# @router.get("/countParticipant")
+# async def count_all_Participant():
     
-    return await crud.count_all_Participant()
+#     return await crud.count_all_Participant()
 
 
 
 
 
-@router.get("/countParticipantConfirm")
-async def count_all_Participant_Confirm():
+# @router.get("/countParticipantConfirm")
+# async def count_all_Participant_Confirm():
     
-    return await crud.count_all_Participant_Confirm()
+#     return await crud.count_all_Participant_Confirm()
 
 
 
 
 
-@router.get("/countParticipantNotConfirm")
-async def count_all_Participant_Not_Confirm():
+# @router.get("/countParticipantNotConfirm")
+# async def count_all_Participant_Not_Confirm():
     
-    return await crud.count_all_Participant_Not_Confirm()
+#     return await crud.count_all_Participant_Not_Confirm()
 
 

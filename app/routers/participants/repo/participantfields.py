@@ -148,20 +148,19 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
     
     event_data = session.query(Event).filter(Event.event_name == event_name).first()
 
+    # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    # program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"event (" + str(event_name) + ") is not found")
 
 
-    flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
-    program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+    
 
     full_data = {
-        "id": data.id,
         "event_name": event_data.event_name,
-        "flyer": flyer_path,
-        "program_outline": program_outline_path,
-        "field_name": data.fields
+        "fields": data.fields
     }             
 
     return full_data

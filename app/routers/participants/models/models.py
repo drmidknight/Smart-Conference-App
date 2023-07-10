@@ -13,7 +13,7 @@ Base = declarative_base()
 class Participant(Base):
     __tablename__ = 'participants'
     id = db.Column(db.Integer, primary_key=True)
-    form_values = db.Column(db.Text, nullable=True)
+    form_values = db.Column(db.JSON, nullable=True)
     status = db.Column(Boolean, default=False, index=False)
     event_id = db.Column(db.Integer, ForeignKey('events.id'))
     created_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP"))
