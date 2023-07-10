@@ -80,7 +80,7 @@ class Fields(BaseModel):
 
 
 class ParticipantFieldRequest(BaseModel):
-    fields: Optional[list[str]] | None = None
+    fields: Optional[list[Fields]] | None = None
     event_id:Optional[int]
 
 
