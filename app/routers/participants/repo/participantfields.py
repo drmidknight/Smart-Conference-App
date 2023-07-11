@@ -36,7 +36,7 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
             ParticipantFields.event_id == participantFieldRequest.event_id
         ).first()
 
-
+#    event_url = f"http://localhost:4200/" + str(db_event_name) + ""
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail=f"Event (" + \
@@ -45,7 +45,7 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
     json_data = jsonable_encoder({i: item for i, item in enumerate(participantFieldRequest.fields)})
     
     new_participant_field = ParticipantFields()
-    new_participant_field.fields = json.dumps(json_data)
+    new_participant_field.fields = json.dumps("[" + str(json_data) + "]")
     new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
@@ -76,10 +76,10 @@ async def all_Participant_Fields()-> Any:
 
 
 from utils.config import settings
+import re
 
 
-
-async def get_Participant_Fields_By_Id(event_id: int):
+async def get_Participant_Fields_By_Id(event_id: int)-> Any:
 
     data = session.query(ParticipantFields).filter(
         ParticipantFields.event_id == event_id).first()
@@ -98,9 +98,22 @@ async def get_Participant_Fields_By_Id(event_id: int):
     #     "flyer": flyer_path,
     #     "program_outline": program_outline_path,
     #     "field_name": data.fields
-    # }             
+    # }
 
-    return  data
+    # db_data = jsonable_encoder(data)
+
+
+    # test= data.fields
+    # str2 = test.replace('"','')
+
+    test = json.loads(data.fields)
+   
+    db_data = {
+        "fields": test,
+        "event_id": data.event_id
+    }
+       
+    return  jsonable_encoder(db_data)
 
 
 
@@ -147,7 +160,7 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         Event.event_name == event_name
         ).first()
 
-    event_data = session.query(Event).filter(Event.event_name == event_name).first()
+    #event_data = session.query(Event).filter(Event.event_name == event_name).first()
 
     # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
     # program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
@@ -157,9 +170,11 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
                             detail=f"event (" + str(event_name) + ") is not found")
 
 
+    test = json.loads(data.fields)
+   
     full_data = {
-        "event_name": event_data.event_name,
-        "fields": data.fields
-    }             
+        "fields": test,
+        "event_id": data.event_id
+    }        
 
     return full_data
