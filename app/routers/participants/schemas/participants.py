@@ -79,12 +79,13 @@ class Fields(BaseModel):
 
 
 
-data =[{
+data = [{
     "fieldName": "name",
     "fieldType": "textField",
     "options": "",
     "validators":{ "required": "true", "email": "", "maxLength": 60, "minLength": 4, "maximum": "", "minimum": "" }
-  }]
+  }
+  ]
 
 
 

@@ -42,9 +42,10 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
            detail=f"Event (" + \
         str(participantFieldRequest.event_id) + ") already exists")
     
+    json_data = jsonable_encoder({i: item for i, item in enumerate(participantFieldRequest.fields)})
     
     new_participant_field = ParticipantFields()
-    new_participant_field.fields = json.dumps(participantFieldRequest.fields)
+    new_participant_field.fields = json.dumps(json_data)
     new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
@@ -56,7 +57,7 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
         "event_id": new_participant_field.event_id
     }
     session.commit()
-    session.close()
+    session.close() 
     return data
 
 
@@ -145,7 +146,7 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         ParticipantFields.event_id == Event.id,
         Event.event_name == event_name
         ).first()
-    
+
     event_data = session.query(Event).filter(Event.event_name == event_name).first()
 
     # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
@@ -155,8 +156,6 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"event (" + str(event_name) + ") is not found")
 
-
-    
 
     full_data = {
         "event_name": event_data.event_name,
