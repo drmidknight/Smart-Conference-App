@@ -41,7 +41,9 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
            detail=f"Event (" + \
         str(participantFieldRequest.event_id) + ") already exists")
     
-    json_data = jsonable_encoder({i: item for i, item in enumerate(participantFieldRequest.fields)})
+    json_data = jsonable_encoder({key: item for key, item in enumerate(participantFieldRequest.fields)})
+
+    #json_data = jsonable_encoder({key.replace('"', ''): item for key, item in enumerate(participantFieldRequest.fields)})
     
     new_participant_field = ParticipantFields()
     new_participant_field.fields = json.dumps(json_data)
@@ -76,7 +78,6 @@ async def all_Participant_Fields()-> Any:
 
 
 from utils.config import settings
-import re
 
 
 async def get_Participant_Fields_By_Id(event_id: int)-> Any:
@@ -163,12 +164,11 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"event (" + str(event_name) + ") is not found")
 
-
-    test = json.loads(data.fields)
+    fields = json.loads(data.fields)
    
-    full_data = {
-        "fields": test,
-        "event_id": data.event_id
-    }        
-
-    return full_data
+    db_data = {
+        "event_name": event_name,
+        "fields": [fields]
+    }
+       
+    return  jsonable_encoder(db_data)
