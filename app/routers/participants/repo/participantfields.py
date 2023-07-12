@@ -36,7 +36,6 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
             ParticipantFields.event_id == participantFieldRequest.event_id
         ).first()
 
-#    event_url = f"http://localhost:4200/" + str(db_event_name) + ""
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail=f"Event (" + \
@@ -45,7 +44,8 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
     json_data = jsonable_encoder({i: item for i, item in enumerate(participantFieldRequest.fields)})
     
     new_participant_field = ParticipantFields()
-    new_participant_field.fields = json.dumps("[" + str(json_data) + "]")
+    new_participant_field.fields = json.dumps(json_data)
+    # new_participant_field.fields = json.dumps("[" + str(json_data) + "]")
     new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
@@ -100,16 +100,10 @@ async def get_Participant_Fields_By_Id(event_id: int)-> Any:
     #     "field_name": data.fields
     # }
 
-    # db_data = jsonable_encoder(data)
-
-
-    # test= data.fields
-    # str2 = test.replace('"','')
-
-    test = json.loads(data.fields)
+    fields = json.loads(data.fields)
    
     db_data = {
-        "fields": test,
+        "fields": [fields],
         "event_id": data.event_id
     }
        
