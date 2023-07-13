@@ -67,18 +67,10 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
 
 
 
-async def all_Participant_Fields()-> Any:
+async def all_Participant_Fields():
     data = session.query(ParticipantFields).all()
-
-    fields = json.loads(data.fields)
-
-    db_data = {
-        "id": data.id,
-        "event_id": data.event_id,
-        "fields": [fields]
-    }
        
-    return  jsonable_encoder(db_data)
+    return  jsonable_encoder(data)
 
 
 
@@ -93,7 +85,7 @@ async def get_Participant_Fields_By_Id(event_id: int)-> Any:
     data = session.query(ParticipantFields).filter(
         ParticipantFields.event_id == event_id).first()
 
-    #event_data = session.query(Event).filter(Event.id == event_id).first()
+    
     
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -101,7 +93,7 @@ async def get_Participant_Fields_By_Id(event_id: int)-> Any:
 
     # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
     # program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
-
+    event_data = session.query(Event).filter(Event.id == event_id).first()
     # full_data = {
     #     "event_name": event_data.event_name,
     #     "flyer": flyer_path,
@@ -112,8 +104,10 @@ async def get_Participant_Fields_By_Id(event_id: int)-> Any:
     fields = json.loads(data.fields)
    
     db_data = {
-        "fields": [fields],
-        "event_id": data.event_id
+        "event_id": data.event_id,
+        "event_name": event_data.event_name,
+        "fields": [fields]
+        
     }
        
     return  jsonable_encoder(db_data)
@@ -142,8 +136,10 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
     fields = json.loads(data.fields)
    
     db_data = {
-        "fields": [fields],
-        "event_name": event_name
+        "event_id": data.event_id,
+         "event_name": event_name,
+        "fields": [fields]
+       
     }
        
     return  jsonable_encoder(db_data)
