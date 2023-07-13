@@ -38,7 +38,7 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
 
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-           detail=f"Event (" + \
+           detail="Event (" + \
         str(participantFieldRequest.event_id) + ") already exists")
     
     json_data = jsonable_encoder({key: item for key, item in enumerate(participantFieldRequest.fields)})
@@ -47,7 +47,6 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
     
     new_participant_field = ParticipantFields()
     new_participant_field.fields = json.dumps(json_data)
-    # new_participant_field.fields = json.dumps("[" + str(json_data) + "]")
     new_participant_field.event_id = participantFieldRequest.event_id
     new_participant_field.status = 1
     
@@ -70,7 +69,16 @@ async def add_participant_fields(participantFieldRequest: participants.Participa
 
 async def all_Participant_Fields()-> Any:
     data = session.query(ParticipantFields).all()
-    return data
+
+    fields = json.loads(data.fields)
+
+    db_data = {
+        "id": data.id,
+        "event_id": data.event_id,
+        "fields": [fields]
+    }
+       
+    return  jsonable_encoder(db_data)
 
 
 
@@ -118,34 +126,6 @@ async def get_Participant_Fields_By_Id(event_id: int)-> Any:
 
 
 
-# async def add_participant_fields(participantFieldRequest: participants.ParticipantFieldRequest):
-
-#     new_participant_field = ParticipantFields()
-#     new_participant_field.field_name = participantFieldRequest.field_name
-#     new_participant_field.field_type = participantFieldRequest.field_type
-#     new_participant_field.field_validation = participantFieldRequest.field_validation
-#     new_participant_field.field_max_length = participantFieldRequest.field_max_length
-#     new_participant_field.field_min_length = participantFieldRequest.field_min_length
-#     new_participant_field.event_id = participantFieldRequest.event_id
-#     new_participant_field.status = 1
-    
-#     session.add(new_participant_field)
-#     session.flush()
-#     session.refresh(new_participant_field, attribute_names=['id'])
-#     data = {
-#         "field_name": new_participant_field.field_name,
-#         "field_type": new_participant_field.field_type,
-#         "field_validation": new_participant_field.field_validation,
-#         "field_max_length": new_participant_field.field_max_length,
-#         "field_min_length": new_participant_field.field_min_length,
-#         "event_id": new_participant_field.event_id
-#     }
-#     session.commit()
-#     session.close()
-#     return data
-
-
-
 
 
 
@@ -155,20 +135,57 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         Event.event_name == event_name
         ).first()
 
-    #event_data = session.query(Event).filter(Event.event_name == event_name).first()
-
-    # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
-    # program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
-
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"event (" + str(event_name) + ") is not found")
+                            detail= "Event (" + str(event_name) + ") is not found")
 
     fields = json.loads(data.fields)
    
     db_data = {
-        "event_name": event_name,
-        "fields": [fields]
+        "fields": [fields],
+        "event_name": event_name
     }
        
     return  jsonable_encoder(db_data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# async def get_Participant_Fields_By_Event_Name(event_name: str):
+#     data = session.query(ParticipantFields).filter(
+#         ParticipantFields.event_id == Event.id,
+#         Event.event_name == event_name
+#         ).first()
+
+#     #event_data = session.query(Event).filter(Event.event_name == event_name).first()
+
+#     # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+#     # program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+
+#     if not data:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"event (" + str(event_name) + ") is not found")
+
+#     fields = json.loads(data.fields)
+   
+#     db_data = {
+#         "fields": [fields],
+#         "event_name": event_name
+#     }
+       
+#     return  jsonable_encoder(db_data)

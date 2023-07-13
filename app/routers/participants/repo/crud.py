@@ -86,7 +86,7 @@ async def get_Participant_By_Id(id: int):
     
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Participant with the id (" + str(id) + ") is not found")
+                            detail="Participant with the id (" + str(id) + ") is not found")
     return data
     
 
@@ -116,7 +116,7 @@ async def updateParticipant(updateParticipant: participants.UpdateParticipant):
     session.commit()
     if not is_Participant_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Participant with the id (" + str(participant_id) + ") is not found")
+            detail="Participant with the id (" + str(participant_id) + ") is not found")
 
     data = session.query(Participant).filter(Participant.id == participant_id).one()
     return data
@@ -156,7 +156,7 @@ async def get_Participant_By_how_to_join(how_to_join: str):
             Participant.how_to_join == how_to_join).all()
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Attend by (" + str(how_to_join) + ") is not available")
+            detail="Attend by (" + str(how_to_join) + ") is not available")
     elif how_to_join == "virtual":
             data = session.query(Participant).filter(Participant.how_to_join == how_to_join).all()
     elif how_to_join == "onsite":
@@ -179,7 +179,7 @@ async def deleteParticipant(id: str):
     session.commit()
     if not db_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Participant with the id (" + str(id) + ") is not available")
+            detail="Participant with the id (" + str(id) + ") is not available")
 
     data = session.query(Participant).filter(Participant.id == id).one()
     return data
@@ -197,7 +197,7 @@ async def show_participant_event_all(id: int):
     
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Participant with the id {id} is not available")
+                            detail="Participant with the id {id} is not available")
     return data
 
 
