@@ -7,10 +7,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 
 
-# APIRouter creates path operations for staffs module
+# APIRouter creates path operations for users module
 admin_router = APIRouter(
     prefix="/admin",
-    tags=["Admin"],
+    tags=["Admin and Users"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -27,7 +27,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @admin_router.post('/login', response_model=admin.Token)
-async def admin_login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     return await crud.admin_authentication(form_data)
 
@@ -37,8 +37,8 @@ async def admin_login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 
-@admin_router.post("/add", response_description="Admin data added into the database")
-async def add_admin(adminRequest: admin.AdminRequest):
+@admin_router.post("/add", response_description="Admin or User data added into the database")
+async def create(adminRequest: admin.AdminRequest):
 
     return await crud.create_admin(adminRequest)
 
@@ -47,15 +47,15 @@ async def add_admin(adminRequest: admin.AdminRequest):
 
 
 
-@admin_router.get("/getAllAdmin")
-async def all_admin():
+@admin_router.get("/all")
+async def get_all():
     return await crud.get_all_admin()
 
 
 
 
-@admin_router.get("/getAdminById/{id}")
-async def getAdminById(id: str):
+@admin_router.get("/id/{id}")
+async def get_by_id(id: str):
     
     return await crud.getAdminById(id)
 
@@ -66,7 +66,7 @@ async def getAdminById(id: str):
 
 
 @admin_router.put("/update")
-async def updateAdmin(updateAdmin: admin.UpdateAdmin):
+async def update(updateAdmin: admin.UpdateAdmin):
    
    return await crud.updateAdmin(updateAdmin)
 
@@ -76,8 +76,8 @@ async def updateAdmin(updateAdmin: admin.UpdateAdmin):
 
 
 
-@admin_router.get("/getAdminByEmail/{email}")
-async def getAdminByEmail(email: str):
+@admin_router.get("/email/{email}")
+async def get_By_Email(email: str):
     
     return await crud.getAdminByEmail(email)
 
@@ -88,7 +88,7 @@ async def getAdminByEmail(email: str):
 
 
 @admin_router.delete("/delete/{id}")
-async def deleteAdmin(id: str):
+async def delete(id: str):
     
     return await crud.deleteAdmin(id)
     
@@ -99,7 +99,7 @@ async def deleteAdmin(id: str):
 
 
 
-@admin_router.get("/countAdmin")
-async def count_all_Admin():
+@admin_router.get("/count")
+async def count_all():
 
     return await crud.count_all_Admin()

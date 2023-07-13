@@ -46,7 +46,7 @@ async def create_participants(participantRequest: participants.ParticipantReques
 
 
 
-@router.get("/getAllParticipant")
+@router.get("/all")
 async def all_Participant():
 
     return await crud.all_Participant()
@@ -55,7 +55,7 @@ async def all_Participant():
 
 
 
-@router.get("/getParticipantById/{id}")
+@router.get("/id/{id}")
 async def get_Participant_By_Id(id: int):
     
     return await crud.get_Participant_By_Id(id)
@@ -72,6 +72,24 @@ async def get_Participant_By_Id(id: int):
 async def updateParticipant(updateParticipant: participants.UpdateParticipant):
     
     return await crud.updateParticipant(updateParticipant)
+
+
+
+
+
+
+
+
+
+
+@router.get("/event_id/{event_id}")
+async def get_Participants_By_Event_ID(event_id: int):
+    
+    return await crud.get_Participants_By_Event_ID(event_id)
+
+
+
+
 
 
 

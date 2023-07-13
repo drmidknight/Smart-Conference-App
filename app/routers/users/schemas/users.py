@@ -4,26 +4,18 @@ from typing import Optional
 
 
 
-class AdminRequest(BaseModel):
+class UserRequest(BaseModel):
     name:str
     email:str
-    contact:Optional[str]
-    usertype: Optional[str]
-    password: Optional[str]
-    event_id: Optional[int]
 
     class Config():
         orm_mode = True
 
 
-class UpdateAdmin(BaseModel):
+class UpdateUser(BaseModel):
     id:Optional[int]
     name:Optional[str]
-    contact:Optional[str]
-    usertype: Optional[str]
     email:Optional[str]
-    password: Optional[str]
-    event_id: Optional[int]
 
     class Config():
         orm_mode = True
@@ -48,7 +40,7 @@ class Token(BaseModel):
     token_type: str
 
     
-class ShowAdmin(BaseModel):
+class ShowUser(BaseModel):
     id: int
     email: str
 

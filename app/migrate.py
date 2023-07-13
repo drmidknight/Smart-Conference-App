@@ -1,10 +1,7 @@
-from models.models import Admin
+#from models.models import Admin
 from routers.admin.models.models import Admin
 from utils.database import Database
 from models.models import Base
-# from routers.admin.models.models import Base
-# from routers.events.models.models import Base
-# from routers.participants.models.models import Base
 from passlib.context import CryptContext
 from sqlalchemy import text
 
@@ -24,11 +21,12 @@ Base.metadata.create_all(bind=engine)
 # SEEDING STAFF DATA INTO DATABASE
 
 db_addStaff = Admin()
-db_addStaff.admin_name = "Super Admin"
+db_addStaff.name = "Super Admin"
 db_addStaff.email = "admin@admin.com"
 db_addStaff.password = pwd_context.hash("openforme")
 db_addStaff.contact = "0245678987",
-db_addStaff.status = "Active"
+db_addStaff.status = "Active",
+db_addStaff.usertype = "Admin"
 db.add(db_addStaff)
 
 

@@ -34,7 +34,7 @@ session = database.get_db_session(engine)
 
 # # PARTICIPANT FIELDS CRUD ENDPOINT
 
-@participantfields_router.post("/addParticipantFields",  response_description="Participant Field data added into the database")
+@participantfields_router.post("/create",  response_description="Participant Field data added into the database")
 async def create_participants_Fields(participantFieldRequest: participants.ParticipantFieldRequest):
 
     return await participantfields.add_participant_fields(participantFieldRequest)
@@ -43,7 +43,7 @@ async def create_participants_Fields(participantFieldRequest: participants.Parti
 
 
 
-@participantfields_router.get("/getAllParticipantFields")
+@participantfields_router.get("/all")
 async def all_Participant_Fields()-> Any:
 
     return await participantfields.all_Participant_Fields()
@@ -56,7 +56,7 @@ async def all_Participant_Fields()-> Any:
 
 
 
-@participantfields_router.get("/getParticipantFieldByEventId/{event_id}")
+@participantfields_router.get("/id/{event_id}")
 async def get_Participant_Fields_By_Event_Id(event_id: int):
     
     return await participantfields.get_Participant_Fields_By_Id(event_id)
@@ -106,7 +106,7 @@ import os
 
 
 
-@participantfields_router.get("/getParticipantFieldByEventName/{event_name}")
+@participantfields_router.get("/event_name/{event_name}")
 async def get_Participant_Fields_By_Event_Name(event_name: str):
     
     return await participantfields.get_Participant_Fields_By_Event_Name(event_name)

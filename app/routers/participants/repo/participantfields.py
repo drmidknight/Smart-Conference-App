@@ -139,7 +139,6 @@ async def get_Participant_Fields_By_Event_Name(event_name: str):
         "event_id": data.event_id,
          "event_name": event_name,
         "fields": [fields]
-       
     }
        
     return  jsonable_encoder(db_data)

@@ -7,15 +7,12 @@ from uuid import uuid4
 import random
 import string
 from dotenv  import dotenv_values
-from fastapi import Depends, File, UploadFile, Form, BackgroundTasks
-from fastapi_jwt_auth import AuthJWT
 from datetime import datetime, time, timedelta
 from utils.config import *
 from jose import jwt
 from utils.database import Database
 from utils.config import settings
-from fastapi.responses import FileResponse
-import shutil
+from routers.admin.models.models import Admin
 
 
 config_credentials = dotenv_values(".env")
@@ -49,57 +46,59 @@ conf = ConnectionConfig(
 
 
 
-def generate_reset_password_token(expires_delta: int = None):
-    if expires_delta is not None:
-        expires_delta = datetime.utcnow() + expires_delta
-    else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
-    to_encode = {"exp": expires_delta}
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, settings.ALGORITHM)
-    return encoded_jwt
+
+
+
+async def sendemailtonewusers(email: EmailSchema, instance: Participant):
+
+    html = f"""                    
+                    <br>
+                    <p>Hi {instance.last_name}, {instance.first_name} !</p>
+                    <br>
+                    <p>You have been added and assigned to <b>GI-KACE APPRAISAL MANAGEMENT SYSTEM</b></p>
+                    <br><br>
+                    Change your password to access the application.
+                    <br><br>
+                    
+                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
+                    background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
+                    Change password 
+                    </a>
+                    <br><br>
+                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser</p>
+                    http://localhost:4200/login/resetpassword?token={instance.reset_password_token}
+                    
+    """
+
+
+    message = MessageSchema(
+        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
+        recipients=email,
+        body=html,
+        subtype=MessageType.html)
+
+    fm = FastMail(conf)
+    await fm.send_message(message)
+    return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 
 
 
-# def generate_reset_password_token(Authorize: AuthJWT = Depends()):
-#     expires = timedelta(minutes=3)
-#     token = Authorize.create_access_token(subject="test",expires_time=expires)
-#     return  token
 
 
 
-# def generate_reset_password_token(size=150, chars=string.ascii_lowercase + string.digits):
-#     return ''.join(random.choice(chars) for _ in range(size))
-
-
-#async def read_image():
-   # return FileResponse("app/static/images/AG.jpg")
 
 
 
-# async def send_file(background_tasks: BackgroundTasks,
-#     file: UploadFile = File(...),
-#     email:EmailStr = Form(...)
-#     ) -> JSONResponse:
 
 
-#IMAGEDIR = "app/flyers"
 
 
-# async def read_image():
-#     return FileResponse("app/flyers/AG.jpg")
 
 
 async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, read_flyer_image):
 
     event_data = session.query(Event).filter(Event.id == instance.event_id).first()
-
-   
-    #fileResponse = FileResponse(f'{IMAGEDIR}/{event_data.flyer}')
-    
-
-    # <img src="app/endpoints/images/{event_data.flyer}" alt="Event Flyer" weight="100" height="100" />
             
     html = f"""
             <html lang="en">
@@ -301,7 +300,7 @@ async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Par
                     <br><br>
                     
                     <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                    background: #0275d8; color:white;" href="http://localhost:4200/reset-password?token={instance.reset_password_token}">
+                    background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
                     Reset password 
                     </a>
                     <br><br>
@@ -309,7 +308,7 @@ async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Par
                     <br>
                     <b>Link expires in 3 hours</b>
                     </p>
-                    http://localhost:4200/reset-password?token={instance.reset_password_token}
+                    http://localhost:4200/login/resetpassword?token={instance.reset_password_token}
                     <br><br>
                     <p><b>Ignore this email if you have not requested to reset your password</b></p>
                     
@@ -326,55 +325,3 @@ async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Par
     await fm.send_message(message)
     return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async def sendEmailToNewAdmin(email: EmailSchema, instance: Participant):
-
-    html = f"""                    
-                    <br>
-                    <p>Hi {instance.admin_name} !</p>
-                    <br>
-                    <p>You have requested to reset your password. Click on the button below to reset your password</p>
-
-                    <br><br>
-                    
-                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                    background: #0275d8; color:white;" href="http://localhost:4200/reset-password?token={instance.reset_password_token}">
-                    Reset password 
-                    </a>
-                    <br><br>
-                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser
-                    <br>
-                    <b>Link expires in 3 hours</b>
-                    </p>
-                    http://localhost:4200/reset-password?token={instance.reset_password_token}
-                    <br><br>
-                    <p><b>Ignore this email if you have not requested to reset your password</b></p>
-                    
-    """
-
-
-    message = MessageSchema(
-        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
-        recipients=email,
-        body=html,
-        subtype=MessageType.html)
-
-    fm = FastMail(conf)
-    await fm.send_message(message)
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})

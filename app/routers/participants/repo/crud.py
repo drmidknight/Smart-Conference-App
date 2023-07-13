@@ -7,6 +7,8 @@ from passlib.context import CryptContext
 from mail import sendmail
 from fastapi.responses import FileResponse
 import json
+from fastapi.encoders import jsonable_encoder
+from typing import Any, Optional
 
 
 
@@ -65,6 +67,9 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
     #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
     session.commit()
     session.close()
+    db_data = {
+
+    }
     return new_participant
 
 
@@ -232,3 +237,42 @@ async def count_all_Participant_Not_Confirm():
     return data
 
 
+
+
+
+
+
+async def get_Participants_By_Event_ID(event_id: int)-> Any:
+
+    data = session.query(Participant).filter(
+        Participant.event_id == event_id).all()
+
+    
+    
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event with the id (" + str(event_id) + ") is not found")
+
+    # flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    # program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+    event_data = session.query(Event).filter(Event.id == event_id).first()
+    # full_data = {
+    #     "event_name": event_data.event_name,
+    #     "flyer": flyer_path,
+    #     "program_outline": program_outline_path,
+    #     "field_name": data.fields
+    # }
+
+    fields_con: Any = data
+
+    fields = json.loads(fields_con.form_values)
+   
+    db_data = {
+        "id": data.id,
+        "event_id": data.event_id,
+        "event_name": event_data.event_name,
+        "form_values": [fields]
+        
+    }
+       
+    return  jsonable_encoder([db_data])

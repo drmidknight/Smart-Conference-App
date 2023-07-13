@@ -48,6 +48,20 @@ def get_hashed_password(password):
 
 
 
+def generate_reset_password_token(expires_delta: int = None):
+    if expires_delta is not None:
+        expires_delta = datetime.utcnow() + expires_delta
+    else:
+        expires_delta = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+    to_encode = {"exp": expires_delta}
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, settings.ALGORITHM)
+    return encoded_jwt
+
+
+
+
+
 def verify_token(token: str):
     try:
         payload = jwt.decode(
@@ -82,16 +96,6 @@ def verify_token(token: str):
 
 
 
-
-
-# async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    
-#     return verify_token(token, db)
-
-# def get_current_active_user(
-#     current_admin = Security(get_current_user)):
-
-#      return current_admin
 
 
 
