@@ -1,18 +1,16 @@
-from typing import List
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, EmailStr
+from routers.admin.models.models import Admin
 from models.models import Participant, Event
 from starlette.responses import JSONResponse
-from uuid import uuid4
-import random
-import string
-from dotenv  import dotenv_values
-from datetime import datetime, time, timedelta
-from utils.config import *
-from jose import jwt
+from pydantic import BaseModel, EmailStr
 from utils.database import Database
+from dotenv  import dotenv_values
 from utils.config import settings
-from routers.admin.models.models import Admin
+from utils.config import *
+from typing import List
+
+
+
 
 
 config_credentials = dotenv_values(".env")
@@ -27,7 +25,6 @@ class EmailSchema(BaseModel):
 
 
 
-PROGRAMOUTLINEDIR = "program_outlines/"
 
 
 
@@ -49,37 +46,192 @@ conf = ConnectionConfig(
 
 
 
-async def sendemailtonewusers(email: EmailSchema, instance: Participant):
+async def sendemailtonewusers(email: EmailSchema, instance: Admin):
 
-    html = f"""                    
-                    <br>
-                    <p>Hi {instance.last_name}, {instance.first_name} !</p>
-                    <br>
-                    <p>You have been added and assigned to <b>GI-KACE APPRAISAL MANAGEMENT SYSTEM</b></p>
-                    <br><br>
-                    Change your password to access the application.
-                    <br><br>
-                    
+
+    html = f"""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="UTF-8">
+             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>GI-KACE SMART CONFERENCE APP</title>
+            <style>
+                @media only screen and (max-width: 600px) {{
+            /* Styles for mobile devices */
+            body {{
+                font-family: 'Roboto', sans-serif;
+                background-color: #000000;
+                margin: 0;
+                padding: 0;
+            }}
+            
+            .container {{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 20px;
+                background-color: #000000; 
+                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                margin: 0 auto;
+                margin-top: 20px;
+            }}
+            
+            .container img {{
+                max-width: 100%;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }}
+            
+            h3, p {{
+                margin: 0;
+                margin-bottom: 12px;
+                color: #FFFFFF;
+                font-family: 'Roboto', sans-serif;;
+            }}
+            
+            h3 {{
+                font-size: 25px;
+                font-weight: bold;
+            }}
+            
+            p {{
+                font-size: 25px;
+                color: #FFFFFF;
+                font-weight: normal;
+            }}
+            
+            .welcome-section {{
+                background-color: #000000;
+                padding: 12px;
+                border-radius: 4px;
+                margin-bottom: 14px;
+            }}
+            
+            .thankyou-section {{
+                background-color: #000000;
+                padding: 12px;
+                border-radius: 4px;
+                margin-bottom:14px
+            }}
+        }}
+        
+        @media only screen and (min-width: 601px) {{
+            /* Styles for desktop devices */
+            body {{
+                font-family: 'Roboto', sans-serif;
+                background-color: #34495e;
+                margin: 0;
+                padding: 0;
+            }}
+            
+            .container {{
+                display: inline-flex; /* Updated to inline-flex */
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 40px;
+                background-color: #34495e;
+                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                max-width: 400px;
+                margin: 0 auto;
+                margin-top: 40px;
+            }}
+            
+            .container img {{
+                max-width: 100%;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }}
+            
+            h3, p {{
+                margin: 0;
+                margin-bottom: 18px;
+                color: #2c3e50;
+                font-family: 'Roboto', sans-serif;;
+            }}
+            
+            h3 {{
+                font-size: 25px;
+                font-weight: bold;
+            }}
+            
+            p {{
+                font-size: 16px;
+                color: #000000;
+                font-weight: normal;
+            }}
+            
+            .welcome-section {{
+                background-color: #FFFFFF;
+                padding: 17px;
+                border-radius: 4px;
+                margin-bottom: 19px;
+            }}
+            
+            .thankyou-section {{
+                background-color: #FFFFFF;
+                padding: 17px;
+                border-radius: 4px;
+                margin-bottom: 19px;
+            }}
+        }}
+            </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="welcome-section">
+                        <h4>Hi <b>{instance.name}</b></h4>
+                        <h3>You have been added and assigned to <b>GI-KACE SMART CONFERENCE APP</b></h3>
+                            as a <b><big> ( {instance.usertype} )</b></big>
+                    </div>
+                    <div class="thankyou-section">
+                        Change your password to access the application.<br><br>
                     <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                    background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
-                    Change password 
+                        background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
+                        Change password 
                     </a>
                     <br><br>
                     <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser</p>
                     http://localhost:4200/login/resetpassword?token={instance.reset_password_token}
-                    
+                    </div>
+                </div>
+            </body>
+            </html>
     """
 
 
+
+
     message = MessageSchema(
-        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
+        subject="GI-KACE SMART CONFERENCE APP",
         recipients=email,
         body=html,
         subtype=MessageType.html)
 
     fm = FastMail(conf)
     await fm.send_message(message)
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    return JSONResponse(status_code=200, content={"message": "email has been sent successfully"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

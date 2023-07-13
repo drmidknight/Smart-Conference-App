@@ -88,8 +88,8 @@ class ParticipantFields(Base):
 class Admin(Base):
     __tablename__ = 'admins'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=True, unique=True)
-    contact = db.Column(db.String(255), nullable=True, unique=True)
+    name = db.Column(db.String(255), nullable=True)
+    contact = db.Column(db.String(255), nullable=True)
     email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=True)
     usertype = db.Column(db.String(255), nullable=True)

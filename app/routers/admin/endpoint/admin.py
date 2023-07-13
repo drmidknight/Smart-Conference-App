@@ -77,9 +77,9 @@ async def update(updateAdmin: admin.UpdateAdmin):
 
 
 @admin_router.get("/email/{email}")
-async def get_By_Email(email: str):
+async def get_by_email(email: str):
     
-    return await crud.getAdminByEmail(email)
+    return await crud.get_by_email(email)
 
 
 

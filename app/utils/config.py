@@ -8,16 +8,16 @@ class Settings(BaseSettings):
 
 
 
-    # MYSQL_SERVER = os.getenv("DATABASE_HOST")
-    # MYSQL_USER :str = os.environ.get("DATABASE_USER")
-    # MYSQL_PASSWORD :str= os.environ.get("DATABASE_PASSWORD")
-    # MYSQL_DB: str = 'smart_conference_app'
-    # MYSQL_PORT: str = '3131'
-    # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3131/smart_conference_app"
+    MYSQL_SERVER = os.getenv("DATABASE_HOST")
+    MYSQL_USER :str = os.environ.get("DATABASE_USER")
+    MYSQL_PASSWORD :str= os.environ.get("DATABASE_PASSWORD")
+    MYSQL_DB: str = 'smart_conference_app'
+    MYSQL_PORT: str = '3131'
+    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@mysql:3131/smart_conference_app"
 
 
 
-    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app"
+    #SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3307/smart_conference_app"
 
 
 
@@ -42,15 +42,25 @@ class Settings(BaseSettings):
 
 
 
-    MAIL_USERNAME: str = 'obwebsitedesign@gmail.com'
-    MAIL_PASSWORD: str = 'mqzcxllgcoprfxia'
-    MAIL_FROM: str = 'obwebsitedesign@gmail.com'
+    MAIL_USERNAME: str = '5e5a7d13b4a389'
+    MAIL_PASSWORD: str = 'd4031fd321d74e'
+    MAIL_FROM: str = 'admin@admin.com'
     MAIL_PORT: int = 587
-    MAIL_SERVER: str = 'smtp.gmail.com'
+    MAIL_SERVER: str = 'sandbox.smtp.mailtrap.io'
     MAIL_STARTTLS = True
     MAIL_SSL_TLS = False
     USE_CREDENTIALS = True
     VALIDATE_CERTS = True
+
+    # MAIL_USERNAME: str = 'obwebsitedesign@gmail.com'
+    # MAIL_PASSWORD: str = 'mqzcxllgcoprfxia'
+    # MAIL_FROM: str = 'obwebsitedesign@gmail.com'
+    # MAIL_PORT: int = 587
+    # MAIL_SERVER: str = 'smtp.gmail.com'
+    # MAIL_STARTTLS = True
+    # MAIL_SSL_TLS = False
+    # USE_CREDENTIALS = True
+    # VALIDATE_CERTS = True
 
     TWILIO_PHONE_NUMBER: str = '+16196584362'
     TWILIO_AUTH_TOKEN: str = '7b6c506ee07337cc3d02536d5119c4b2'

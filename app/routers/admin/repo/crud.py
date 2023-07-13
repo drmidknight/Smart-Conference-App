@@ -82,7 +82,7 @@ async def create_admin(adminRequest: admin.AdminRequest):
     session.add(new_admin)
     session.flush()
     session.refresh(new_admin, attribute_names=['id'])
-    #await sendemailtonewusers([adminRequest.email], new_admin)
+    await sendemailtonewusers([adminRequest.email], new_admin)
     session.commit()
     session.close()
     return new_admin
@@ -151,16 +151,23 @@ async def updateAdmin(updateAdmin: admin.UpdateAdmin):
 
 
 
-async def getAdminByEmail(email: str):
-    data = session.query(Admin).filter(Admin.email == email).all()
+
+
+async def get_by_email(email: str):
+
+    user_db_data = session.query(Admin).filter(Admin.email == email).update({
+        Admin.password : None,
+        Admin.reset_password_token : authentication.generate_reset_password_token()
+    }, synchronize_session=False)
+    session.flush()
+    session.commit()
     
-    if not data:
+    if not user_db_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Admin or User with the email {email} is not found")
+            detail="Admin or User with the email (" + str(email) + ") is not found")
+
+    data = session.query(Admin).filter(Admin.email == email).one()
     return data
-
-
-
 
 
 
