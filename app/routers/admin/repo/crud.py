@@ -1,13 +1,13 @@
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, status, Depends
-from routers.admin.schemas import admin
-from models.models import Admin
-from utils.database import Database
-from auth import authentication
+from mail.sendmail import sendemailtonewusers
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordRequestForm
-from mail.sendmail import sendemailtonewusers
+from routers.admin.schemas import admin
+from utils.database import Database
 from utils.config import settings
+from models.models import Admin
+from auth import authentication
 from datetime import timedelta
 
 
@@ -25,7 +25,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-
+## function to authentication all admin and users
 async def admin_authentication(form_data: OAuth2PasswordRequestForm = Depends()):
     
     data=session.query(Admin).filter(Admin.email==form_data.username).first()
@@ -36,10 +36,7 @@ async def admin_authentication(form_data: OAuth2PasswordRequestForm = Depends())
 
         db_data = {
             "access_token":access_token,
-            "token_type": "bearer",
-            "email": form_data.username,
-            "usertype": data.usertype,
-            "event_id": data.event_id
+            "token_type": "bearer"
         }
 
         return db_data
@@ -58,7 +55,7 @@ async def admin_authentication(form_data: OAuth2PasswordRequestForm = Depends())
 
 
 
-
+## function to create new admin and users
 
 async def create_admin(adminRequest: admin.AdminRequest):
 
@@ -67,18 +64,11 @@ async def create_admin(adminRequest: admin.AdminRequest):
  
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-           detail="Admin or User with email or phone number (" + \
+           detail="Admin or User with email (" + \
         str(adminRequest.email) + ") already exists")
     
-    new_admin = Admin()
-    new_admin.name = adminRequest.name
-    new_admin.email = adminRequest.email
-    new_admin.contact = adminRequest.contact
-    new_admin.usertype = adminRequest.usertype
-    new_admin.event_id = adminRequest.event_id
-    new_admin.password = pwd_context.hash("password")
+    new_admin = Admin(**adminRequest.dict())
     new_admin.reset_password_token = authentication.generate_reset_password_token()
-    new_admin.status = "Active"
     session.add(new_admin)
     session.flush()
     session.refresh(new_admin, attribute_names=['id'])
@@ -96,11 +86,10 @@ async def create_admin(adminRequest: admin.AdminRequest):
 
 
 
+## function to get all admin and users base on their active status
 
-
-
-async def get_all_admin():
-    data = session.query(Admin).filter(Admin.status == "Active").all()
+async def get_all():
+    data = session.query(Admin).all()
     return data
 
 
@@ -108,6 +97,7 @@ async def get_all_admin():
 
 
 
+## function to get admin or users base on id
 
 async def getAdminById(id: str):
     data = session.query(Admin).filter(Admin.id == id).all()
@@ -122,7 +112,7 @@ async def getAdminById(id: str):
 
 
 
-
+## function to update admin or users base on id
 
 async def updateAdmin(updateAdmin: admin.UpdateAdmin):
     adminID = updateAdmin.id
@@ -152,7 +142,7 @@ async def updateAdmin(updateAdmin: admin.UpdateAdmin):
 
 
 
-
+## function to get admin or user base on email
 async def get_by_email(email: str):
 
     user_db_data = session.query(Admin).filter(Admin.email == email).update({
@@ -177,6 +167,21 @@ async def get_by_email(email: str):
 
 
 
+## function to get admin or user base on token
+async def get_by_token(token: str):
+
+    user_db_data = session.query(Admin).filter(Admin.reset_password_token == token).update({
+        Admin.password : None
+    }, synchronize_session=False)
+    session.flush()
+    session.commit()
+    
+    if not user_db_data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid Token")
+
+    data = session.query(Admin).filter(Admin.reset_password_token == token).one()
+    return data
 
 
 
@@ -184,6 +189,9 @@ async def get_by_email(email: str):
 
 
 
+
+
+## function to delete all admin and users base on id
 async def deleteAdmin(id: str):
     db_data = session.query(Admin).filter(Admin.id == id).update({
             Admin.status: "InActive"
@@ -203,7 +211,7 @@ async def deleteAdmin(id: str):
 
 
 
-
+## function to count all admin and users
 async def count_all_Admin():
     data = session.query(Admin).count()
     return data

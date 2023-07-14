@@ -1,13 +1,15 @@
+from fastapi.security import OAuth2PasswordRequestForm
+from passlib.context import CryptContext
+from routers.admin.schemas import admin
 from fastapi import APIRouter, Depends
 from utils.database import Database
-from routers.admin.schemas import admin
 from routers.admin.repo import crud
-from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordRequestForm
 
 
 
-# APIRouter creates path operations for users module
+
+
+# APIRouter creates path operations for admin and users module
 admin_router = APIRouter(
     prefix="/admin",
     tags=["Admin and Users"],
@@ -26,6 +28,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
+
+## function to authentication all admin and users
 @admin_router.post('/login', response_model=admin.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
@@ -36,7 +40,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 
-
+## function to create new admin and users
 @admin_router.post("/add", response_description="Admin or User data added into the database")
 async def create(adminRequest: admin.AdminRequest):
 
@@ -46,14 +50,16 @@ async def create(adminRequest: admin.AdminRequest):
 
 
 
-
+## function to get all admin and users base on their active status
 @admin_router.get("/all")
 async def get_all():
-    return await crud.get_all_admin()
+    return await crud.get_all()
 
 
 
 
+
+## function to get admin or users base on id
 @admin_router.get("/id/{id}")
 async def get_by_id(id: str):
     
@@ -64,7 +70,7 @@ async def get_by_id(id: str):
 
 
 
-
+## function to update admin or users base on id
 @admin_router.put("/update")
 async def update(updateAdmin: admin.UpdateAdmin):
    
@@ -75,7 +81,7 @@ async def update(updateAdmin: admin.UpdateAdmin):
 
 
 
-
+## function to get admin or user base on email
 @admin_router.get("/email/{email}")
 async def get_by_email(email: str):
     
@@ -85,8 +91,20 @@ async def get_by_email(email: str):
 
 
 
+## function to get admin or user base on token
+@admin_router.get("/token/{token}")
+async def get_by_token(token: str):
+    
+    return await crud.get_by_token(token)
 
 
+
+
+
+
+
+
+## function to delete all admin and users base on id
 @admin_router.delete("/delete/{id}")
 async def delete(id: str):
     
@@ -98,7 +116,7 @@ async def delete(id: str):
 
 
 
-
+## function to count all admin and users
 @admin_router.get("/count")
 async def count_all():
 

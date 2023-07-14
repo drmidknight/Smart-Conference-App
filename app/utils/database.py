@@ -1,13 +1,15 @@
-from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import as_declarative
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from .config import settings
 from typing import Any
 
 
-metadata_obj = MetaData()
 
-#SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{settings.MYSQL_USER}:{settings.MYSQL_PASSWORD}@{settings.MYSQL_SERVER}:3307/{settings.MYSQL_DB}"
+
+
+
+metadata_obj = MetaData()
 
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URL, 

@@ -1,9 +1,16 @@
-from fastapi import APIRouter
-from routers.admin.endpoint import admin
-from routers.events.endpoint import events
+from routers.participants.endpoint import participantfields
 from routers.participants.endpoint import participants
 from routers.attendances.endpoint import attendances
-from routers.participants.endpoint import participantfields
+from routers.events.endpoint import events
+from routers.admin.endpoint import admin
+from fastapi import APIRouter
+
+
+
+
+
+
+
 
 
 router = APIRouter()

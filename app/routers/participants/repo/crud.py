@@ -35,21 +35,6 @@ async def read_flyer(event_id: int):
 
 async def add_participants(participantRequest: participants.ParticipantRequest):
 
-    # email_query = session.query(Participant).filter(
-    #     Participant.email == participantRequest.email).first()
-    
-    # phone_query = session.query(Participant).filter(
-    #     Participant.phone_number == participantRequest.phone_number).first()
-
-
-    # contact_query = session.query(Participant).filter(
-    #     Participant.contact == participantRequest.contact).first()
-
-
-    # if email_query or phone_query or contact_query:
-    #     raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-    #        detail=f"Participant with email or phone number already exists")
-
 
     new_participant = Participant()
     new_participant.form_values = json.dumps(participantRequest.form_values)
@@ -59,17 +44,8 @@ async def add_participants(participantRequest: participants.ParticipantRequest):
     session.add(new_participant)
     session.flush()
     session.refresh(new_participant, attribute_names=['id'])
-
-    #event_data = session.query(Event).filter(Event.id == participantRequest.event_id).first()
-    #read_flyer_image = read_flyer(participantRequest.event_id)
-    #db_flyer_name = f'app/flyers/{event_data.flyer}'
-
-    #await sendmail.sendEmailToNewParticipant([new_participant.email], new_participant, read_flyer_image)
     session.commit()
     session.close()
-    db_data = {
-
-    }
     return new_participant
 
 

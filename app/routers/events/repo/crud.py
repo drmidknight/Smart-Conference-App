@@ -1,7 +1,5 @@
 from fastapi import APIRouter, status, Depends, File, UploadFile, Form
 from routers.events.schemas.events import EventRequest, UpdateEventRequest
-# from routers.admin.models.models import Admin
-# from routers.events.models.models import Event
 from models.models import Admin, Event
 from utils.database import Database
 from utils.config import settings
@@ -43,16 +41,16 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...),
+async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
                 registration_time:str = Form(None) ,how_to_join:str = Form(None),
                   number_of_participants:str = Form(None),
                 description:str = Form(None), flyer: Optional[UploadFile] = File(None),
                 program_outline: Optional[UploadFile] = File(None),
-                #current_admin: Admin = Depends(authentication.get_current_user)
+                current_admin: Admin = Depends(authentication.get_current_user)
                 ):
 
-    #admin_id = current_admin.id
+    admin_id = current_admin.id
 
     db_query = session.query(Event).filter(
             Event.event_name == event_name
@@ -60,13 +58,13 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
 
     if db_query is not None:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-           detail=f"Event (" + \
+           detail="Event (" + \
         str(event_name) + ") already exists")
 
 
 
-    flyer_name = f"flyer-" + str(event_name) + ".jpg"
-    program_outline_name = f"program_outline-" + str(event_name) + ".pdf"
+    flyer_name = "flyer-" + str(event_name) + ".jpg"
+    program_outline_name = "program_outline-" + str(event_name) + ".pdf"
 
     new_event = Event()
     new_event.event_name = event_name
@@ -79,7 +77,7 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
     new_event.registration_time = registration_time
     new_event.number_of_participants = number_of_participants
     new_event.description = description
-    #new_event.admin_id = admin_id
+    new_event.admin_id = admin_id
     new_event.status = "Active"
     
     session.add(new_event)
@@ -93,7 +91,7 @@ async def add_event_with_files(event_name:str = Form(...), venue:str = Form(...)
         "program_outline_name": new_event.program_outline,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
-        #"admin_id": new_event.admin_id,
+        "admin_id": new_event.admin_id,
         "registration_time": new_event.registration_time,
         "number_of_participants": new_event.number_of_participants,
         "description": new_event.description

@@ -1,18 +1,18 @@
-from fastapi import APIRouter, status, Depends, File, UploadFile, Form
+from routers.events.schemas.events import EventRequest, UpdateEventRequest
+from fastapi import APIRouter,Depends, File, UploadFile, Form
 from routers.events.schemas import events
-from models.models import Admin, Event
+from passlib.context import CryptContext
+from routers.events.repo import crud
 from utils.database import Database
 from auth import authentication
-from fastapi.exceptions import HTTPException
-from passlib.context import CryptContext
-import shutil
-from response.response import Response
-from routers.events.repo import crud
-from fastapi.responses import FileResponse
+from models.models import Admin
 from sqlalchemy import text
-import os
-from routers.events.schemas.events import EventRequest, UpdateEventRequest
-from typing import Optional, List
+from typing import Optional
+
+
+
+
+
 
 
 
@@ -37,6 +37,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
+
+
 @events_router.post("/add", response_description="Event data added into the database")
 async def add_event(event_name:str = Form(...), venue:str = Form(...),
                 start_date:str = Form(...), end_date:str = Form(...),
@@ -44,13 +46,13 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                   number_of_participants:str = Form(None),
                 description:str = Form(None), flyer: Optional[UploadFile] = File(None),
                 program_outline: Optional[UploadFile] = File(None),
-                #current_admin: Admin = Depends(authentication.get_current_user)
+                current_admin: Admin = Depends(authentication.get_current_user)
                 ):
         
-    return await crud.add_event_with_files(
+    return await crud.add_event(
         event_name,venue,start_date,end_date,
         registration_time,how_to_join,number_of_participants,
-        description,flyer,program_outline
+        description,flyer,program_outline,current_admin
     )
 
 

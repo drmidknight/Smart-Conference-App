@@ -1,12 +1,18 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Boolean,text,ForeignKey, TIMESTAMP
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 import sqlalchemy as db
 
                     
 
+
+
+
+
 Base = declarative_base()
+
+
 
 
 class Participant(Base):
@@ -45,6 +51,10 @@ class Event(Base):
     updated_at = db.Column(TIMESTAMP, nullable=False,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
     participants = relationship("Participant", back_populates="events")
     #admins = relationship("Admin", back_populates="event")
+
+
+
+
 
 
 

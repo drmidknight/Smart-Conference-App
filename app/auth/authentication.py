@@ -1,19 +1,25 @@
-from passlib.context import CryptContext
-import jwt
-from models.models import Admin
-from fastapi.exceptions import HTTPException
-from sqlalchemy.orm import Session
-from fastapi import status, Security
-from datetime import datetime, timedelta
-from pydantic import ValidationError
-from utils.config import *
-from jose import JWTError, jwt
 from fastapi.security import (OAuth2PasswordBearer, SecurityScopes)
-from routers.admin.schemas.admin import *
+from fastapi.exceptions import HTTPException
 from routers.admin.endpoint.admin import *
-from typing import Optional
-from utils.database import *
+from routers.admin.schemas.admin import *
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
+from fastapi import status, Security
+from pydantic import ValidationError
 from utils.config import settings
+from models.models import Admin
+from jose import JWTError, jwt
+from utils.database import *
+from utils.config import *
+from typing import Optional
+import jwt
+
+
+
+
+
+
+
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
