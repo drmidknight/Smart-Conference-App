@@ -47,18 +47,18 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                   number_of_participants:str = Form(None),
                 description:str = Form(None), flyer: Optional[UploadFile] = File(None),
                 program_outline: Optional[UploadFile] = File(None),
-                current_admin: Admin = Depends(authentication.get_current_user)
+                #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
 
-    admin_id = current_admin.id
+    #admin_id = current_admin.id
 
     event_query = session.query(Event).filter(
             Event.event_name == event_name
         ).first()
     
-    usertype_query = session.query(Admin).filter(
-            Admin.id == admin_id, Admin.usertype == "User"
-        ).first()
+    # usertype_query = session.query(Admin).filter(
+    #         Admin.id == admin_id, Admin.usertype == "User"
+    #     ).first()
 
 
     if event_query:
@@ -67,9 +67,9 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
         str(event_name) + ") already exists")
 
 
-    if usertype_query:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-           detail="You are not authorized to create an Event. Please contact your system admin")
+    # if usertype_query:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #        detail="You are not authorized to create an Event. Please contact your system admin")
 
 
     flyer_name = "flyer-" + str(event_name) + ".jpg"
@@ -86,7 +86,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     new_event.registration_time = registration_time
     new_event.number_of_participants = number_of_participants
     new_event.description = description
-    new_event.admin_id = admin_id
+    #new_event.admin_id = admin_id
     new_event.status = "Active"
     
     session.add(new_event)
@@ -100,7 +100,6 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
         "program_outline_name": new_event.program_outline,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
-        "admin_id": new_event.admin_id,
         "registration_time": new_event.registration_time,
         "number_of_participants": new_event.number_of_participants,
         "description": new_event.description
