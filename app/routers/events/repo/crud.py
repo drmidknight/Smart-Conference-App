@@ -52,15 +52,24 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
 
     admin_id = current_admin.id
 
-    db_query = session.query(Event).filter(
+    event_query = session.query(Event).filter(
             Event.event_name == event_name
         ).first()
+    
+    usertype_query = session.query(Admin).filter(
+            Admin.id == admin_id, Admin.usertype == "User"
+        ).first()
 
-    if db_query is not None:
+
+    if event_query:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail="Event (" + \
         str(event_name) + ") already exists")
 
+
+    if usertype_query:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+           detail="You are not authorized to create an Event. Please contact your system admin")
 
 
     flyer_name = "flyer-" + str(event_name) + ".jpg"
@@ -99,19 +108,13 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
     session.commit()
     session.close()
 
-
-
-
    # get flyer destination path
     flyer_dest = os.path.join(settings.flyer_upload_dir, flyer_name)
     print(flyer_dest)
 
-
        # get program_outline destination path
     program_outline_dest = os.path.join(settings.program_outline_upload_dir, program_outline_name)
     print(program_outline_dest)
-
-
 
     try:
         flyer_contents = flyer.file.read()
@@ -131,7 +134,6 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
         return {"message": "There was an error uploading program_outline"}
     finally:
         program_outline_name
-
 
     return data
 
@@ -408,55 +410,55 @@ async def get_flyer_Event_By_Id(id: str):
 
 
 
-async def add_event(addEvent: EventRequest,
-                    #flyer: Optional[UploadFile] = File(None),program_outline: Optional[UploadFile] = File(None),
-                #current_admin: Admin = Depends(authentication.get_current_user)
-                ):
+# async def add_event(addEvent: EventRequest,
+#                     #flyer: Optional[UploadFile] = File(None),program_outline: Optional[UploadFile] = File(None),
+#                 #current_admin: Admin = Depends(authentication.get_current_user)
+#                 ):
     
-    #admin_id = current_admin.id
+#     #admin_id = current_admin.id
 
-    db_query = session.query(Event).filter(
-            Event.event_name == addEvent.event_name
-        ).first()
+#     db_query = session.query(Event).filter(
+#             Event.event_name == addEvent.event_name
+#         ).first()
 
-    if db_query is not None:
-        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
-           detail=f"Event (" + \
-        str(addEvent.event_name) + ") already exists")
+#     if db_query is not None:
+#         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+#            detail=f"Event (" + \
+#         str(addEvent.event_name) + ") already exists")
 
-    flyer_name = f"flyer-" + str(addEvent.event_name) + ".jpg"
-    program_outline_name = f"program_outline-" + str(addEvent.event_name) + ".jpg"
+#     flyer_name = f"flyer-" + str(addEvent.event_name) + ".jpg"
+#     program_outline_name = f"program_outline-" + str(addEvent.event_name) + ".jpg"
 
-    new_event = Event()
-    new_event.event_name = addEvent.event_name
-    new_event.venue = addEvent.venue
-    new_event.start_date = addEvent.start_date
-    new_event.end_date = addEvent.end_date
-    new_event.how_to_join = addEvent.how_to_join
-    new_event.registration_time = addEvent.registration_time
-    new_event.number_of_participants = addEvent.number_of_participants
-    new_event.description = addEvent.description
-    new_event.flyer = flyer_name
-    new_event.program_outline = program_outline_name
-    #new_event.admin_id = admin_id
-    new_event.status = "Active"
+#     new_event = Event()
+#     new_event.event_name = addEvent.event_name
+#     new_event.venue = addEvent.venue
+#     new_event.start_date = addEvent.start_date
+#     new_event.end_date = addEvent.end_date
+#     new_event.how_to_join = addEvent.how_to_join
+#     new_event.registration_time = addEvent.registration_time
+#     new_event.number_of_participants = addEvent.number_of_participants
+#     new_event.description = addEvent.description
+#     new_event.flyer = flyer_name
+#     new_event.program_outline = program_outline_name
+#     #new_event.admin_id = admin_id
+#     new_event.status = "Active"
     
-    session.add(new_event)
-    session.flush()
-    session.refresh(new_event, attribute_names=['id'])
-    data = {
-        "event_name": new_event.event_name,
-        "venue": new_event.venue,
-        "status": new_event.status,
-        "program_outline": new_event.program_outline,
-        "start_date": new_event.start_date,
-        "end_date": new_event.end_date,
-        "admin_id": new_event.admin_id,
-        "registration_time": new_event.registration_time,
-        "number_of_participants": new_event.number_of_participants,
-        "description": new_event.description
-    }
-    session.commit()
-    session.close()
+#     session.add(new_event)
+#     session.flush()
+#     session.refresh(new_event, attribute_names=['id'])
+#     data = {
+#         "event_name": new_event.event_name,
+#         "venue": new_event.venue,
+#         "status": new_event.status,
+#         "program_outline": new_event.program_outline,
+#         "start_date": new_event.start_date,
+#         "end_date": new_event.end_date,
+#         "admin_id": new_event.admin_id,
+#         "registration_time": new_event.registration_time,
+#         "number_of_participants": new_event.number_of_participants,
+#         "description": new_event.description
+#     }
+#     session.commit()
+#     session.close()
 
-    return data
+#     return data
