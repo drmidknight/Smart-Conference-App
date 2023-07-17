@@ -46,13 +46,13 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
                   number_of_participants:str = Form(None),
                 description:str = Form(None), flyer: Optional[UploadFile] = File(None),
                 program_outline: Optional[UploadFile] = File(None),
-                current_admin: Admin = Depends(authentication.get_current_user)
+                #current_admin: Admin = Depends(authentication.get_current_user)
                 ):
         
     return await crud.add_event(
         event_name,venue,start_date,end_date,
         registration_time,how_to_join,number_of_participants,
-        description,flyer,program_outline,current_admin
+        description,flyer,program_outline
     )
 
 
