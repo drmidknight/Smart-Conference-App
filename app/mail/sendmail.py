@@ -100,7 +100,7 @@ async def sendemailtonewusers(email: EmailSchema, instance: Admin):
             display: inline-block;
             margin-top: 12px;
             padding: 12px 24px;
-            background-color: ;
+            background-color: #1abc9c;
             color: #ffffff;
             text-decoration: none;
             border-radius: 4px;
