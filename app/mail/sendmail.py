@@ -47,165 +47,86 @@ conf = ConnectionConfig(
 
 
 async def sendemailtonewusers(email: EmailSchema, instance: Admin):
-
-    event_data = session.query(Event).filter(Event.id == instance.event_id).first()
-
     html = f"""
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charset="UTF-8">
-             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>GI-KACE SMART CONFERENCE APP</title>
-            <style>
-                @media only screen and (max-width: 600px) {{
-            /* Styles for mobile devices */
-            body {{
-                font-family: 'Roboto', sans-serif;
-                background-color: #000000;
-                margin: 0;
-                padding: 0;
-            }}
-            
-            .container {{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                padding: 20px;
-                background-color: #000000; 
-                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-                border-radius: 5px;
-                margin: 0 auto;
-                margin-top: 20px;
-            }}
-            
-            .container img {{
-                max-width: 100%;
-                margin-bottom: 10px;
-                border-radius: 5px;
-            }}
-            
-            h3, p {{
-                margin: 0;
-                margin-bottom: 12px;
-                color: #FFFFFF;
-                font-family: 'Roboto', sans-serif;;
-            }}
-            
-            h3 {{
-                font-size: 25px;
-                font-weight: bold;
-            }}
-            
-            p {{
-                font-size: 25px;
-                color: #FFFFFF;
-                font-weight: normal;
-            }}
-            
-            .welcome-section {{
-                background-color: #000000;
-                padding: 12px;
-                border-radius: 4px;
-                margin-bottom: 14px;
-            }}
-            
-            .thankyou-section {{
-                background-color: #000000;
-                padding: 12px;
-                border-radius: 4px;
-                margin-bottom:14px
-            }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GI-KACE SMART CONFERENCE APP</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
         }}
         
-        @media only screen and (min-width: 601px) {{
-            /* Styles for desktop devices */
-            body {{
-                font-family: 'Roboto', sans-serif;
-                background-color: #34495e;
-                margin: 0;
-                padding: 0;
-            }}
-            
-            .container {{
-                display: inline-flex; /* Updated to inline-flex */
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                padding: 40px;
-                background-color: #34495e;
-                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-                border-radius: 5px;
-                max-width: 400px;
-                margin: 0 auto;
-                margin-top: 40px;
-            }}
-            
-            .container img {{
-                max-width: 100%;
-                margin-bottom: 10px;
-                border-radius: 5px;
-            }}
-            
-            h3, p {{
-                margin: 0;
-                margin-bottom: 18px;
-                color: #2c3e50;
-                font-family: 'Roboto', sans-serif;;
-            }}
-            
-            h3 {{
-                font-size: 25px;
-                font-weight: bold;
-            }}
-            
-            p {{
-                font-size: 16px;
-                color: #000000;
-                font-weight: normal;
-            }}
-            
-            .welcome-section {{
-                background-color: #FFFFFF;
-                padding: 17px;
-                border-radius: 4px;
-                margin-bottom: 19px;
-            }}
-            
-            .thankyou-section {{
-                background-color: #FFFFFF;
-                padding: 17px;
-                border-radius: 4px;
-                margin-bottom: 19px;
-            }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
         }}
-            </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="welcome-section">
-                        <h4>Hi <b>{instance.name}!</b></h4>
-                        <h3>You have been added and assigned to <b>({event_data.event_name}) CONFERENCE</b></h3>
-                    </div>
-                    <div class="thankyou-section">
-                        Change your password to access the application.<br><br>
-                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                        background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
-                        Change password 
-                    </a>
-                    <br><br>
-                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser</p>
-                    http://localhost:4200/login/resetpassword?token={instance.reset_password_token}
-                    </div>
-                </div>
-            </body>
-            </html>
-    """
-
-
+        
+        h2, p {{
+            margin: 0;
+            margin-bottom: 12px;
+        }}
+        
+        h2 {{
+            font-size: 24px;
+            font-weight: bold;
+        }}
+        
+        p {{
+            font-size: 16px;
+            line-height: 1.5;
+        }}
+        
+        .welcome-section {{
+            margin-bottom: 24px;
+        }}
+        
+        .thankyou-section {{
+            margin-bottom: 24px;
+        }}
+        
+        .btn {{
+            display: inline-block;
+            margin-top: 12px;
+            padding: 12px 24px;
+            background-color: ;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+        }}
+        
+        .btn span {{
+            color: #000000;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Hi {instance.name},</h2>
+            <p>You have been added and assigned to the GI-KACE SMART CONFERENCE APP as a {instance.usertype}.</p>
+        </div>
+        <div class="thankyou-section">
+            <p>Please change your password to access the application.</p>
+            <a class="btn" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">Change Password <span>&#9658;</span></a>
+            <p>If you're having trouble clicking the "Change Password" button, copy and paste the following URL into your web browser:</p>
+            <p>http://localhost:4200/login/resetpassword?token={instance.reset_password_token}</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
 
 
     message = MessageSchema(
@@ -441,11 +362,11 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
 
 
 
-async def send_reset_password(email: EmailSchema, instance: Admin):
+async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Participant):
 
     html = f"""                    
                     <br>
-                    <p>Hi {instance.name} !</p>
+                    <p>Hi {instance.admin_name} !</p>
                     <br>
                     <p>You have requested to reset your password. Click on the button below to reset your password</p>
 
@@ -468,7 +389,7 @@ async def send_reset_password(email: EmailSchema, instance: Admin):
 
 
     message = MessageSchema(
-        subject="GI-KACE SMART CONFERENCE APP",
+        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
         recipients=email,
         body=html,
         subtype=MessageType.html)
