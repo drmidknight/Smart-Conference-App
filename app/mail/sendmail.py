@@ -47,12 +47,6 @@ conf = ConnectionConfig(
 
 
 async def sendemailtonewusers(email: EmailSchema, instance: Admin):
-<<<<<<< HEAD
-=======
-
-    event_data = session.query(Event).filter(Event.id == instance.event_id).first()
-
->>>>>>> b06d61a8232ba408e01f101c3963d0ca891db38a
     html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -78,7 +72,6 @@ async def sendemailtonewusers(email: EmailSchema, instance: Admin):
             margin-top: 20px;
             text-align: center;
         }}
-<<<<<<< HEAD
         
         h2, p {{
             margin: 0;
@@ -107,7 +100,7 @@ async def sendemailtonewusers(email: EmailSchema, instance: Admin):
             display: inline-block;
             margin-top: 12px;
             padding: 12px 24px;
-            background-color: #1abc9c;
+            background-color: ;
             color: #ffffff;
             text-decoration: none;
             border-radius: 4px;
@@ -134,32 +127,6 @@ async def sendemailtonewusers(email: EmailSchema, instance: Admin):
 </body>
 </html>
 """
-=======
-            </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="welcome-section">
-                        <h4>Hi <b>{instance.name}!</b></h4>
-                        <h3>You have been added and assigned to <b>({event_data.event_name}) CONFERENCE</b></h3>
-                    </div>
-                    <div class="thankyou-section">
-                        Change your password to access the application.<br><br>
-                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                        background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
-                        Change password 
-                    </a>
-                    <br><br>
-                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser</p>
-                    http://localhost:4200/login/resetpassword?token={instance.reset_password_token}
-                    </div>
-                </div>
-            </body>
-            </html>
-    """
-
-
->>>>>>> b06d61a8232ba408e01f101c3963d0ca891db38a
 
 
     message = MessageSchema(
@@ -395,11 +362,11 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
 
 
 
-async def send_reset_password(email: EmailSchema, instance: Admin):
+async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Participant):
 
     html = f"""                    
                     <br>
-                    <p>Hi {instance.name} !</p>
+                    <p>Hi {instance.admin_name} !</p>
                     <br>
                     <p>You have requested to reset your password. Click on the button below to reset your password</p>
 
@@ -422,7 +389,7 @@ async def send_reset_password(email: EmailSchema, instance: Admin):
 
 
     message = MessageSchema(
-        subject="GI-KACE SMART CONFERENCE APP",
+        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
         recipients=email,
         body=html,
         subtype=MessageType.html)
