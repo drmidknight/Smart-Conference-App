@@ -101,6 +101,13 @@ async def get_by_token(token: str):
 
 
 
+## function to update admin or users base on id after reseting password
+@admin_router.put("/reset-password")
+async def update(updateAdmin: admin.UpdateAdmin):
+   
+   return await crud.update_user_after_reset_password(updateAdmin)
+
+
 
 
 
