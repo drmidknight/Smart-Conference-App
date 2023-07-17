@@ -366,29 +366,86 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
 
 
 async def send_reset_password(email: EmailSchema, instance: Admin):
-
     html = f"""                    
-                    <br>
-                    <p>Hi {instance.name} !</p>
-                    <br>
-                    <p>You have requested to reset your password. Click on the button below to reset your password</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset - GI-KACE SMART CONFERENCE APP</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }}
+        
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }}
+        
+        p {{
+            margin: 0;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }}
+        
+        a.btn {{
+            display: inline-block;
+            margin-top: 12px;
+            padding: 12px 24px;
+            background-color: #0275d8;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            position: relative;
+        }}
+        
+        a.btn span {{
+            margin-left: 5px;
+        }}
+        
+        b {{
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <br>
+        <p>Hi <b>{instance.name} !</b></p>
+        <br>
+        <p>You have requested to reset your password. Click on the button below to reset your password.</p>
 
-                    <br><br>
-                    
-                    <a style="margin-top:1rem;padding:1rem;border-radius:0.5rem;font-size:1rem;text-decoration:none;
-                    background: #0275d8; color:white;" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
-                    Reset password 
-                    </a>
-                    <br><br>
-                    <p>If you're having problem clicking the Change Password button, copy and paste the URL below into your web browser
-                    <br>
-                    <b>Link expires in 3 hours</b>
-                    </p>
-                    http://localhost:4200/login/resetpassword?token={instance.reset_password_token}
-                    <br><br>
-                    <p><b>Ignore this email if you have not requested to reset your password</b></p>
-                    
-    """
+        <br><br>
+        <a class="btn" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
+            Change Password <span>&#9658;</span>
+        </a>
+        
+        <br><br>
+        
+        <p>If you're having trouble clicking the "Change Password" button, copy and paste the URL below into your web browser.</p>
+        <br>
+        <b>Link expires in 3 hours</b>
+        <br>
+        <br>
+        <p><a href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">http://localhost:4200/login/resetpassword?token={instance.reset_password_token}</a></p>
+        <br><br>
+        <p><b>Ignore this email if you have not requested to reset your password.</b></p>
+    </div>
+</body>
+</html>
+"""
 
 
     message = MessageSchema(
