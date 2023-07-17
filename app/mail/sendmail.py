@@ -429,12 +429,12 @@ async def send_reset_password(email: EmailSchema, instance: Admin):
 
         <br><br>
         <a class="btn" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
-            Change Password <span>&#9658;</span>
+            Reset Password <span>&#9658;</span>
         </a>
         
         <br><br>
         
-        <p>If you're having trouble clicking the "Change Password" button, copy and paste the URL below into your web browser.</p>
+        <p>If you're having trouble clicking the "Reset Password" button, copy and paste the URL below into your web browser.</p>
         <br>
         <b>Link expires in 3 hours</b>
         <br>
