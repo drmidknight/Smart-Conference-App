@@ -1,5 +1,5 @@
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import APIRouter, status, Depends
+from fastapi import status, Depends
 from mail.sendmail import sendemailtonewusers,send_reset_password
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext

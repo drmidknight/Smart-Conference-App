@@ -74,7 +74,6 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
 
     flyer_name = "flyer-" + str(event_name) + ".jpg"
     program_outline_name = "program_outline-" + str(event_name) + ".pdf"
-
     new_event = Event()
     new_event.event_name = event_name
     new_event.venue = venue
@@ -100,6 +99,7 @@ async def add_event(event_name:str = Form(...), venue:str = Form(...),
         "program_outline_name": new_event.program_outline,
         "start_date": new_event.start_date,
         "end_date": new_event.end_date,
+        "admin_id": new_event.admin_id,
         "registration_time": new_event.registration_time,
         "number_of_participants": new_event.number_of_participants,
         "description": new_event.description

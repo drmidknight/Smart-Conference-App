@@ -47,6 +47,9 @@ conf = ConnectionConfig(
 
 
 async def sendemailtonewusers(email: EmailSchema, instance: Admin):
+
+    event_data = session.query(Event).filter(Event.id == instance.event_id).first()
+
     html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -115,7 +118,7 @@ async def sendemailtonewusers(email: EmailSchema, instance: Admin):
     <div class="container">
         <div class="welcome-section">
             <h2>Hi {instance.name},</h2>
-            <p>You have been added and assigned to the GI-KACE SMART CONFERENCE APP as a {instance.usertype}.</p>
+            <p>You have been added and assigned to ({event_data.event_name}) CONFERENCE.</p>
         </div>
         <div class="thankyou-section">
             <p>Please change your password to access the application.</p>
@@ -325,7 +328,7 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
 """
 
     message = MessageSchema(
-        subject=" SMART CONFERENCE",
+        subject="GI-KACE SMART CONFERENCE APP",
         recipients=email,
         body=html,
         subtype=MessageType.html,
@@ -362,11 +365,11 @@ async def sendEmailToNewParticipant(email: EmailSchema, instance: Participant, r
 
 
 
-async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Participant):
+async def send_reset_password(email: EmailSchema, instance: Admin):
 
     html = f"""                    
                     <br>
-                    <p>Hi {instance.admin_name} !</p>
+                    <p>Hi {instance.name} !</p>
                     <br>
                     <p>You have requested to reset your password. Click on the button below to reset your password</p>
 
@@ -389,7 +392,7 @@ async def send_Reset_Password_LinkToStaffEmail(email: EmailSchema, instance: Par
 
 
     message = MessageSchema(
-        subject="GHANA-INDIA KOFI ANNAN CENTRE OF EXCELLENCE IN ICT (STUDENT RESULTS APP)",
+        subject="GI-KACE SMART CONFERENCE APP",
         recipients=email,
         body=html,
         subtype=MessageType.html)
