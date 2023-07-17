@@ -1,6 +1,6 @@
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, status, Depends
-from mail.sendmail import sendemailtonewusers
+from mail.sendmail import sendemailtonewusers,send_reset_password
 from fastapi.exceptions import HTTPException
 from passlib.context import CryptContext
 from routers.admin.schemas import admin
@@ -59,16 +59,16 @@ async def admin_authentication(form_data: OAuth2PasswordRequestForm = Depends())
 
 async def create_admin(adminRequest: admin.AdminRequest):
 
-    db_query = session.query(Admin).filter(Admin.email == adminRequest.email).filter(
-        Admin.contact == adminRequest.contact).first()
+    db_query = session.query(Admin).filter(Admin.email == adminRequest.email).first()
  
-    if db_query is not None:
+    if db_query:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail="Admin or User with email (" + \
         str(adminRequest.email) + ") already exists")
     
     new_admin = Admin(**adminRequest.dict())
     new_admin.reset_password_token = authentication.generate_reset_password_token()
+    new_admin.password = None
     session.add(new_admin)
     session.flush()
     session.refresh(new_admin, attribute_names=['id'])
@@ -127,7 +127,7 @@ async def updateAdmin(updateAdmin: admin.UpdateAdmin):
     session.commit()
     if not is_adminID_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail="Admin or User with the id (" + str(adminID) + ") is not found")
+            detail="Admin or User with the id (" + str(adminID) + ") not found")
 
     data = session.query(Admin).filter(Admin.id == adminID).one()
     return data
@@ -155,8 +155,9 @@ async def get_by_email(email: str):
     if not user_db_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail="Admin or User with the email (" + str(email) + ") is not found")
-
+    
     data = session.query(Admin).filter(Admin.email == email).one()
+    await send_reset_password([email], data)
     return data
 
 
@@ -214,4 +215,32 @@ async def deleteAdmin(id: str):
 ## function to count all admin and users
 async def count_all_Admin():
     data = session.query(Admin).count()
+    return data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async def update_user_after_reset_password(update: admin.UpdateAdmin):
+    staffID = update.id
+    is_staffID_update = session.query(Admin).filter(Admin.id == staffID).update({
+        Admin.reset_password_token : None,
+        Admin.hashed_password : pwd_context.hash(update.password)
+        }, synchronize_session=False)
+    session.flush()
+    session.commit()
+    if not is_staffID_update:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail="Staff with the id (" + str(staffID) + ") is not found")
+
+    data = session.query(Admin).filter(Admin.id == staffID).one()
     return data
