@@ -234,7 +234,7 @@ async def update_user_after_reset_password(update: admin.UpdateAdmin):
     staffID = update.id
     is_staffID_update = session.query(Admin).filter(Admin.id == staffID).update({
         Admin.reset_password_token : None,
-        Admin.hashed_password : pwd_context.hash(update.password)
+        Admin.password : pwd_context.hash(update.password)
         }, synchronize_session=False)
     session.flush()
     session.commit()
