@@ -118,13 +118,14 @@ async def sendemailtonewusers(email: EmailSchema, instance: Admin):
     <div class="container">
         <div class="welcome-section">
             <h2>Hi {instance.name},</h2>
-            <p>You have been added and assigned to ({event_data.event_name}) CONFERENCE.</p>
+            <p>You have been added and assigned to ({event_data.event_name}) CONFERENCE <br> which starts at 
+            {event_data.start_date} and ends at {event_data.end_date}.</p>
         </div>
         <div class="thankyou-section">
             <p>Please change your password to access the application.</p>
-            <a class="btn" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">Change Password <span>&#9658;</span></a>
+            <a class="btn" href="http://localhost:4200/login/resetpassword/token/{instance.reset_password_token}">Change Password <span>&#9658;</span></a>
             <p>If you're having trouble clicking the "Change Password" button, copy and paste the following URL into your web browser:</p>
-            <p>http://localhost:4200/login/resetpassword?token={instance.reset_password_token}</p>
+            <p>http://localhost:4200/login/resetpassword/token/{instance.reset_password_token}</p>
         </div>
     </div>
 </body>
@@ -428,7 +429,7 @@ async def send_reset_password(email: EmailSchema, instance: Admin):
         <p>You have requested to reset your password. Click on the button below to reset your password.</p>
 
         <br><br>
-        <a class="btn" href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">
+        <a class="btn" href="http://localhost:4200/login/resetpassword/token/{instance.reset_password_token}">
             Reset Password <span>&#9658;</span>
         </a>
         
@@ -439,7 +440,7 @@ async def send_reset_password(email: EmailSchema, instance: Admin):
         <b>Link expires in 3 hours</b>
         <br>
         <br>
-        <p><a href="http://localhost:4200/login/resetpassword?token={instance.reset_password_token}">http://localhost:4200/login/resetpassword?token={instance.reset_password_token}</a></p>
+        <p><a href="http://localhost:4200/login/resetpassword/token/{instance.reset_password_token}">http://localhost:4200/login/resetpassword/token/{instance.reset_password_token}</a></p>
         <br><br>
         <p><b>Ignore this email if you have not requested to reset your password.</b></p>
     </div>

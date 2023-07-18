@@ -69,13 +69,14 @@ async def create_admin(adminRequest: admin.AdminRequest):
     new_admin = Admin(**adminRequest.dict())
     new_admin.reset_password_token = authentication.generate_reset_password_token()
     new_admin.password = None
+    new_admin.usertype = "User"
     session.add(new_admin)
     session.flush()
     session.refresh(new_admin, attribute_names=['id'])
     await sendemailtonewusers([adminRequest.email], new_admin)
     session.commit()
     session.close()
-    return new_admin
+    return "User added successfully!"
 
 
 

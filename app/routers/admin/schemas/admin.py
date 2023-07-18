@@ -8,7 +8,6 @@ class AdminRequest(BaseModel):
     name:str
     email:str
     contact:Optional[str]
-    usertype: Optional[str]
     event_id: Optional[int]
 
     class Config():
