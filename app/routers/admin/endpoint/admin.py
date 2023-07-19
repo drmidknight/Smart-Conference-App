@@ -121,6 +121,14 @@ async def delete(id: str):
 
 
 
+## function to get admin or users events base on event id
+@admin_router.get("/event_id/{event_id}")
+async def get_user_event_by_event_id(event_id: int):
+    
+    return await crud.get_user_event_by_event_id(event_id)
+
+
+
 
 
 ## function to count all admin and users

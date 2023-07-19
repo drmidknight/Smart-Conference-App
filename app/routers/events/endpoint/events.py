@@ -140,6 +140,8 @@ async def generate_url(event_name: str):
 
 
 
+
+
 @events_router.get("/count")
 async def count_all_Event():
     

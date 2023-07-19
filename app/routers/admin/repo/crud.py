@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from routers.admin.schemas import admin
 from utils.database import Database
 from utils.config import settings
-from models.models import Admin
+from models.models import Admin, Event
 from auth import authentication
 from datetime import timedelta
 
@@ -60,11 +60,19 @@ async def admin_authentication(form_data: OAuth2PasswordRequestForm = Depends())
 async def create_admin(adminRequest: admin.AdminRequest):
 
     db_query = session.query(Admin).filter(Admin.email == adminRequest.email).first()
+
+    event_id_query = session.query(Admin).filter(Admin.event_id == adminRequest.event_id).first()
  
     if db_query:
         raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
            detail="Admin or User with email (" + \
         str(adminRequest.email) + ") already exists")
+    
+
+    if event_id_query:
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER,
+           detail="Sorry, Can't assigned one Event to two(2) Users")
+    
     
     new_admin = Admin(**adminRequest.dict())
     new_admin.reset_password_token = authentication.generate_reset_password_token()
@@ -245,3 +253,38 @@ async def update_user_after_reset_password(update: admin.UpdateAdmin):
 
     data = session.query(Admin).filter(Admin.id == staffID).one()
     return data
+
+
+
+
+
+
+
+
+
+
+## function to get admin or users events base on event id
+
+async def get_user_event_by_event_id(event_id: int):
+    data = session.query(Event).filter(Admin.event_id == event_id).first()
+
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Event with the id {event_id} is not available")
+
+    flyer_path = f"{settings.flyer_upload_dir}/{data.flyer}"
+    program_outline_path = f"{settings.program_outline_upload_dir}/{data.program_outline}"
+
+    db_data = {
+        "event_name": data.event_name,
+        "venue": data.venue,
+        "status": data.status,
+        "flyer": flyer_path,
+        "program_outline": program_outline_path,
+        "start_date": data.start_date,
+        "end_date": data.end_date,
+        "registration_time": data.registration_time,
+        "number_of_participants": data.number_of_participants,
+        "description": data.description
+    }
+    return db_data
